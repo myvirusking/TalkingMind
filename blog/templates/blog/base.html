@@ -1,0 +1,102 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    {% if title %}
+        <title>Blog-{{title}}</title>
+    {% else %}
+        <title>Blog</title>
+    {% endif %}
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link href="{% static 'blog/main.css' %}" rel="stylesheet" type="text/css" >
+
+    <script type="text/javascript">
+
+    function showModal(){
+        document.querySelector('.bg-modal').style.display = "flex";
+
+    }
+
+    function closeModal(){
+        document.querySelector('.bg-modal').style.display = "none";
+    }
+
+    function showNewPostForm() {
+        document.querySelector('.bg-post-modal').style.display="flex";
+    }
+
+    function closeNewPostForm() {
+        document.querySelector('.bg-post-modal').style.display="none";
+
+    }
+
+    function  showDeleteInfo() {
+        document.querySelector('.delete-post-modal').style.display = "flex";
+
+    }
+
+    function closeDeleteInfo() {
+        document.querySelector('.delete-post-modal').style.display = "none";
+
+    }
+
+    </script>
+
+</head>
+<body>
+          <nav class="navbar navbar-expand-md navbar-inverse bg-dark ">
+            <div class="container">
+                {% if user.is_authenticated %}
+                    <a class="navbar-brand mr-4" href="{% url 'login-home' %}">{TalkingMind}</a>
+                {% else %}
+              <a class="navbar-brand mr-4" href="{% url 'blog-home' %}">{TalkingMind}</a>
+                {% endif %}
+              <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+              </button>
+              <div class="collapse navbar-collapse" id="navbarToggle">
+                <div class="navbar-nav mr-auto">
+                    {% if user.is_authenticated %}
+                        <a class="nav-item nav-link" href="{% url 'login-home' %}">Home</a>
+                    {% else %}
+                        <a class="nav-item nav-link" href="{% url 'blog-home' %}">Home</a>
+                    {% endif %}
+                  <a class="nav-item nav-link" href="#">About</a>
+                </div>
+                <!-- Navbar Right Side -->
+                <div class="navbar-nav ">
+                    {% if user.is_authenticated %}
+                        <a class="nav-item nav-link " style="width:100px; margin-right:10px;" href="{% url 'profile' %}">Profile</a>
+                        <a class="nav-item nav-link " style="width:100px;" href="{% url 'logout' %}">Log out</a>
+                    {% else %}
+                  <a class="nav-item nav-link btn btn-primary " style="width:100px; margin-right:10px;" href="{% url 'login' %}">Login</a>
+                  <a class="nav-item nav-link btn btn-primary" style="width:100px;" href="{% url 'registration-form' %}">Register</a>
+                    {% endif %}
+                </div>
+              </div>
+            </div>
+          </nav>
+
+          <div class="container center">
+              {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{message.tags}} align-center">
+                        {{message}}
+                    </div>
+                {% endfor %}
+              {% endif %}
+
+          </div>
+
+        {% block content %}
+        {% endblock content %}
+
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+</body>
+
+</html>

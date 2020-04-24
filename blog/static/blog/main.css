@@ -1,0 +1,186 @@
+html,body{
+    width:100%;
+    height:100%;
+
+}
+
+body{
+    background-color: #F0F0F0;
+    padding-bottom: 40px;
+
+}
+
+#post{
+    border:1px solid darkgray;
+    /*border-radius:20px;*/
+    width:100%;
+}
+
+#post:hover{
+    background-color:rgb(242,243,247)
+}
+
+#post-section{
+     margin-top:50px
+}
+
+.post-container{
+    width:80%;
+
+
+}
+
+
+#login-form{
+    margin-top:50px;
+    border:1px solid gray;
+    padding-top:20px;
+    padding-bottom:40px;
+    padding-left:30px;
+    padding-right:30px;
+    margin-left:30px;
+    border-radius:10px;
+    width:70%;
+    
+}
+
+.first-div{
+    width:60%;
+    float:left;
+    margin-top:50px;
+
+}
+
+.second-div{
+    width:40%;
+    float:left;
+
+}
+
+.article-metadata{
+  border-bottom: 1px solid gray;
+
+}
+
+.registration-form{
+    border:1px solid gray;
+    padding-top:20px;
+    padding-bottom:40px;
+    padding-left:30px;
+    padding-right:30px;
+    border-radius:10px;
+    background-color: white;
+}
+
+.post{
+    padding: 5px;
+    border:1px solid lightgray;
+    background-color: white;
+    /*border-radius:20px;*/
+
+}
+
+#profile{
+    border:1px solid lightgray;
+    border-radius: 40px;
+    padding: 5px;
+}
+
+.profile-content{
+    border-left: 1px solid lightgray;
+}
+
+
+
+.bg-modal {
+	background-color: rgba(0, 0, 0, 0.8);
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	top: 0;
+	display: none;
+	align-items: center;
+}
+
+.bg-post-modal{
+    background-color: rgba(0, 0, 0, 0.8);
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	top: 0;
+	display: none;
+	align-items: center;
+}
+
+.update-post-modal{
+    background-color: rgba(0, 0, 0, 0.8);
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	top: 0;
+	display: none;
+	align-items: center;
+}
+
+
+.modal-contents {
+	/*height: 300px;
+	width: 500px;*/
+	background-color: white;
+	text-align: center;
+	padding: 20px;
+	position: relative;
+	border-radius: 4px;
+}
+
+input {
+	margin: 15px auto;
+	display: block;
+	width: 50%;
+	padding: 8px;
+	border: 1px solid gray;
+}
+
+.close {
+	position: absolute;
+	top: 0;
+	right: 10px;
+	font-size: 42px;
+	color: #333;
+	transform: rotate(45deg);
+	cursor: pointer;
+
+}
+
+.close:hover{
+    color:#666;
+}
+
+.post-update-form{
+    border:1px solid gray;
+    padding-bottom: 10px;
+    margin-top: 3rem;
+    background-color: white;
+}
+
+.post-update-form input{
+    width:100%;
+}
+
+.post-update-form textarea{
+    width:100%;
+}
+
+
+.delete-post-modal{
+    background-color: rgba(0, 0, 0, 0.8);
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	top: 0;
+	display: none;
+	align-items: center;
+}
+
+
+

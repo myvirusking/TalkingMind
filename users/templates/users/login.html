@@ -1,0 +1,49 @@
+{% extends 'blog/base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+    <div class="container">
+        <div class="col-lg-4  offset-lg-4 mt-5 registration-form shadow-lg p-3 mb-5 pb-5 bg-white rounded">
+            {% if form.errors %}
+                {% for field in form %}
+                    {% for error in field.errors %}
+                        <div class="alert alert-danger">
+                            <strong>{{ error|escape }}</strong>
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+                {% for error in form.non_field_errors %}
+                    <div class="alert alert-danger">
+                        <strong>{{ error|escape }}</strong>
+                    </div>
+                {% endfor %}
+            {% endif %}
+            {% if error_message %}
+                <div class="alert alert-danger">
+                    <strong>{{ error_message }}</strong>
+                </div>
+            {% endif %}
+            <center><img src="{% static 'blog/website_logo.png' %}"></center>
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    {{form.username}}
+                </div>
+
+                <div class="form-group ">
+                    {{form.password}}
+                </div>
+
+                <a href="#"  class="mt-1 mb-1">forgot password?</a>
+                <br>
+                <button type="submit" class="btn btn-block" style="background-color:#4b204f;color:white;">Login</button><center><strong>or<br></strong></center>
+                <a class="btn btn-primary  btn-block mt-2"  href="{% url 'registration-form'%}" role="button" style="background-color:#4b204f;color:white;">Sign up</a>
+
+
+
+
+            </form>
+        </div>
+    </div>
+{% endblock content %}

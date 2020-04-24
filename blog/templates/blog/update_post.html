@@ -1,0 +1,61 @@
+{% extends 'blog/base.html' %}
+
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+    <div class="container post-update-form col-4 offset-4 shadow-lg p-3 mb-5 bg-white rounded shadow-sm p-3 mb-5 bg-white rounded shadow p-3 mb-5 bg-white rounded">
+        <div class="mt-2">
+            {% if form.errors %}
+                {% for field in form %}
+                    {% for error in field.errors %}
+                        <div class="alert alert-danger">
+                            <strong>{{ error|escape }}</strong>
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+                {% for error in form.non_field_errors %}
+                    <div class="alert alert-danger">
+                        <strong>{{ error|escape }}</strong>
+                    </div>
+                {% endfor %}
+            {% endif %}
+            {% if error_message %}
+                <div class="alert alert-danger">
+                    <strong>{{ error_message }}</strong>
+                </div>
+            {% endif %}
+            <form method="post">
+                {% csrf_token %}
+                <h4 style="text-align: center;  display:inline;color: #4b204f; "><strong >Update post</strong></h4>
+                <a style="float: right; display:inline;" class="btn btn-primary btn-sm active"  onclick="showDeleteInfo()"  aria-pressed="true">Delete</a>
+                <div class="form-group">
+                    <strong>Title:</strong>
+                    {{form.title}}
+                </div>
+                <div class="form-group">
+                    <strong>Content:</strong>
+                    {{form.content}}
+
+                </div>
+                <button type="submit" class="btn btn-block" style="background-color:#4b204f;color:white;">Update</button>
+            </form>
+        </div>
+    </div>
+
+     <div class="delete-post-modal  ">
+        <div class="modal-contents col-4 offset-4 mt-5 ">
+
+            <div class="close " onclick="closeDeleteInfo()">+</div>
+                <form method="post" action="{% url 'post-delete' object.id%}">
+                    {% csrf_token %}
+                    <h4>Are you sure, you wanna delete the post?</h4>
+                    <button type="submit" class="btn mt-2 btn-danger" style="background-color:#4b204f;color:white; display: inline; float: left;">Yes</button>
+                    <a class="btn btn-outline-secondary" type="button" onclick="closeDeleteInfo()" style="display: inline;float: right;">Cancel</a>
+                </form>
+        </div>
+     </div>
+
+
+
+{% endblock content %}
