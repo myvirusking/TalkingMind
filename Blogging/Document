@@ -1,0 +1,44 @@
+
+Commands and its uses:
+
+1-  django-admin startproject mysite
+Use:- This command creates a project
+
+2-  py manage.py runserver
+Use:-  Runs the development server
+
+3-  py manage.py runserver 8080
+Use:- Changes the running server port to 8080 (By default the server runs at 8000 port)
+
+4-  py manage.py startapp appName
+Use:- The above command creates an app inside the project
+
+NOTE:- After creating any app in the project add the app in the INSTALLED_APPS in the settings.py
+        file of the project
+
+5-  python manage.py makemigrations polls
+Use:-  By running makemigrations, you’re telling Django that you’ve made some changes to your models
+        and that you’d like the changes to be stored as a migration.
+
+6-  python manage.py sqlmigrate polls 0001
+Use:- Creates the sql for the named migration
+
+7-  python manage.py check
+Use:- Checks any problem in the project without touching the database and without doing any migrations
+
+8-  python manage.py migrate
+Use:-  The migrate command takes all the migrations that haven’t been applied (Django tracks which ones are
+        applied using a special table in your database called django_migrations) and runs them against your
+        database - essentially, synchronizing the changes you made to your models with the schema in the database.
+
+NOTE:-  The three steps for creating the models
+        =>Change your models (in models.py).
+        =>Run python manage.py makemigrations to create migrations for those changes
+        =>Run python manage.py migrate to apply those changes to the database.
+
+9-  python manage.py createsuperuser
+Use:-  To create the admin login for django admin page
+
+10-  If you want to edit any model through django admin then you havev to register the model in admin.py file of the app
+
+11- 
