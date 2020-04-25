@@ -3,8 +3,8 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-    <div class="container">
-        <div class="col-lg-4  offset-lg-4 mt-5 registration-form shadow-lg p-3 mb-5 pb-5 bg-white rounded">
+        <div class="container">
+            <div class="col-lg-4  offset-lg-4 mt-5 registration-form shadow-lg p-3 mb-5 pb-5 bg-white rounded">
             {% if form.errors %}
                 {% for field in form %}
                     {% for error in field.errors %}

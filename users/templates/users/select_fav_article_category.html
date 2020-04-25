@@ -1,0 +1,34 @@
+<html>
+
+<head>
+    <title>Select Favourite Article Category</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" />
+</head>
+
+<body>
+    <br><br>
+    <form method="POST"> {% csrf_token %}
+        <div class="container">
+            <div class="col-lg-10 offset-lg-1 shadow-lg p-3 mb-5 pb-5 bg-white rounded">
+                <div class="row">
+                    {% for id,name in category_list %}
+                    <div class="col-md-2">
+                        <div class=" custom-control custom-checkbox" style="margin-bottom: 10px;">
+                            <input value="{{id}} " name="check" type="checkbox" class="custom-control-input" id="defaultUnchecked{{forloop.counter}} ">
+                            <label class="custom-control-label" for="defaultUnchecked{{forloop.counter}} ">{{name}}</label>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    <div class="col-md-5"></div>
+                    <div class="col-md-4">
+                        <button type="submit" class="btn btn-outline-success" style="margin-top: 50px;">Save & Continue</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+    </form> l̥
+
+</body>
+
+</html>

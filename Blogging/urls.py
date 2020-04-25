@@ -22,6 +22,7 @@ from django.conf.urls.static import static
 from users import views as user_views
 from blog.views import PostDeleteView
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('blog/', include('blog.urls')),
