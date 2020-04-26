@@ -11,17 +11,17 @@ import re
 class RegisterForm(forms.ModelForm):
 
     username = forms.CharField(widget=forms.TextInput(attrs={
-        'class': 'form-control', 'placeholder': 'Username'
+        'class': 'form-control regInput', 'placeholder': 'Username', 'id': 'username'
     }))
     email = forms.EmailField(widget=forms.EmailInput(attrs={
-        'class': 'form-control', 'placeholder': 'Email'
+        'class': 'form-control regInput', 'placeholder': 'Email', 'id': 'email'
     }))
     password = forms.CharField(widget=forms.PasswordInput(attrs={
-        'class': 'form-control', 'placeholder': 'Password'
+        'class': 'form-control regInput', 'placeholder': 'Password', 'id': 'pswrd'
     }))
 
     repeat_password = forms.CharField(widget=forms.PasswordInput(attrs={
-        'class': 'form-control', 'placeholder': 'Confirm password'
+        'class': 'form-control regInput', 'placeholder': 'Confirm password', 'id': 'repeatPswrd'
     }))
 
     def clean_username(self, *args, **kwargs):
