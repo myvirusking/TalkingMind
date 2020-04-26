@@ -10,12 +10,27 @@
     <form method="POST"> {% csrf_token %}
         <div class="container">
             <div class="col-lg-10 offset-lg-1 shadow-lg p-3 mb-5 pb-5 bg-white rounded">
+            <div class="row">
+            <div class="col-md-4"></div>
+            <div style="text-align:center;" class="col-md-4">
+            <h3>Article You Like</h3>
+            <i>Choose your favourite article categories.</i>
+            </div>
+            <div class="col-md-4" style="text-align:end;">
+            <a href="{% url "login-home" %}">Skip</a>
+            </div>
+            </div>
+            <br>
                 <div class="row">
                     {% for id,name in category_list %}
                     <div class="col-md-2">
                         <div class=" custom-control custom-checkbox" style="margin-bottom: 10px;">
-                            <input value="{{id}} " name="check" type="checkbox" class="custom-control-input" id="defaultUnchecked{{forloop.counter}} ">
-                            <label class="custom-control-label" for="defaultUnchecked{{forloop.counter}} ">{{name}}</label>
+                        {% if id in category_selected_id_list %}
+                            <input value="{{id}} " name="check" type="checkbox" class="custom-control-input" id="defaultUnchecked{{forloop.counter}}" checked>
+                        {% else %}
+                            <input value="{{id}} " name="check" type="checkbox" class="custom-control-input" id="defaultUnchecked{{forloop.counter}}">
+                        {% endif %}
+                            <label class="custom-control-label" for="defaultUnchecked{{forloop.counter}}">{{name}}</label>
                         </div>
                     </div>
                     {% endfor %}

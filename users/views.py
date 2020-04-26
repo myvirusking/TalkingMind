@@ -11,6 +11,7 @@ from django.views.generic import  CreateView,View,TemplateView
 from .models import *
 from django.urls import reverse_lazy
 from django.contrib.auth import authenticate,login
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 def user_register(request):
@@ -69,13 +70,14 @@ def profile(request):
         profile_form = ProfileUpdateForm(instance = request.user.profile)
 
     post = Post.objects.filter(author_id=request.user)
+    article_category = [name for id,name in Profile.objects.get(user=request.user).article_category.values_list()]
     context = {
         'user_form':user_form,
         'profile_form':profile_form,
+        'article_category':article_category,
         'posts':post
     }
 
-    print(post)
     return render(request, 'users/userprofile.html',context)
 
 
@@ -90,12 +92,13 @@ class HomeView(ListView):
 
 
 
-class SelectFavouriteArticleCategoryView(View):
+class SelectFavouriteArticleCategoryView(LoginRequiredMixin,View):
     template_name = "users/select_fav_article_category.html"
     context = {}
 
     def get(self,*args, **kwargs):
         self.context["category_list"] = [(category.id,category.name) for category in ArticleCategory.objects.all()]
+        self.context["category_selected_id_list"] = [id for id,name in Profile.objects.get(user=self.request.user).article_category.values_list()]
         return render(self.request,self.template_name,self.context)
 
     def post(self,*args, **kwargs):
@@ -107,4 +110,4 @@ class SelectFavouriteArticleCategoryView(View):
         profile_obj = Profile.objects.get(user=user)
         profile_obj.article_category.set(slected_article_obj_list)
         profile_obj.save()
-        return redirect("profile")
+        return redirect("login-home")
