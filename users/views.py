@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect,HttpResponseRedirect
 from django.contrib.auth.models import User
 from .forms import RegisterForm, UserUpdateForm, ProfileUpdateForm
 from django.contrib import messages
@@ -7,7 +7,10 @@ from blog.models import Post
 from django.contrib.auth.decorators import login_required
 from blog import urls
 from django.views.generic.edit import FormView
-from django.views.generic import  CreateView
+from django.views.generic import  CreateView,View,TemplateView
+from .models import *
+from django.urls import reverse_lazy
+from django.contrib.auth import authenticate,login
 
 
 def user_register(request):
@@ -34,9 +37,10 @@ def user_register(request):
                     form.cleaned_data['password']
                 )
                 user.save()
-                messages.success(request, 'Registration successful, you can login now')
-
-                return redirect('login')
+                #messages.success(request, 'Registration successful, you can login now')
+                user = authenticate(request,username=form.cleaned_data['username'],password=form.cleaned_data['password'])
+                login(request,user)
+                return redirect('fav_article_category')
 
         else:
             print(form.errors)
@@ -83,3 +87,24 @@ class HomeView(ListView):
 
     # def get_queryset(self):
     #     return Post.objects.all()
+
+
+
+class SelectFavouriteArticleCategoryView(View):
+    template_name = "users/select_fav_article_category.html"
+    context = {}
+
+    def get(self,*args, **kwargs):
+        self.context["category_list"] = [(category.id,category.name) for category in ArticleCategory.objects.all()]
+        return render(self.request,self.template_name,self.context)
+
+    def post(self,*args, **kwargs):
+        slected_article_category_list = self.request.POST.getlist("check")
+        slected_article_obj_list = []
+        for id in slected_article_category_list:
+            slected_article_obj_list.append(ArticleCategory.objects.get(id=id))
+        user = self.request.user
+        profile_obj = Profile.objects.get(user=user)
+        profile_obj.article_category.set(slected_article_obj_list)
+        profile_obj.save()
+        return redirect("profile")
