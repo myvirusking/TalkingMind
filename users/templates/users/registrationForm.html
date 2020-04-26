@@ -2,8 +2,21 @@
 {% load static %}
 {% load crispy_forms_tags %}
 
+
+{% block css %}
+
+    <style>
+        
+        .mainNav{
+            display: none;
+        }
+    </style>
+    
+
+{% endblock css %}
+
 {% block content %}
-    <div class="container">
+    <!-- <div class="container">
         <div class="col-lg-4  offset-lg-4 mt-5 registration-form shadow-lg p-3 mb-5 pb-5 bg-white rounded">
             {% if form.errors %}
                 {% for field in form %}
@@ -43,5 +56,60 @@
                 <button type="submit" class="btn btn-block" style="background-color:#4b204f;color:white;">Register</button>
             </form>
         </div>
+    </div> -->
+
+    <nav class="navbar navbar-expand-md navbar-inverse regNav">
+        <div class="container">
+            <a class="navbar-brand" href="#">TalkingMind</a>
+
+            <ul class="nav navbar-nav">          
+            </ul>
+
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="#">Login</a></li>
+            </ul>
+        </div>
+        
+    </nav>    
+    
+    <div class="main-container">
+        <div class="container">
+            <div class="row sub-container">
+                <div class="col-md-1"></div>
+                <div class="col-md-10 centerDiv">
+                    <div class="centerDivHeader">
+                        <h2>Registration</h2>
+                        <p>Just One Step To Explore The New World</p>
+                    </div>
+                    <div class="row centerRow">                        
+                        <div class="col-md-6 leftDiv">
+                            <img src="/static/blog/website_logo.png">
+                        </div>
+                        <div class="col-md-6 rightDiv">
+                            <form method="post">
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    {{form.username}}
+                                </div>
+                                <div class="form-group">
+                                    {{form.email}}
+                                </div>
+                                <div class="form-group">
+                                    {{form.password}}
+                                </div>
+                                <div class="form-group">
+                                    {{form.repeat_password}}
+                                </div>
+                                <button type="submit" class="btn registerBtn">Register</button>
+                              </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-1"></div>
+            </div>
+            
+        </div>
     </div>
-{% endblock content %}
+
+    {% endblock content %}
+
