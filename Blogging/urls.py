@@ -34,7 +34,6 @@ urlpatterns = [
     path('blog/', include('blog.urls')),
     path('user/', include('users.urls')),
     path('profile/',user_views.profile, name='profile'),
-    path('login/', auth_views.LoginView.as_view(template_name='users/login.html', authentication_form=CustomAuthForm), name='login'),
     path('logout/', auth_views.LogoutView.as_view(template_name='users/login.html', next_page='/login/'), name='logout'),
     path('other-profile/<int:pk>/',user_views.other_user_profile, name='other-profile'),
     path('login/', user_views.CustomLoginView.as_view(),name='login'),
