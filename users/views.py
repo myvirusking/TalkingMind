@@ -72,7 +72,7 @@ class CustomLoginView(auth_views.LoginView):
     authentication_form=CustomAuthForm
 
     def get(self, request, *args, **kwargs):
-        if request.user.is_authenticated():
+        if request.user.is_authenticated:
             return redirect("login-home")
         return self.render_to_response(self.get_context_data())
 
