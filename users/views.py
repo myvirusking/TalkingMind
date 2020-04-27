@@ -23,6 +23,7 @@ def logout_required(function=None, logout_url=settings.LOGOUT_URL):
     )
     if function:
         return actual_decorator(function)
+
     return actual_decorator
 
 
