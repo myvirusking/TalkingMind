@@ -183,6 +183,31 @@ input {
 	align-items: center;
 }
 
+/*------------------Testing---------------*/
+
+#searchResult{
+ list-style: none;
+ padding: 0px;
+ width: 250px;
+ position: absolute;
+ margin: 0;
+}
+
+#search-results li{
+ background: lavender;
+ padding: 4px;
+ margin-bottom: 1px;
+}
+
+#search-results li:nth-child(even){
+ background: cadetblue;
+ color: white;
+}
+
+#search-results li:hover{
+ cursor: pointer;
+}
+
 /*----------------- Abhishek------------- */
 .regNav{
     background-color: #f73d4a;

@@ -16,29 +16,49 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.contrib.auth import views as auth_views
-from users.forms import CustomAuthForm
+from users.forms import (
+    CustomAuthForm,
+    CustomPasswordResetForm,
+    CustomPasswordResetEmailForm)
 from django.conf import settings
 from django.conf.urls.static import static
 from users import views as user_views
+from users.views import logout_required
+from django.conf.urls import url
 from blog.views import PostDeleteView
 from django.shortcuts import redirect
 
-class CustomLoginView(auth_views.LoginView):
-    template_name='users/login.html'
-    authentication_form=CustomAuthForm
-
-    def get(self, request, *args, **kwargs):
-        if request.user.is_authenticated:
-            return redirect("login-home")
-        return self.render_to_response(self.get_context_data())
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('blog/', include('blog.urls')),
     path('user/', include('users.urls')),
     path('profile/',user_views.profile, name='profile'),
-    path('login/', CustomLoginView.as_view(),name='login'),
-    path('logout/', auth_views.LogoutView.as_view(template_name='users/login.html', next_page='/login/'), name='logout')
+    path('login/', auth_views.LoginView.as_view(template_name='users/login.html', authentication_form=CustomAuthForm), name='login'),
+    path('logout/', auth_views.LogoutView.as_view(template_name='users/login.html', next_page='/login/'), name='logout'),
+    path('other-profile/<int:pk>/',user_views.other_user_profile, name='other-profile'),
+    path('login/', user_views.CustomLoginView.as_view(),name='login'),
+    path('logout/', auth_views.LogoutView.as_view(template_name='users/login.html', next_page='/login/'), name='logout'),
+    path('password-reset/',
+         auth_views.PasswordResetView.as_view(
+             template_name = 'users/password_reset.html', form_class = CustomPasswordResetEmailForm,
+         ),
+         name='password_reset'),
+    path('password-rest/done/',
+         auth_views.PasswordResetDoneView.as_view(
+             template_name='users/password_reset_done.html'),
+         name='password_reset_done'
+         ),
+    path('password-reset-confirm/<uidb64>/<token>',
+         auth_views.PasswordResetConfirmView.as_view(
+             template_name='users/password_reset_confirm.html', form_class=CustomPasswordResetForm,
+         ),
+         name='password_reset_confirm'),
+    path('password-rest-complete/',
+         auth_views.PasswordResetCompleteView.as_view(
+             template_name='users/password_reset_complete.html'),
+             name='password_reset_complete'
+         ),
 ]
 if settings.DEBUG:
     urlpatterns+= static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -39,16 +39,20 @@
 
     <div class="container col-10 offset-1 mt-2 ">
         <h4 class="mt-4 "><strong>Your posts</strong></h4>
-        {% for post in posts %}
-        <div id="post " class="post shadow p-3 mb-1 bg-white rounded " style="background-color: white; ">
-            <div class="article-metadata ">
-                <a class="mr-2 " href="# ">{{ post.author }}</a>
-                <small class="text-muted ">{{ post.date_posted }}</small>
+        {% if posts.count > 0 %}
+            {% for post in posts %}
+            <div id="post " class="post shadow p-3 mb-1 bg-white rounded " style="background-color: white; ">
+                <div class="article-metadata ">
+                    <a class="mr-2 " href="#">{{ post.author }}</a>
+                    <small class="text-muted ">{{ post.date_posted }}</small>
+                </div>
+                <h3><a class="article-title " href="{% url 'post-update' post.id %} ">{{ post.title }}</a></h3>
+                <p class="article-content ">{{ post.content }}</p>
             </div>
-            <h3><a class="article-title " href="{% url 'post-update' post.id %} ">{{ post.title }}</a></h3>
-            <p class="article-content ">{{ post.content }}</p>
-        </div>
-        {% endfor %}
+            {% endfor %}
+        {% else %}
+        {% endif %}
+        <h5>You haven't posted anything yet</h5>
     </div>
 
 </div>

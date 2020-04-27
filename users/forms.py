@@ -4,6 +4,7 @@ from django import forms
 from django.contrib.auth.forms import AuthenticationForm
 from django.forms.widgets import PasswordInput, TextInput
 from .models import Profile
+from django.contrib.auth.forms import PasswordResetForm, SetPasswordForm
 from blog.models import Post
 import re
 
@@ -51,6 +52,15 @@ class RegisterForm(forms.ModelForm):
 class CustomAuthForm(AuthenticationForm):
     username = forms.CharField(widget=TextInput(attrs={'class':'validate form-control','placeholder': 'Username'}))
     password = forms.CharField(widget=PasswordInput(attrs={'placeholder':'Password','class': 'form-control'}))
+
+
+class CustomPasswordResetForm(SetPasswordForm):
+    new_password1 = forms.CharField(widget=PasswordInput(attrs={'placeholder':'New Password', 'class':'form-control'}))
+    new_password2 = forms.CharField(widget=PasswordInput(attrs={'placeholder':'Confirm password', 'class':'form-control'}))
+
+
+class CustomPasswordResetEmailForm(PasswordResetForm):
+    email = forms.EmailField(widget=TextInput(attrs={'class':'form-control', 'placeholder':'Enter email'}))
 
 
 class UserUpdateForm(forms.ModelForm):

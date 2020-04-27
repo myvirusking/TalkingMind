@@ -50,11 +50,11 @@
                             <img src="{{post.author.profile.image.url}}" class="rounded-circle col-1" style="display:inline;height: 50px;width:50px; padding: 0;">
                             <div class="col-11">
                                  <div class="article-metadata">
-                                <a class="mr-2" href="#">{{ post.author }}</a>
+                                <a class="mr-2" href="{% url 'other-profile' post.author.id%}">{{ post.author }}</a>
                                 <small class="text-muted">{{ post.date_posted }}</small>
                                 </div>
                                 <h4 class="article-title" style="color: dodgerblue;">{{ post.title }}</h4>
-                                <p class="article-content">{{ post.content }}</p>
+                                <pre style="white-space:pre-wrap;" class="article-content">{{ post.content }}</pre>
                             </div>
                            
                         </div>
