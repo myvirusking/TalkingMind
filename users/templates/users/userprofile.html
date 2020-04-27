@@ -1,75 +1,86 @@
-{% extends 'blog/base.html' %}
+{% extends 'blog/base.html' %} {% block content %}
 
+<div class="container col-lg-6 col-md-10 offset-md-1 offset-lg-3 mt-5 shadow-lg p-3 mb-5 bg-white rounded" id="profile" style="background-color: white;">
 
-{% block content %}
+    <div class="row container">
 
-    <div class = "container col-lg-6 col-md-10 offset-md-1 offset-lg-3 mt-5 shadow-lg p-3 mb-5 bg-white rounded" id = "profile" style="background-color: white;" >
+        <img class="rounded-circle account-img col-3 mt-2" height="150px" src="{{user.profile.image.url}}">
+        <div class="col-9 profile-content ">
+            <h4 class="account-heading" style="color:#4b204f;display: inline">{{user.username}}</h4>
+            <a id="button" class="button btn btn-primary" onclick="showModal()" style="display: inline;float: right; border-radius: 30px;">Edit</a>
+            <p class="text-secondary">{{user.email}}</p>
+            <p class="content">{{user.profile.about}}</p>
 
-        <div class="row container">
-
-            <img class="rounded-circle account-img col-3 mt-2" height="150px"  src="{{user.profile.image.url}}">
-            <div class="col-9 profile-content ">
-                <h4 class="account-heading" style="color:#4b204f;display: inline" >{{user.username}}</h4>
-                <a id="button" class="button btn btn-primary" onclick="showModal()" style="display: inline;float: right; border-radius: 30px;">Edit</a>
-                <p class="text-secondary">{{user.email}}</p>
-                <p class="content">{{user.profile.about}}</p>
-
-            </div>
         </div>
-
     </div>
 
-    <div class="container col-8 offset-2">
+</div>
 
-        <div class="container col-10 offset-1 mt-2">
-            <h4 class="mt-4"><strong>Your posts</strong></h4>
-               {% for post in posts %}
-                    <div id="post" class="post shadow p-3 mb-1 bg-white rounded" style="background-color: white;">
-                        <div class="article-metadata ">
-                            <a class="mr-2" href="#">{{ post.author }}</a>
-                            <small class="text-muted">{{ post.date_posted }}</small>
-                        </div>
-                        <h3><a class="article-title" href="{% url 'post-update' post.id %}">{{ post.title }}</a></h3>
-                        <p class="article-content">{{ post.content }}</p>
+<div class="container col-lg-6 col-md-10 offset-md-1 offset-lg-3 mt-5 shadow-lg p-3 mb-5 bg-white rounded" id="profile" style="background-color: white;">
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-10">
+                <div class="row">
+                    {% for category in article_category %}
+                    <div class="card" style="margin: 5px;">
+                        <div class="card-header" style="padding: 7px;">{{category}}</div>
                     </div>
-                {% endfor %}
-        </div>
-
-    </div>
-
-    <div class="bg-modal ">
-        <div class="modal-contents col-4 offset-4 mt-5">
-
-            <div class="close " onclick="closeModal()">+</div>
-
-            <form enctype="multipart/form-data" method="post">
-                {% csrf_token %}
-                {{user_form.username}}
-                {{user_form.email}}
-                {{profile_form.about}}
-                {{profile_form.image}}
-
-                <button type="submit" class="btn btn-block" style="background-color:#4b204f;color:white;">Update</button>
-
-            </form>
-
-        </div>
-    </div>
-
-
-    <div class="update-post-modal ">
-            <div class="modal-contents col-4 offset-4 mt-5">
-
-                <div class="close " onclick="closeUpdatePostForm()">+</div>
-                    <form method="post">
-                        {% csrf_token %}
-                        {{post_update_form.title}}
-                        {{post_update_form.content}}
-                        <button type="submit" class="btn btn-block mt-2" style="background-color:#4b204f;color:white;">Post</button>
-                    </form>
+                    {% endfor %}
                 </div>
             </div>
+            <div class="col-md-2">
+                <a id="button" href="{% url 'fav_article_category' %}" class="button btn btn-primary" style="color:black;display: inline;float: left; border-radius: 30px;">Edit</a>
+            </div>
         </div>
+    </div>
+</div>
+
+<div class=" container col-8 offset-2 ">
+
+    <div class="container col-10 offset-1 mt-2 ">
+        <h4 class="mt-4 "><strong>Your posts</strong></h4>
+        {% for post in posts %}
+        <div id="post " class="post shadow p-3 mb-1 bg-white rounded " style="background-color: white; ">
+            <div class="article-metadata ">
+                <a class="mr-2 " href="# ">{{ post.author }}</a>
+                <small class="text-muted ">{{ post.date_posted }}</small>
+            </div>
+            <h3><a class="article-title " href="{% url 'post-update' post.id %} ">{{ post.title }}</a></h3>
+            <p class="article-content ">{{ post.content }}</p>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+
+
+<div class="bg-modal ">
+    <div class="modal-contents col-4 offset-4 mt-5 ">
+
+        <div class="close " onclick="closeModal() ">+</div>
+
+        <form enctype="multipart/form-data " method="post ">
+            {% csrf_token %} {{user_form.username}} {{user_form.email}} {{profile_form.about}} {{profile_form.image}}
+
+            <button type="submit " class="btn btn-block " style="background-color:#4b204f;color:white; ">Update</button>
+
+        </form>
+
+    </div>
+</div>
+
+
+<div class="update-post-modal ">
+    <div class="modal-contents col-4 offset-4 mt-5 ">
+
+        <div class="close " onclick="closeUpdatePostForm() ">+</div>
+        <form method="post ">
+            {% csrf_token %} {{post_update_form.title}} {{post_update_form.content}}
+            <button type="submit " class="btn btn-block mt-2 " style="background-color:#4b204f;color:white; ">Post</button>
+        </form>
+    </div>
+</div>
+</div>
 
 
 {% endblock content %}
