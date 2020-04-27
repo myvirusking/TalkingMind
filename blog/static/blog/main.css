@@ -221,11 +221,12 @@ input {
 }
 .leftDiv, .rightDiv{
     padding: 2rem 4rem;
+    text-align: center;
 }
 .leftDiv{
     text-align: center;
 }
-.registerBtn{
+.registerBtn, .loginBtn{
     color: #fff;
     border-radius: 20px;
     width: 100%;
@@ -235,6 +236,9 @@ input {
     background-color: #f33543;
     border-color: #f33543;
     box-shadow: 1px 3px 5px 0px rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+.loginBtn:hover{
+    color: white;
 }
 
 .regInput:focus{
@@ -271,6 +275,25 @@ input {
         padding: 2rem 2rem;
     }
 }
+
+.alert-danger {
+    font-size: 14px;
+    border-color: #f33543;
+    font-weight: 300;
+}
+
+.forgotPswd{
+    margin: 14px 0px 0px 0px;
+}
+.forgotPswd a{
+    text-decoration: none;
+    color: black;
+}
+.forgotPswd a:hover{
+    color: #f73d4a;
+}
+
+
 /* body::-webkit-scrollbar {
     display: none;
 } */
