@@ -66,7 +66,7 @@
             </ul>
 
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="#">Login</a></li>
+                <li><a href="{% url 'login'%}">Login</a></li>
             </ul>
         </div>
         
@@ -86,6 +86,25 @@
                             <img src="/static/blog/website_logo.png">
                         </div>
                         <div class="col-md-6 rightDiv">
+                            {% if form.errors %}
+                {% for field in form %}
+                    {% for error in field.errors %}
+                        <div class="alert alert-danger">
+                            <strong>{{ error|escape }}</strong>
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+                {% for error in form.non_field_errors %}
+                    <div class="alert alert-danger">
+                        <strong>{{ error|escape }}</strong>
+                    </div>
+                {% endfor %}
+            {% endif %}
+            {% if error_message %}
+                <div class="alert alert-danger">
+                    <strong>{{ error_message }}</strong>
+                </div>
+            {% endif %}
                             <form method="post">
                                 {% csrf_token %}
                                 <div class="form-group">
