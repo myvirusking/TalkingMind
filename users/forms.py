@@ -44,17 +44,17 @@ class RegisterForm(forms.ModelForm):
 
 
 class CustomAuthForm(AuthenticationForm):
-    username = forms.CharField(widget=TextInput(attrs={'class':'validate form-control','placeholder': 'Username'}))
-    password = forms.CharField(widget=PasswordInput(attrs={'placeholder':'Password','class': 'form-control'}))
+    username = forms.CharField(widget=TextInput(attrs={'class':'validate form-control regInput','placeholder': 'Username'}))
+    password = forms.CharField(widget=PasswordInput(attrs={'placeholder':'Password','class': 'form-control regInput'}))
 
 
 class CustomPasswordResetForm(SetPasswordForm):
-    new_password1 = forms.CharField(widget=PasswordInput(attrs={'placeholder':'New Password', 'class':'form-control'}))
-    new_password2 = forms.CharField(widget=PasswordInput(attrs={'placeholder':'Confirm password', 'class':'form-control'}))
+    new_password1 = forms.CharField(widget=PasswordInput(attrs={'placeholder':'New Password', 'class':'form-control regInput'}))
+    new_password2 = forms.CharField(widget=PasswordInput(attrs={'placeholder':'Confirm password', 'class':'form-control regInput'}))
 
 
 class CustomPasswordResetEmailForm(PasswordResetForm):
-    email = forms.EmailField(widget=TextInput(attrs={'class':'form-control', 'placeholder':'Enter email'}))
+    email = forms.EmailField(widget=TextInput(attrs={'class':'form-control regInput', 'placeholder':'Enter email'}))
 
 
 class UserUpdateForm(forms.ModelForm):
