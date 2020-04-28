@@ -26,6 +26,7 @@ def home(request):
         if new_post_form.is_valid():
             new_post_form.instance.author = request.user
             new_post_form.save()
+            
             messages.success(request, f'Your new post has been posted successfully')
             return redirect('login-home')
 
@@ -70,7 +71,7 @@ def post_update(request, pk):
 class PostUpdateView(LoginRequiredMixin,UpdateView,UserPassesTestMixin):
     template_name = 'blog/update_post.html'
     model = Post
-    fields = ['title','content']
+    fields = ['title','content','category']
     success_url = '/profile'
 
     def form_valid(self, form):
