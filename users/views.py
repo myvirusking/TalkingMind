@@ -34,8 +34,6 @@ def user_register(request):
     if request.method == 'POST':
         form = RegisterForm(request.POST)
         if form.is_valid():
-            print("Inside")
-
             if User.objects.filter(username=form.cleaned_data['username']).exists():
                 return render(request, template, {'form': form,
                                                   'error_message': 'Username is not available'})
