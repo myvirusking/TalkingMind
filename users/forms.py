@@ -29,14 +29,13 @@ class RegisterForm(forms.ModelForm):
     def clean_username(self, *args, **kwargs):
         uname = self.cleaned_data.get("username")
         if re.match(r'^(?!.*[_\s-]{2,})[a-zA-Z][a-zA-Z0-9_\s\-]*[a-zA-Z0-9]$', uname) is None:
-            print("Error in username")
             raise forms.ValidationError("Username must not start with digit and also it must not start or end with any special characters")
         else:
-            print("correct")
             return uname
 
     def clean_password(self,*args, **kwargs):
         password_validation.validate_password(self.cleaned_data.get('password'), None)
+        return self.cleaned_data.get('password')
 
     class Meta:
         model = User
