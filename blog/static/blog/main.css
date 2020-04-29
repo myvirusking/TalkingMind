@@ -323,6 +323,57 @@ input {
     display: none;
 } */
 
+/* article  */
+.selectBtnDiv{
+    display: block;
+    text-align: justify;
+}
+.selectBtnDiv .selectBtn{
+  border-top-right-radius: 15px !important;
+  border-top-left-radius: 15px !important;
+  border-bottom-right-radius: 15px !important;
+  border-bottom-left-radius: 15px !important;
+  margin: 6px 0px !important;
+  padding: 1px 14px;
+}
+@media screen and (max-width: 480px){
+  .selectBtnDiv .selectBtn{
+      margin: 4px 0px !important;
+    }
+    .btn-outline-primary{
+        font-size: 12px;
+    }
+}
+.btn-outline-primary{
+  color: #7436ff;
+  font-weight: 500;
+  border-color: #7436ff;
+}
+.btn{
+  font-weight: 500;
+}
+.btn-outline-primary:not(:disabled):not(.disabled).active, .btn-outline-primary:not(:disabled):not(.disabled):active, .show>.btn-outline-primary.dropdown-toggle {
+  color: #fff;
+  background-color: #7436ff;
+  border-color: #7436ff;
+}
+.btn-outline-primary:hover {
+  color: #fff;
+  background-color: #7436ff;
+  border-color: #7436ff;
+}
+.skipBtn{
+  text-align: end;
+  margin: 0px 6px;
+  font-size: 20px;
+}
+.skipBtn a{
+  text-decoration: none;
+  color: #f73d4a;
+}
+/* article end */
+
+
 /*----------------- Abhishek End-------- */
 
 
