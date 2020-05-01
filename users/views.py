@@ -150,4 +150,3 @@ class SelectFavouriteArticleCategoryView(LoginRequiredMixin, View):
         profile_obj.article_category.set(slected_article_obj_list)
         profile_obj.save()
         return redirect("login-home")
-        return redirect("profile")

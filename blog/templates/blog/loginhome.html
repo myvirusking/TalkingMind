@@ -36,16 +36,23 @@
             </div>
         </div>-->
 
-        <div class="container col-lg-6 offset-lg-3 mt-4 col-md-8 offset-md-2 col-sm-10 offset-ms-1 col-10 offset-1">
-           <a class="btn btn-primary button-block  btn-block mt-2  " id="new-post-button"  role="button" style="background-color:#4b204f;color:white; width:95%;" onclick="showNewPostForm()">
-                   Add New Post
-           </a>
+        <div class="container row col-lg-6 offset-lg-3 mt-4 col-md-8 offset-md-2 col-sm-10 offset-ms-1 col-10 offset-1">
+            <div class="col-md-6">
+                <a class="btn btn-primary button-block  btn-block mt-2  " id="new-post-button"  role="button" style="background-color:#4b204f;color:white; width:95%;" onclick="showNewPostForm()">
+                        Add New Post
+                </a>
+            </div>
+            <div class="col-md-6">
+                <a class="btn btn-primary button-block  btn-block mt-2  " id="new-post-button"  role="button" style="background-color:#4b204f;color:white; width:95%;" onclick="showFilterPostForm()">
+                        Filter Post
+                </a>
+            </div>
         </div>
 
         <div class="main">
             <div class="container col-lg-6 offset-lg-3 mt-3 col-md-8 offset-md-2 col-sm-10 offset-ms-1 col-10 offset-1">
+                {% if posts.count > 0 %}
                    {% for post in posts %}
-
                         <div id="post" class="post row shadow p-3 mb-2 bg-white rounded" style="background-color: white;">
                             <img src="{{post.author.profile.image.url}}" class="rounded-circle col-1" style="display:inline;height: 50px;width:50px; padding: 0;">
                             <div class="col-11">
@@ -54,11 +61,14 @@
                                 <small class="text-muted">{{ post.date_posted }}</small>
                                 </div>
                                 <h4 class="article-title" style="color: dodgerblue;">{{ post.title }}</h4>
+                                <h6 class="text-muted">{{ post.category }}</h6>
                                 <pre style="white-space:pre-wrap;" class="article-content">{{ post.content }}</pre>
                             </div>
-                           
                         </div>
                     {% endfor %}
+                {% else %}
+                    <h5>Any post regarding this topics not published</h5>
+                {% endif %}
             </div>
         </div>
 
@@ -77,8 +87,42 @@
                 </div>
             </div>
         </div>
+        
+        <div class="filter-post-modal ">
+            <div class="modal-contents col-8 offset-2 mt-5">
+                <span onclick="closeFilterPostForm()" class="fa fa-times" aria-hidden="true" style="color: red;float: right;margin-bottom: 10px;cursor: pointer;"></span>
 
+                <form method="POST">{%csrf_token%}
+                        <div class="row">
+                            <div class="col-md-12 text-center mb-4">
+                                <h3>Choose your favourite article topics.</h3>{{topicId}}
+                            </div>
+                        </div>
+                            <div class="row">
+                                <div class="col-md-12 mb-4">
+                                    <div class="btn-group btn-group-toggle selectBtnDiv" data-toggle="buttons">
+                                        {% for id,name in category_list %}
+                                            {% if id in topicId %}
+                                                <label class="btn btn-outline-primary selectBtn">
+                                                <input type="checkbox" value="{{id}} " name="topicId" id="defaultUnchecked{{forloop.counter}}" checked autocomplete="off" checked> {{name}}
+                                                </label>
+                                            {% else %}
+                                                <label class="btn btn-outline-primary selectBtn">
+                                                <input type="checkbox" value="{{id}} " name="topicId" id="defaultUnchecked{{forloop.counter}} autocomplete="off" > {{name}}
+                                                </label>
+                                            {% endif %}
+                                        {%endfor%}
+                                      </div>
+                                </div>  
+                            </div>
+                        <button type="submit" class="btn btn" style="background-color:#4b204f;color:white;">Apply Filter</button>
+                 </form>
 
+                </div>
+            </div>
+        </div>
+
+     <!--  -->
 <!--            <div class="second-div">-->
 <!--                <div id="login-form">-->
 <!--                    <center><img src="{% static 'blog/website_logo.png'%}"></center>-->
