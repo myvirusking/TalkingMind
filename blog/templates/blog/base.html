@@ -107,60 +107,57 @@
 <!--            </div>-->
 <!--          </nav>-->
 
-        <nav class="navbar navbar-dark  bg-dark navbar-expand-lg my-0 mainNav">
-          <a class="navbar-brand" href="{% url 'login-home' %}">{TalkingMind}</a>
-          <button class="navbar-toggler" data-toggle="collapse" data-target="#navMenu">
-              <span class="navbar-toggler-icon"></span>
-          </button>
-          <div id="navMenu" class="collapse navbar-collapse">
-            <ul class= " navbar-nav ">
-                {% if user.is_authenticated %}
-                  <li class="nav-item active">
-                      <a class="nav-link" href="{% url 'login-home' %}">Home<span class="sr-only">(current)</span></a>
-                  </li>
-                {% else %}
-                   <li class="nav-item active">
-                       <a class="nav-link" href="{% url 'blog-home' %}">Home<span class="sr-only">(current)</span></a>
-                   </li>
-                {% endif %}
+        <nav class="navbar navbar-dark navbar-expand-lg my-0 mainNav">
+            <div class="container">
+                <a class="navbar-brand" href="{% url 'login-home' %}">TalkingMind</a>
+                <button class="navbar-toggler" data-toggle="collapse" data-target="#navMenu">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
 
-              <li class="nav-item">
-                  <a class="nav-link" href="#">About</a>
-              </li>
-            </ul>
-              {% if user.is_authenticated %}
-                <div class="ml-auto">
-                    <form class="form-inline my-2 my-lg-0 ">
-                      {% csrf_token %}
-                      <input class="form-control mr-sm-2 input-lg" type="text" placeholder="Search">
-                      <button class="btn btn-outline-success my-2 my-lg-0 my-sm-0">Search</button>
-                  </form>
+                <div id="navMenu" class="collapse navbar-collapse">
+                    <ul class= "nav navbar-nav ">
+                        {% if user.is_authenticated %}
+                        <li class="nav-item"><a class="nav-link" href="{% url 'login-home' %}">Home<span class="sr-only">(current)</span></a>
+                        </li>
+                        {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'blog-home' %}">Home<span class="sr-only">(current)</span></a>
+                        </li>
+                        {% endif %}
+
+                    <!-- <li class="nav-item">
+                        <a class="nav-link" href="#">About</a>
+                    </li> -->
+                    </ul>
+                    {% if user.is_authenticated %}
+                        <div class="ml-auto">
+                            <form class="form-inline my-2 my-lg-0 ">
+                            {% csrf_token %}
+                            <input class="form-control mr-sm-2 input-lg" type="text" placeholder="Search">
+                            <button class="btn btn-outline-success my-2 my-lg-0 my-sm-0">Search</button>
+                        </form>
+                        </div>
+
+
+                    {% endif %}
+
+                        <ul class= "nav navbar-nav ml-auto">
+                            {% if user.is_authenticated %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'profile' %}">Profile<span class="sr-only">(current)</span></a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                            </li>
+                            {% else %}
+                                <li class="nav-item"><a class="nav-link" href="{% url 'login'%}">Login</a></li>
+                                <li class="nav-item"><a class="nav-link" href="{% url 'registration-form'%}">Sign Up</a></li>
+                            {% endif %}
+                        </ul>
+
+
                 </div>
-
-
-              {% endif %}
-
-                  <ul class= " navbar-nav ml-auto">
-                      {% if user.is_authenticated %}
-                      <li class="nav-item">
-                          <a class="nav-link" href="{% url 'profile' %}">Profile<span class="sr-only">(current)</span></a>
-                      </li>
-                      <li class="nav-item">
-                          <a class="nav-link" href="{% url 'logout' %}">Logout</a>
-                      </li>
-                      {% else %}
-                      <li class="nav-item">
-                          <a class="nav-item nav-link btn btn-primary " style="width:100px; margin-right:10px;" href="{% url 'login' %}">Login</a>
-                      </li>
-
-                      <li>
-                          <a class="nav-item nav-link btn btn-primary" style="width:100px;" href="{% url 'registration-form' %}">Register</a>
-                      </li>
-                      {% endif %}
-                  </ul>
-
-
-          </div>
+            </div>
         </nav>
 
           <div class="container center">
