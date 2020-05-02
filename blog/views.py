@@ -6,7 +6,7 @@ from django.contrib import messages
 from django.views.generic.list import ListView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
-
+from users.models import ArticleCategory
 
 class HomeView(ListView):
     model = Post
@@ -14,32 +14,41 @@ class HomeView(ListView):
     context_object_name = 'posts'
 
     def get_queryset(self):
-        return Post.objects.all()[:3]
+        return Post.objects.all()[:5]
 
 
 @login_required
 def home(request):
     if request.method == 'POST':
-        print("Inside")
         new_post_form = NewPostForm(request.POST)
+        topicId = request.POST.getlist("topicId")
 
         if new_post_form.is_valid():
             new_post_form.instance.author = request.user
             new_post_form.save()
             messages.success(request, f'Your new post has been posted successfully')
             return redirect('login-home')
-
+        
+        if len(topicId):
+            posts = Post.objects.filter(category__id__in = topicId).order_by('-date_posted')
+            new_post_form = NewPostForm()
+            topicId = [int(id) for id in topicId]
+            context = {
+                'new_post_form': new_post_form,
+                'posts': posts,
+                "topicId" : topicId,
+                "category_list" : [(category.id, category.name) for category in ArticleCategory.objects.all()]
+            }
+            return render(request, 'blog/loginhome.html', context)
+    
     else:
-        print("HEre")
         new_post_form = NewPostForm()
 
+    context = {}
     posts = Post.objects.all().order_by('-date_posted')
-
-    context = {
-        'new_post_form': new_post_form,
-        'posts': posts
-    }
-
+    context['new_post_form'] = new_post_form
+    context['posts'] = posts
+    context["category_list"] = [(category.id, category.name) for category in ArticleCategory.objects.all()]
     return render(request, 'blog/loginhome.html', context)
 
 
@@ -47,7 +56,7 @@ def post_update(request, pk):
 
     current_post = Post.objects.get(id=pk)
     if request.method == 'POST':
-        post_update_form = NewPostForm(request.POST, instance=post)
+        post_update_form = NewPostForm(request.POST, instance=current_post)
 
         if post_update_form.is_valid():
             post_update_form.save()
@@ -70,7 +79,7 @@ def post_update(request, pk):
 class PostUpdateView(LoginRequiredMixin,UpdateView,UserPassesTestMixin):
     template_name = 'blog/update_post.html'
     model = Post
-    fields = ['title','content']
+    fields = ['title','content','category']
     success_url = '/profile'
 
     def form_valid(self, form):

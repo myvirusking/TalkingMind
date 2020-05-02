@@ -34,8 +34,6 @@ def user_register(request):
     if request.method == 'POST':
         form = RegisterForm(request.POST)
         if form.is_valid():
-            print("Inside")
-
             if User.objects.filter(username=form.cleaned_data['username']).exists():
                 return render(request, template, {'form': form,
                                                   'error_message': 'Username is not available'})
@@ -72,7 +70,7 @@ class CustomLoginView(auth_views.LoginView):
     authentication_form=CustomAuthForm
 
     def get(self, request, *args, **kwargs):
-        if request.user.is_authenticated():
+        if request.user.is_authenticated:
             return redirect("login-home")
         return self.render_to_response(self.get_context_data())
 
@@ -152,4 +150,3 @@ class SelectFavouriteArticleCategoryView(LoginRequiredMixin, View):
         profile_obj.article_category.set(slected_article_obj_list)
         profile_obj.save()
         return redirect("login-home")
-        return redirect("profile")

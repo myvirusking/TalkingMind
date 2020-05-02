@@ -1,42 +1,51 @@
-<html>
+{% extends 'blog/base.html' %}
+{% load static %}
 
-<head>
-    <title>Select Favourite Article Category</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" />
-</head>
+  {% block css %}
+  <style>
+    .mainNav {
+        display: none;
+    }     
+      
+  </style>
+  {% endblock css %}
 
-<body>
+
+    {% block content %}
     <br><br>
     <form method="POST"> {% csrf_token %}
         <div class="container">
             <div class="col-lg-10 offset-lg-1 shadow-lg p-3 mb-5 pb-5 bg-white rounded">
+                <p class="skipBtn"><a href="{% url "login-home" %}"><i class="fa fa-times" aria-hidden="true"></i></a></p>
+                    
+                
+                
             <div class="row">
-            <div class="col-md-4"></div>
-            <div style="text-align:center;" class="col-md-4">
-            <h3>Article You Like</h3>
-            <i>Choose your favourite article categories.</i>
+                <div class="col-md-12 text-center mb-4">
+                    <h3>Article You Like</h3>
+                    <i>Choose your favourite article topics.</i>
+                </div>
             </div>
-            <div class="col-md-4" style="text-align:end;">
-            <a href="{% url "login-home" %}">Skip</a>
-            </div>
-            </div>
-            <br>
                 <div class="row">
-                    {% for id,name in category_list %}
-                    <div class="col-md-2">
-                        <div class=" custom-control custom-checkbox" style="margin-bottom: 10px;">
-                        {% if id in category_selected_id_list %}
-                            <input value="{{id}} " name="check" type="checkbox" class="custom-control-input" id="defaultUnchecked{{forloop.counter}}" checked>
-                        {% else %}
-                            <input value="{{id}} " name="check" type="checkbox" class="custom-control-input" id="defaultUnchecked{{forloop.counter}}">
-                        {% endif %}
-                            <label class="custom-control-label" for="defaultUnchecked{{forloop.counter}}">{{name}}</label>
-                        </div>
-                    </div>
-                    {% endfor %}
-                    <div class="col-md-5"></div>
-                    <div class="col-md-4">
-                        <button type="submit" class="btn btn-outline-success" style="margin-top: 50px;">Save & Continue</button>
+                    <div class="col-md-12 mb-4">
+                        <div class="btn-group btn-group-toggle selectBtnDiv" data-toggle="buttons">
+                            {% for id,name in category_list %}
+                                {% if id in category_selected_id_list %}
+                                    <label class="btn btn-outline-primary selectBtn">
+                                    <input type="checkbox" value="{{id}} " name="check" id="defaultUnchecked{{forloop.counter}}" checked autocomplete="off" > {{name}}
+                                    </label>
+                                {% else %}
+                                    <label class="btn btn-outline-primary selectBtn">
+                                    <input type="checkbox" value="{{id}} " name="check" id="defaultUnchecked{{forloop.counter}} autocomplete="off" > {{name}}
+                                    </label>
+                                {% endif %}
+                            {%endfor%}
+                          </div>
+                    </div>  
+                </div>
+                <div>
+                    <div class="col-md-12 text-center">
+                        <button type="submit" class="btn btn-outline-success">Save & Continue</button>
                     </div>
                 </div>
             </div>
@@ -44,6 +53,4 @@
         </div>
     </form> l̥
 
-</body>
-
-</html>
+    {% endblock content %}
