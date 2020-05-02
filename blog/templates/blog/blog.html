@@ -2,41 +2,9 @@
 {% load static  %}
 
 {% block content %}
-    <!--<div class="container post-container " >
-               {% for post in posts %}
-                <div class="container" id="post">
-                    <div class="article-metadata">
-                      <a class="mr-2" href="#">{{ post.author }}</a>
-                      <small class="text-muted">{{ post.date_posted }}</small>
-                    </div>
-                    <h2><a class="article-title" href="#">{{ post.title }}</a></h2>
-                    <p class="article-content">{{ post.content }}</p>
-                  </div>
-            {% endfor %}
-            </div>
+  
 
-            <div id="login-form">
-                <center><img src="{% static 'blog/website_logo.png'%}"></center>
-                <form>
-                  <div class="form-group">
-                    <label for="exampleInputEmail1" class="sr-only">Email address</label>
-                    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
-                  </div>
-                  <div class="form-group">
-                    <label for="exampleInputPassword1" class="sr-only">Password</label>
-                    <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
-                  </div>
-                    <a href="#" >forgot password?</a><br>
-                    <center>
-                        <button type="submit" class="btn btn-block" style="background-color:#4b204f;color:white;margin-top:5px;">Login</button><br>or<br>
-                    <a class="btn btn-primary  btn-block" href="#" role="button" style="background-color:#4b204f;color:white;">Sign up</a>
-                    </center>
-                </form>
-            </div>
-            </div>
-        </div>-->
-
-        <div class="main">
+        <!-- <div class="main">
             <div class="first-div">
                 <div class="container post-container " >
                    {% for post in posts %}
@@ -72,6 +40,168 @@
                 </form>
             </div>
             </div>
-        </div>
+        </div> -->
+
+        <section>
+            <div class="container">
+                <div>
+                    <div class="row">
+                        <div class="col-lg-3 col-left" >
+                            <div class="mainLeftDiv">
+                                <div>
+                                    <div class="card sgstnCard">
+                                        <div class="card-header">
+                                            <p class="cardHeaderName">Top Profiles</p>
+                                            <p class="cardHeaderIcon"><i class="fa fa-ellipsis-v" aria-hidden="true"></i></p>                                          
+                                        </div>
+                                        <div class="card-body sgstnBody">
+                                            <div class="list-group">
+                                                <a href="#" class="list-group-item">
+                                                    <div class="cardHeadSection">
+                                                        <div class="profileImg"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></div>
+                                                        <div class="profileTitle">
+                                                            <h6>Abhishek Gupta</h6><p>@abhishek </p>
+                                                        </div>
+                                                        <div class="sgstAddBtn">
+                                                            <p><i class="fa fa-plus" aria-hidden="true"></i></p>                                                
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                                <a href="#" class="list-group-item">
+                                                    <div class="cardHeadSection">
+                                                        <div class="profileImg"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></div>
+                                                        <div class="profileTitle">
+                                                            <h6>Abhishek Gupta</h6><p>@abhishek </p>
+                                                        </div>
+                                                        <div class="sgstAddBtn">
+                                                            <p><i class="fa fa-plus" aria-hidden="true"></i></p>                                                
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                                <a href="#" class="list-group-item">
+                                                    <div class="cardHeadSection">
+                                                        <div class="profileImg"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></div>
+                                                        <div class="profileTitle">
+                                                            <h6>Abhishek Gupta</h6><p>@abhishek </p>
+                                                        </div>
+                                                        <div class="sgstAddBtn">
+                                                            <p><i class="fa fa-plus" aria-hidden="true"></i></p>                                                
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                                <a href="#" class="list-group-item">
+                                                    <div class="cardHeadSection">
+                                                        <div class="profileImg"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></div>
+                                                        <div class="profileTitle">
+                                                            <h6>Abhishek Gupta</h6><p>@abhishek </p>
+                                                        </div>
+                                                        <div class="sgstAddBtn">
+                                                            <p><i class="fa fa-plus" aria-hidden="true"></i></p>                                                
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                                <a href="#" class="list-group-item">
+                                                    <div class="cardHeadSection">
+                                                        <div class="profileImg"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></div>
+                                                        <div class="profileTitle">
+                                                            <h6>Abhishek Gupta</h6><p>@abhishek </p>
+                                                        </div>
+                                                        <div class="sgstAddBtn">
+                                                            <p><i class="fa fa-plus" aria-hidden="true"></i></p>                                                
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                                
+                                              </div>
+                                        </div>                                       
+                                        
+                                        <div class="card-footer sgstnFooter text-center">
+                                            <a href="">Explore More</a>
+                                        </div>
+                                      </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-8 col-lg-6 col-center" >
+                            <div class="mainCenterDiv">
+                                {% for post in posts %}
+                                <div class="card">
+                                    <div class="card-header">
+                                        <div class="cardHeadSection">
+                                            <div class="profileImg"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></div>
+                                            <div class="profileTitle">
+                                                <h6>{{ post.author }}</h6><p>@abhishek </p>
+                                            </div>
+                                            <div class="threeDot">
+                                                <p><i class="fa fa-ellipsis-v" aria-hidden="true"></i></p>                                                
+                                            </div>
+                                        </div>
+                                        
+                                    </div>
+                                    <div class="card-body">
+                                      <h5 class="card-title">{{ post.title }}</h5>
+                                      <p class="card-text">{{ post.content }}</p>
+                                      <img class="card-img-bottom" data-src="holder.js/100px180/" alt="100%x180" src="https://unknown-ag.github.io/sheetal_academy/ProjectImages/abhishek.jpeg" data-holder-rendered="true">
+                                    </div>
+                                    
+                                    <div class="card-footer">
+                                        <div class="footerBtn">
+                                            <div class="like"><i class="fa fa-heart" aria-hidden="true"></i><span>20</span></div>
+                                            <div class="comment"><i class="fa fa-comment-o" aria-hidden="true"></i><span>13</span></div>
+                                            <div class="share"><i class="fa fa-paper-plane" aria-hidden="true"></i><span>28</span></div>
+                                        </div>
+                                        <!-- {{ post.date_posted }} -->
+                                    </div>
+                                  </div>
+                                {% endfor %}
+                                <a href="{% url 'registration-form'%}" class="btn btn-outline-primary signHomeBtn bottomBtn" role="button">Explore More</a>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-lg-3 col-right" >
+                            <div class="innerDivRight text-center">
+                                <div>
+                                    <img src="https://www.righttimemarketer.com/wp-content/uploads/2017/02/Social-Media-Marketing.jpg" >
+                                </div>
+                                <div>
+                                    <form method="post">
+                                        {% csrf_token %}
+                                        <h6>Welcome To TalkingMind</h6>
+                                        <div class="form-group">
+                                            <input type="text" name="username" class="validate form-control loginHomeInput" placeholder="Username" maxlength="150" required="" id="exampleInputEmail1">
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="password" name="password" placeholder="Password" class="form-control loginHomeInput" required="" id="exampleInputPassword1">
+                                        </div>
+                                        <button type="submit" class="btn loginHomeBtn">Login</button>
+                                        <p>or</p>
+                                        <a href="{% url 'registration-form'%}" class="btn signHomeBtn" role="button">Sign Up</a>
+                                        <!-- <button type="submit" class="btn signHomeBtn">Sign Up</button> -->
+                                    </form>
+                                </div>
+    
+                            </div>
+                        </div>
+                    </div>
+                </div>                
+            </div>
+            
+        </section>
+
+        <!-- <div class="fixed-bottom">
+            <div class="container bottomBtnDiv">
+                <a href="{% url 'login'%}" class="btn loginHomeBtn bottomBtn" role="button">Login</a>
+                <a href="{% url 'registration-form'%}" class="btn signHomeBtn bottomBtn" role="button">Sign Up</a>
+            </div>            
+        </div> -->
+        
+
+        <script type="text/javascript">
+            $(function(e) {
+                $( ".like i" ).click(function(e) {
+                    $(this).toggleClass( "press", 1000 );
+                });
+              });
+        </script>
+
 
 {% endblock content %}

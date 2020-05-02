@@ -14,7 +14,7 @@ class HomeView(ListView):
     context_object_name = 'posts'
 
     def get_queryset(self):
-        return Post.objects.all()[:3]
+        return Post.objects.all()[:5]
 
 
 @login_required
