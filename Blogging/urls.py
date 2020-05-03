@@ -62,6 +62,9 @@ urlpatterns = [
              template_name='users/password_reset_complete.html'),
              name='password_reset_complete'
          ),
+         # Search user
+             path('userSearch/',user_views.user_search_view,name="user_search"),
+
 ]
 if settings.DEBUG:
     urlpatterns+= static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
