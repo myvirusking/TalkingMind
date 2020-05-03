@@ -12,12 +12,36 @@
             <div class="col-9 profile-content ">
                 <h4 class="account-heading" style="color:#4b204f;display: inline" >{{user_id.username}}</h4>
 
-                <a id="follow-button" class="button btn btn-primary"  style="display: inline;float: right; border-radius: 30px;">Follow</a>
-
+<!--                <a id="follow-button" class="button btn btn-primary"  style="display: inline;float: right; border-radius: 30px;">Follow</a>-->
+                {% if button_status == 'not_following' %}
+                    <small><a style="display: inline;float: right; border-radius: 30px;" class='btn btn-primary'  href="{% url 'send_follow_request' user_id.id %}">Follow</a></small>
+                {% elif button_status == 'requested' %}
+                    <small><a style="display: inline;float: right; border-radius: 30px; background-color: darkslategrey" class='btn btn-primary' href="{% url 'cancel_follow_request' user_id.id %}">Cancel request</a></small>
+                {% elif button_status == 'none' %}
+                    <small><a style="display: inline;float: right; border-radius: 30px; background-color: red; color:white;" class='btn btn-primary' href="{% url 'unfollow_user' user_id.id %}">Unfollow</a></small>
+                {% endif %}
                 <p class="content">{{user_id.profile.about}}</p>
+
+                <div style="float: left; margin-left: 50px;">
+                    <strong style="color: rebeccapurple">Followers<br></strong>
+                    <center>{{followers_count}}</center>
+                </div>
+                <div style="float: left;margin-left: 50px">
+                    <strong style="color: rebeccapurple">Following<br></strong>
+                    <center>{{following_count}}</center>
+                </div>
+                <div style="float: left;margin-left: 50px">
+                    <strong style="color: rebeccapurple">Posts<br></strong>
+                    <center>{{posts.count}}</center>
+                </div>
+
 
             </div>
         </div>
+
+
+
+
 
     </div>
 

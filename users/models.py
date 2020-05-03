@@ -1,14 +1,28 @@
 from django.db import models
 from django.contrib.auth.models import User
 from PIL import Image
+from Blogging import settings
 
 
 class ArticleCategory(models.Model):
     name = models.CharField(max_length=100)
-    
+
     def __str__(self):
         return self.name
-        
+
+
+class Followers(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+
+    def __str__(self):
+        return self.user.username
+
+
+class Following(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+
+    def __str__(self):
+        return self.user.username
 
 
 class Profile(models.Model):
@@ -16,6 +30,8 @@ class Profile(models.Model):
     image = models.ImageField(default='default.jpeg', upload_to='profile_pics')
     about = models.CharField(max_length=150, default="I am using TalkingMind")
     article_category = models.ManyToManyField(ArticleCategory)
+    followers = models.ManyToManyField(Followers, null=True)
+    following = models.ManyToManyField(Following, null=True)
 
     def __str__(self):
         return f'{self.user.username} Profile'
@@ -30,3 +46,16 @@ class Profile(models.Model):
 
             img.thumbnail(output_size)
             img.save(self.image.path)
+
+
+class FollowRequest(models.Model):
+    from_user = models.ForeignKey(User,related_name='from_user', on_delete=models.CASCADE)
+    to_user = models.ForeignKey(User,related_name='to_user', on_delete=models.CASCADE)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+
+
+
+
+
+

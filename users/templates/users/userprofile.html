@@ -1,5 +1,18 @@
 {% extends 'blog/base.html' %} {% block content %}
 
+{% if rec_request %}
+    <div class="container col-6 my-4">
+        <h4>Follow requests:</h4><br>
+        {% for r_request in rec_request %}
+            <a style="margin-right: 20px; display: inline; font-size: 30px;" href="{% url 'other-profile' r_request.from_user.id %}">{{ r_request.from_user.username }}</a>
+            <small><a class='btn btn-primary' href=" {% url 'accept_follow_request' r_request.from_user.id %}">Accept</a></small>
+            <small><a class='btn btn-warning' href=" {% url 'delete_follow_request' r_request.from_user.id %}">Delete</a></small>
+            <br>
+        {% endfor %}
+
+    </div>
+{% endif %}
+
 <div class="container col-lg-6 col-md-10 offset-md-1 offset-lg-3 mt-5 shadow-lg p-3 mb-5 bg-white rounded" id="profile" style="background-color: white;">
 
     <div class="row container">
@@ -10,10 +23,28 @@
             <a id="button" class="button btn btn-primary" onclick="showModal()" style="display: inline;float: right; border-radius: 30px;">Edit</a>
             <p class="text-secondary">{{user.email}}</p>
             <p class="content">{{user.profile.about}}</p>
+            <br>
+
+                <div style="float: left; margin-left: 50px;">
+                    <strong style="color: rebeccapurple">Followers<br></strong>
+                    <center>{{followers_count}}</center>
+                </div>
+                <div style="float: left;margin-left: 50px">
+                    <strong style="color: rebeccapurple">Following<br></strong>
+                    <center>{{following_count}}</center>
+                </div>
+
+                <div style="float: left;margin-left: 50px">
+                    <strong style="color: rebeccapurple">Posts<br></strong>
+                    <center>{{posts.count}}</center>
+                </div>
+
 
         </div>
-    </div>
 
+
+
+    </div>
 </div>
 
 <div class="container col-lg-6 col-md-10 offset-md-1 offset-lg-3 mt-5 shadow-lg p-3 mb-5 bg-white rounded" id="profile" style="background-color: white;">
@@ -75,10 +106,10 @@
 
         <div class="close " onclick="closeModal() ">+</div>
 
-        <form enctype="multipart/form-data " method="post ">
+        <form enctype="multipart/form-data" method="post">
             {% csrf_token %} {{user_form.username}} {{user_form.email}} {{profile_form.about}} {{profile_form.image}}
 
-            <button type="submit " class="btn btn-block " style="background-color:#4b204f;color:white; ">Update</button>
+            <button type="submit" class="btn btn-block " style="background-color:#4b204f;color:white; ">Update</button>
 
         </form>
 
@@ -89,10 +120,10 @@
 <div class="update-post-modal ">
     <div class="modal-contents col-4 offset-4 mt-5 ">
 
-        <div class="close " onclick="closeUpdatePostForm() ">+</div>
-        <form method="post ">
+        <div class="close" onclick="closeUpdatePostForm() ">+</div>
+        <form method="post">
             {% csrf_token %} {{post_update_form.title}} {{post_update_form.content}}
-            <button type="submit " class="btn btn-block mt-2 " style="background-color:#4b204f;color:white; ">Post</button>
+            <button type="submit" class="btn btn-block mt-2 " style="background-color:#4b204f;color:white; ">Post</button>
         </form>
     </div>
 </div>
