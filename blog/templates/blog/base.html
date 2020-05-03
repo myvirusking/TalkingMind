@@ -11,11 +11,13 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-    <link rel="stylesheet" href="http://code.jquery.com/ui/1.8.18/themes/base/jquery-ui.css" type="text/css" media="all" /> <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"> </script> <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js" type="text/javascript"></script>
+    <!-- <link rel="stylesheet" href="http://code.jquery.com/ui/1.8.18/themes/base/jquery-ui.css" type="text/css" media="all" /> <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"> </script> <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js" type="text/javascript"></script> -->
     <link href="{% static 'blog/main.css' %}" rel="stylesheet" type="text/css" >
     <link href="https://fonts.googleapis.com/css2?family=Acme&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.0/jquery.js" integrity="sha256-r/AaFHrszJtwpe+tHyNi/XCfMxYpbsRg2Uqn0x3s2zc=" crossorigin="anonymous"></script>
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> -->
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.0/jquery.js" integrity="sha256-r/AaFHrszJtwpe+tHyNi/XCfMxYpbsRg2Uqn0x3s2zc=" crossorigin="anonymous"></script> -->
+    <script src="{% static 'blog/javascript/jquery-3.4.1.min.js' %}"></script>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
 
     {% block css %}
     
@@ -92,13 +94,18 @@
                     </li> -->
                     </ul>
                     {% if user.is_authenticated %}
-                        <div class="ml-auto">
-                            <form class="form-inline my-2 my-lg-0 ">
-                            {% csrf_token %}
-                            <input class="form-control mr-sm-2 input-lg" type="text" placeholder="Search">
-                            <button class="btn btn-outline-success my-2 my-lg-0 my-sm-0">Search</button>
-                        </form>
+                    <div class="ml-auto">
+                        <form class="form-inline my-2 my-lg-0 ">
+                        {% csrf_token %}
+                        <input class="form-control mr-sm-2 input-lg" type="text" placeholder="Search" id="user-input">
+                        <button class="btn btn-outline-success my-2 my-lg-0 my-sm-0">Search</button>
+                        <div id="replaceable-content" class="col-6">
+                            {% include 'blog/user-search-results.html' %}
+                           
                         </div>
+                        
+                    </form>
+                    </div>
 
 
                     {% endif %}
@@ -135,6 +142,9 @@
 
         {% block content %}
         {% endblock content %}
+        {% block footer %}
+            <script type="text/javascript" src="{% static 'blog/javascript/main.js' %}"></script>
+         {% endblock %}
 
 </body>
 

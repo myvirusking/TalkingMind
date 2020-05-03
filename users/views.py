@@ -15,6 +15,10 @@ from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth import authenticate, login
 
 
+from django.template.loader import render_to_string
+from django.http import JsonResponse
+
+
 #################  Currently not in use but could be used in future development##################
 def logout_required(function=None, logout_url=settings.LOGOUT_URL):
     actual_decorator = user_passes_test(
@@ -287,3 +291,27 @@ class SelectFavouriteArticleCategoryView(LoginRequiredMixin, View):
         profile_obj.save()
         return redirect("login-home")
         # return redirect("profile")
+
+# user search view
+@login_required
+def user_search_view(request):
+    print("Reached")
+    ctx = {}
+    url_parameter = request.GET.get("q")
+
+    users= []
+    if url_parameter:
+        users = User.objects.filter(username__icontains=url_parameter)
+    
+
+    ctx["users"] = users
+    if request.is_ajax():
+        print("Ajax request")
+
+        html = render_to_string(
+            template_name="blog/user-search-results.html", context={"users": users}
+        )
+        data_dict = {"html_from_view": html}
+        return JsonResponse(data=data_dict, safe=False)
+
+    return render(request, "blog/base.html", context=ctx)

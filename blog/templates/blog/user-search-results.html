@@ -1,0 +1,13 @@
+{% if users %}
+    <div style="border-left:1px solid gray;border-right:1px solid gray;border-bottom:1px solid gray" class="ml-3">
+   
+        {% for user in users %}
+        <div  style="border-bottom:1px solid gray;">
+            <a href="{% url 'other-profile' user.id %}" style="padding: 10px;">{{ user.username }}</a><br>
+            </div>
+        {% endfor %}
+
+    </div>
+{% else %}
+    <p></p>
+{% endif %}
