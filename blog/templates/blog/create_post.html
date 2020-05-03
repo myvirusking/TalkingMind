@@ -1,8 +1,5 @@
 {% extends 'blog/base.html' %}
 
-{% load static %}
-{% load crispy_forms_tags %}
-
 {% block content %}
     <div class="container post-update-form col-4 offset-4 shadow-lg p-3 mb-5 bg-white rounded shadow-sm p-3 mb-5 bg-white rounded shadow p-3 mb-5 bg-white rounded">
         <div class="mt-2">
@@ -27,49 +24,27 @@
             {% endif %}
             <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
-                <h4 style="text-align: center;  display:inline;color: #4b204f; "><strong >Update post</strong></h4>
-                <a style="float: right; display:inline;" class="btn btn-primary btn-sm active"  onclick="showDeleteInfo()"  aria-pressed="true">Delete</a>
+                <h4 style="text-align: center;  display:inline;color: #4b204f;"><strong >New post</strong></h4>
 
                 <div class="form-group" style="margin-top:15px;">
                     <strong>Title:</strong>
                     {{form.title}}
                 </div>
                 <div class="form-group">
-                    <strong>Content:</strong>
-                    {{form.content}}
-
-                </div>
-                <div class="form-group">
                     <strong>Topics:</strong>
                     {{form.category}}
                 </div>
-                 <div class="form-group">
-                    <strong>Image:</strong>&nbsp;&nbsp;
-                        {% if object.image %}
-                            <a target="_blank" href="{{object.image.url}}">
-                            {{object.image.url}}
-                            </a>  
-                        {% endif %}
+                <div class="form-group">
+                    <strong>Content:</strong>
+                    {{form.content}}
+                </div>
+                <div class="form-group">
+                    <strong>Image:</strong>
                     {{form.image}}
                 </div>
-                <button type="submit" class="btn btn-block" style="background-color:#4b204f;color:white;">Update</button>
+                <button type="submit" class="btn btn-block" style="background-color:#4b204f;color:white;">Post</button>
             </form>
         </div>
     </div>
-
-     <div class="delete-post-modal  ">
-        <div class="modal-contents col-4 offset-4 mt-5 ">
-
-            <div class="close " onclick="closeDeleteInfo()">+</div>
-                <form method="post" action="{% url 'post-delete' object.id%}">
-                    {% csrf_token %}
-                    <h4>Are you sure, you wanna delete the post?</h4>
-                    <button type="submit" class="btn mt-2 btn-danger" style="background-color:#4b204f;color:white; display: inline; float: left;">Yes</button>
-                    <a class="btn btn-outline-secondary" type="button" onclick="closeDeleteInfo()" style="display: inline;float: right;">Cancel</a>
-                </form>
-        </div>
-     </div>
-
-
 
 {% endblock content %}

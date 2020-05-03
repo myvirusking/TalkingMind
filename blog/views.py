@@ -1,6 +1,7 @@
 from .models import Post
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
+from django.urls import reverse_lazy
 from .forms import NewPostForm
 from django.contrib import messages
 from django.views.generic.list import ListView
@@ -20,34 +21,21 @@ class HomeView(ListView):
 @login_required
 def home(request):
     if request.method == 'POST':
-        new_post_form = NewPostForm(request.POST)
         topicId = request.POST.getlist("topicId")
 
-        if new_post_form.is_valid():
-            new_post_form.instance.author = request.user
-            new_post_form.save()
-
-            messages.success(request, f'Your new post has been posted successfully')
-            return redirect('login-home')
-        
         if len(topicId):
             posts = Post.objects.filter(category__id__in = topicId).order_by('-date_posted')
             new_post_form = NewPostForm()
             topicId = [int(id) for id in topicId]
             context = {
-                'new_post_form': new_post_form,
                 'posts': posts,
                 "topicId" : topicId,
                 "category_list" : [(category.id, category.name) for category in ArticleCategory.objects.all()]
             }
             return render(request, 'blog/loginhome.html', context)
-    
-    else:
-        new_post_form = NewPostForm()
 
     context = {}
     posts = Post.objects.all().order_by('-date_posted')
-    context['new_post_form'] = new_post_form
     context['posts'] = posts
     context["category_list"] = [(category.id, category.name) for category in ArticleCategory.objects.all()]
     return render(request, 'blog/loginhome.html', context)
@@ -79,12 +67,19 @@ def post_update(request, pk):
 class PostUpdateView(LoginRequiredMixin, UpdateView, UserPassesTestMixin):
     template_name = 'blog/update_post.html'
     model = Post
-    fields = ['title', 'content', 'category']
+    # fields = ['title','content','category','image']
     success_url = '/profile'
+    form_class = NewPostForm
 
     def form_valid(self, form):
         form.instance.author = self.request.user
         return super().form_valid(form)
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        if self.object.image is not None:
+            self.object.image.delete(save=True)
+        return super().post(request, *args, **kwargs)
 
     def test_func(self):
         post = self.get_object()
@@ -103,6 +98,21 @@ class PostDeleteView(LoginRequiredMixin, DeleteView, UserPassesTestMixin):
     def test_func(self):
         post = self.get_object()
         return self.request.user == post.author
+
+
+class PostCreateView(LoginRequiredMixin,CreateView):
+    model = Post
+    template_name = 'blog/create_post.html'
+    success_url = reverse_lazy("login-home")
+    form_class = NewPostForm
+
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        messages.success(self.request, f'Your new post has been posted successfully')
+        return super().form_valid(form)
+
+
+
 
 # class AboutView(DetailView):
 #     template_name = "blog/about.html"
