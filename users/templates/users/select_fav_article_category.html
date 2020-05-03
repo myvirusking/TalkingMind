@@ -30,11 +30,11 @@
                             {% for id,name in category_list %}
                                 {% if id in category_selected_id_list %}
                                     <label class="btn btn-outline-primary selectBtn">
-                                    <input type="checkbox" value="{{id}} " name="check" id="defaultUnchecked{{forloop.counter}}" checked autocomplete="off" > {{name}}
+                                    <input type="checkbox" value="{{id}}" name="check" id="defaultUnchecked{{forloop.counter}}" checked autocomplete="off" > {{name}}
                                     </label>
                                 {% else %}
                                     <label class="btn btn-outline-primary selectBtn">
-                                    <input type="checkbox" value="{{id}} " name="check" id="defaultUnchecked{{forloop.counter}} autocomplete="off" > {{name}}
+                                    <input type="checkbox" value="{{id}}" name="check" id="defaultUnchecked{{forloop.counter}} autocomplete="off" > {{name}}
                                     </label>
                                 {% endif %}
                             {%endfor%}

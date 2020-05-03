@@ -117,17 +117,4 @@
 </div>
 
 
-<div class="update-post-modal">
-    <div class="modal-contents col-4 offset-4 mt-5 ">
-
-        <div class="close" onclick="closeUpdatePostForm() ">+</div>
-        <form method="post">
-            {% csrf_token %} {{post_update_form.title}} {{post_update_form.content}}
-            <button type="submit" class="btn btn-block mt-2 " style="background-color:#4b204f;color:white; ">Post</button>
-        </form>
-    </div>
-</div>
-</div>
-
-
 {% endblock content %}

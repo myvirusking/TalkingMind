@@ -77,8 +77,11 @@ class PostUpdateView(LoginRequiredMixin, UpdateView, UserPassesTestMixin):
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
-        if self.object.image is not None:
+        try:
+            image = self.request.FILES["image"]
             self.object.image.delete(save=True)
+        except Exception as e:
+            pass
         return super().post(request, *args, **kwargs)
 
     def test_func(self):
