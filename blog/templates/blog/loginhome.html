@@ -1,135 +1,339 @@
 {% extends "blog/base.html" %}
 {% load static  %}
 
+{% block css %}
+
+<style>
+    .mainNav {
+        display: none;
+    }
+    
+</style>
+
+
+{% endblock css %}
+
 {% block content %}
-    <!--<div class="container post-container " >
-               {% for post in posts %}
-                <div class="container" id="post">
-                    <div class="article-metadata">
-                      <a class="mr-2" href="#">{{ post.author }}</a>
-                      <small class="text-muted">{{ post.date_posted }}</small>
-                    </div>
-                    <h2><a class="article-title" href="#">{{ post.title }}</a></h2>
-                    <p class="article-content">{{ post.content }}</p>
-                  </div>
-            {% endfor %}
-            </div>
 
-            <div id="login-form">
-                <center><img src="{% static 'blog/website_logo.png'%}"></center>
-                <form>
-                  <div class="form-group">
-                    <label for="exampleInputEmail1" class="sr-only">Email address</label>
-                    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
-                  </div>
-                  <div class="form-group">
-                    <label for="exampleInputPassword1" class="sr-only">Password</label>
-                    <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
-                  </div>
-                    <a href="#" >forgot password?</a><br>
-                    <center>
-                        <button type="submit" class="btn btn-block" style="background-color:#4b204f;color:white;margin-top:5px;">Login</button><br>or<br>
-                    <a class="btn btn-primary  btn-block" href="#" role="button" style="background-color:#4b204f;color:white;">Sign up</a>
-                    </center>
-                </form>
-            </div>
-            </div>
-        </div>-->
 
-        <div class="container row col-lg-6 offset-lg-3 mt-4 col-md-8 offset-md-2 col-sm-10 offset-ms-1 col-10 offset-1">
-            <div class="col-md-6">
-                <a href="{% url "post-create" %}" class="btn btn-primary button-block  btn-block mt-2  " id="new-post-button"  role="button" style="background-color:#4b204f;color:white; width:95%;">
-                        Add New Post
-                </a>
-            </div>
-            <div class="col-md-6">
-                <a class="btn btn-primary button-block  btn-block mt-2  " id="new-post-button"  role="button" style="background-color:#4b204f;color:white; width:95%;" onclick="showFilterPostForm()">
-                        Filter Post
-                </a>
+    
+    
+    <div class="sidenav" id="mySidenav">
+        <h6 class="brandName" href="#" >TalkingMind</h6>
+        <div class="menuProfileMainDiv">
+            <a href="#" class="menuProfile">
+                <div class="profileImg"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></div>
+                <div class="profileTitle">
+                    <h6>Abhishek Gupta</h6><p>@abhishek </p>
+                </div>
+            </a>            
+        </div>
+        <div class="sideMenu">
+            <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+            
+            <a href="#"><i class="fa fa-home" aria-hidden="true"></i><p>Home</p></a>
+            <a href="#"><i class="fa fa-bell" aria-hidden="true"></i><p>Notifications</p></a>
+            <a href="#"><i class="fa fa-th-large" aria-hidden="true"></i><p>Posts</p></a>
+            <a href="#"><i class="fa fa-users" aria-hidden="true"></i><p>Users</p></a>
+            <a href="#"><i class="fa fa-bookmark" aria-hidden="true"></i><p>Bookmarks</p></a>
+            <a href="#"><i class="fa fa-cog" aria-hidden="true"></i><p>Settings</p></a>
+            <a href="#"><i class="fas fa-sign-out-alt"></i><p>Logout</p></a>
+        </div>        
+        <div class="sideNavBottom">
+            <div>
+                <ul>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Terms</a></li>
+                    <li><a href="#">Privacy policy</a></li>
+                </ul>
+                <a href="#" class="copyright">&copy; 2020 TalkingMind</a>
+                
             </div>
         </div>
-
-        <div class="main">
-            <div class="container col-lg-6 offset-lg-3 mt-3 col-md-8 offset-md-2 col-sm-10 offset-ms-1 col-10 offset-1">
-                {% if posts.count > 0 %}
-                   {% for post in posts %}
-                        <div id="post" class="post row shadow p-3 mb-2 bg-white rounded" style="background-color: white;">
-                            <img src="{{post.author.profile.image.url}}" class="rounded-circle col-1" style="display:inline;height: 50px;width:50px; padding: 0;">
-                            <div class="col-11">
-                                 <div class="article-metadata">
-                                <a class="mr-2" href="{% url 'other-profile' post.author.id%}">{{ post.author }}</a>
-                                <small class="text-muted">{{ post.date_posted }}</small>
+    </div>
+      
+      <div class="main">          
+        <nav class="navbar navbar-expand-md navbar-inverse regNav">
+            <div class="container-fluid">
+                <div class="navbar-brand">                    
+                    <form class="form-inline searchForm">
+                        {% csrf_token %}
+                        <input class="form-control form-control-sm" type="text" autocomplete="off" placeholder="Search" id="user-input">
+                        <button class="btn btn-primary btn-sm searchBtn"><i class="fa fa-search" aria-hidden="true"></i></button>
+                        <div id="replaceable-content" class="col-6">
+                            {% include 'blog/user-search-results.html' %}
+                           
+                        </div>
+                    </form>
+                </div>
+            
+        
+                <ul class="nav navbar-nav navbar-right">
+                    <div class="icons">
+                        <a class="filterIcon" data-toggle="modal" data-target="#filterModal"><i class="fa fa-filter" aria-hidden="true"></i></a>
+                        <a class="menuBtn" onclick="openNav()"><i class="fa fa-bars" aria-hidden="true"></i></a>
+                    </div>
+                    <!-- <div class="profileImg"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></div> -->
+                    <li class="profile profileImg"><a href="{% url 'profile' %}"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></a></li>
+                    <!-- <li><a class="menuBtn" href="#" onclick="openNav()"><i class="fa fa-bars" aria-hidden="true"></i></a></li> -->
+                    <!-- <li><a class="menuBtn" href="#" onclick="openNav()"><i class="fa fa-bars" aria-hidden="true"></i></a></li> -->
+                </ul>
+            </div>
+        
+        </nav>
+        <section>
+            <div class="container-fluid">
+                <div class="row">
+                    
+                    <div class="col-lg-8 col-md-8">
+                        <div class="card" data-toggle="modal" data-target="#postModal">
+                            <div class="postBtnBody">
+                                <div class="profileImg"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></div>
+                                <div class="postInputDiv"><input class="form-control form-control-sm" type="text"  placeholder="What's in your mind.." ></div>
+                                <p class="postBtn"><button class="btn btn-primary">Post</button></p>                                          
+                            </div>
+                        </div>
+                        <div class="filterDiv">
+                            <h2><span>filter by: <i class="fa fa-filter" aria-hidden="true" data-toggle="modal" data-target="#filterModal"></i></span></h2>
+                        </div>
+                        <div class="mainCenterDiv">
+                            {% if posts.count > 0 %}
+                                {% for post in posts %}
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <div class="cardHeadSection">
+                                                <div class="profileImg"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></div>
+                                                <div class="profileTitle">
+                                                    <h6>{{ post.author }}</h6><p>@abhishek </p>
+                                                </div>
+                                                <div class="threeDot">
+                                                    <p><i class="fa fa-ellipsis-v" aria-hidden="true"></i></p>                                                
+                                                </div>
+                                            </div>
+                                            
+                                        </div>
+                                        <div class="card-body">
+                                        <h5 class="card-title">{{ post.title }}</h5>
+                                        <p class="card-text">{{ post.content }}</p>
+                                        <img class="card-img-bottom" data-src="holder.js/100px180/" alt="100%x180" src="https://unknown-ag.github.io/sheetal_academy/ProjectImages/abhishek.jpeg" data-holder-rendered="true">
+                                        </div>
+                                        
+                                        <div class="card-footer">
+                                            <div class="footerBtn">
+                                                <div class="like"><i class="fa fa-heart" aria-hidden="true"><span>20</span></i></div>
+                                                <div class="comment"><i class="fa fa-comment-o" aria-hidden="true"><span>13</span></i></div>
+                                                <div class="share"><i class="fa fa-paper-plane" aria-hidden="true"><span>28</span></i></div>
+                                                <div class="save"><i class="fa fa-bookmark" aria-hidden="true"></i></div>
+                                                
+                                            </div>
+                                            <!-- {{ post.date_posted }} -->
+                                         </div>
+                                    </div> 
+                                 {% endfor %}
+                            {% else %}
+                                <h5>Any post regarding this topics not published</h5>
+                            {% endif %} 
+                         </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4">
+                        <div class="mainLeftDiv">
+                            <!-- <div>
+                                <div class="card" data-toggle="modal" data-target="#filterModal">
+                                    <div class="filterBtnBody">
+                                        <p>Filter Post</p>
+                                    </div>
                                 </div>
+<<<<<<< Updated upstream
                                 <h4 class="article-title" style="color: dodgerblue;">{{ post.title }}</h4>
                                 <h6 class="text-muted">{{ post.category }}</h6>
                                 <pre style="white-space:pre-wrap;" class="article-content">{{ post.content }}</pre>
                                 {% if post.image %}
                                     <img src="/media/{{post.image}}" style="width:100%;height:auto;" alt="Loading Error : Image didn't get"/>
                                 {% endif %}
+=======
+                            </div> -->
+                            <div>
+                                <div class="card recomdCard">
+                                    <div class="card-header">
+                                        <p class="cardHeaderName">Recommendation for you</p>
+                                        <!-- <p class="cardHeaderIcon"><i class="fa fa-ellipsis-v" aria-hidden="true"></i></p>                                           -->
+                                    </div>
+                                    <div class="card-body recomdBody">
+                                        <div class="list-group">
+                                            <a href="#" class="list-group-item">
+                                                <div class="cardHeadSection">
+                                                    <div class="profileImg"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></div>
+                                                    <div class="profileTitle">
+                                                        <h6>Abhishek Gupta</h6><p>@abhishek </p>
+                                                    </div>
+                                                    <div class="recomdAddBtn">
+                                                        <p><i class="fa fa-plus" aria-hidden="true"></i></p>                                                
+                                                    </div>
+                                                </div>
+                                            </a>
+                                            <a href="#" class="list-group-item">
+                                                <div class="cardHeadSection">
+                                                    <div class="profileImg"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></div>
+                                                    <div class="profileTitle">
+                                                        <h6>Abhishek Gupta</h6><p>@abhishek </p>
+                                                    </div>
+                                                    <div class="recomdAddBtn">
+                                                        <p><i class="fa fa-plus" aria-hidden="true"></i></p>                                                
+                                                    </div>
+                                                </div>
+                                            </a>
+                                            <a href="#" class="list-group-item">
+                                                <div class="cardHeadSection">
+                                                    <div class="profileImg"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></div>
+                                                    <div class="profileTitle">
+                                                        <h6>Abhishek Gupta</h6><p>@abhishek </p>
+                                                    </div>
+                                                    <div class="recomdAddBtn">
+                                                        <p><i class="fa fa-plus" aria-hidden="true"></i></p>                                                
+                                                    </div>
+                                                </div>
+                                            </a>
+                                            <a href="#" class="list-group-item">
+                                                <div class="cardHeadSection">
+                                                    <div class="profileImg"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></div>
+                                                    <div class="profileTitle">
+                                                        <h6>Abhishek Gupta</h6><p>@abhishek </p>
+                                                    </div>
+                                                    <div class="recomdAddBtn">
+                                                        <p><i class="fa fa-plus" aria-hidden="true"></i></p>                                                
+                                                    </div>
+                                                </div>
+                                            </a>
+                                            <a href="#" class="list-group-item">
+                                                <div class="cardHeadSection">
+                                                    <div class="profileImg"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></div>
+                                                    <div class="profileTitle">
+                                                        <h6>Abhishek Gupta</h6><p>@abhishek </p>
+                                                    </div>
+                                                    <div class="recomdAddBtn">
+                                                        <p><i class="fa fa-plus" aria-hidden="true"></i></p>                                                
+                                                    </div>
+                                                </div>
+                                            </a>
+                                            
+                                          </div>
+                                    </div>                                       
+                                    
+                                    <div class="card-footer recomdFooter text-center">
+                                        <a href="">Explore More</a>
+                                    </div>
+                                  </div>
+>>>>>>> Stashed changes
                             </div>
                         </div>
-                    {% endfor %}
-                {% else %}
-                    <h5>Any post regarding this topics not published</h5>
-                {% endif %}
+                    </div>
+                </div>
             </div>
+<<<<<<< Updated upstream
         </div>
         
         <div class="filter-post-modal ">
             <div class="modal-contents col-8 offset-2 mt-5">
                 <span onclick="closeFilterPostForm()" class="fa fa-times" aria-hidden="true" style="color: red;float: right;margin-bottom: 10px;cursor: pointer;"></span>
+=======
+            </section>
+      </div>
 
-                <form method="POST">{%csrf_token%}
-                        <div class="row">
+      <!-- Modal -->
+    <div class="modal fade" id="postModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">New Post</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        {{new_post_form.title}}
+                        {{new_post_form.content}}
+                        {{new_post_form.category}}
+                        <button type="submit" class="btn btn-block mt-2" style="background-color:#4b204f;color:white;">Post</button>
+                    </form>
+                </div>
+                <!-- <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div> -->
+            </div>
+        </div>
+    </div>
+>>>>>>> Stashed changes
+
+    <div class="modal fade" id="filterModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Choose article topics to filter.</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form method="POST">{%csrf_token%}
+                        <!-- <div class="row">
                             <div class="col-md-12 text-center mb-4">
                                 <h3>Choose your favourite article topics.</h3>
                             </div>
+                        </div> -->
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="btn-group btn-group-toggle selectBtnDiv" data-toggle="buttons">
+                                    {% for id,name in category_list %}
+                                        {% if id in topicId %}
+                                            <label class="btn btn-outline-primary selectBtn">
+                                            <input type="checkbox" value="{{id}} " name="topicId" id="defaultUnchecked{{forloop.counter}}" checked autocomplete="off" checked> {{name}}
+                                            </label>
+                                        {% else %}
+                                            <label class="btn btn-outline-primary selectBtn">
+                                            <input type="checkbox" value="{{id}} " name="topicId" id="defaultUnchecked{{forloop.counter}} autocomplete="off" > {{name}}
+                                            </label>
+                                        {% endif %}
+                                    {%endfor%}
+                                    </div>
+                            </div>  
                         </div>
-                            <div class="row">
-                                <div class="col-md-12 mb-4">
-                                    <div class="btn-group btn-group-toggle selectBtnDiv" data-toggle="buttons">
-                                        {% for id,name in category_list %}
-                                            {% if id in topicId %}
-                                                <label class="btn btn-outline-primary selectBtn">
-                                                <input type="checkbox" value="{{id}} " name="topicId" id="defaultUnchecked{{forloop.counter}}" checked autocomplete="off" checked> {{name}}
-                                                </label>
-                                            {% else %}
-                                                <label class="btn btn-outline-primary selectBtn">
-                                                <input type="checkbox" value="{{id}} " name="topicId" id="defaultUnchecked{{forloop.counter}} autocomplete="off" > {{name}}
-                                                </label>
-                                            {% endif %}
-                                        {%endfor%}
-                                      </div>
-                                </div>  
-                            </div>
-                        <button type="submit" class="btn btn" style="background-color:#4b204f;color:white;">Apply Filter</button>
+                        <div class="col-md-12 text-center">
+                            <button type="submit" class="btn btn-outline-success">Apply Filter</button>
+                        </div>
                  </form>
-
                 </div>
+                <!-- <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div> -->
             </div>
         </div>
+    </div>
 
-     <!--  -->
-<!--            <div class="second-div">-->
-<!--                <div id="login-form">-->
-<!--                    <center><img src="{% static 'blog/website_logo.png'%}"></center>-->
-<!--                    <form>-->
-<!--                    <div class="form-group">-->
-<!--                        <label for="exampleInputEmail1" class="sr-only">Email address</label>-->
-<!--                        <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">-->
-<!--                    </div>-->
-<!--                    <div class="form-group">-->
-<!--                        <label for="exampleInputPassword1" class="sr-only">Password</label>-->
-<!--                        <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">-->
-<!--                    </div>-->
-<!--                    <a href="#" >forgot password?</a><br>-->
-<!--                    <center>-->
-<!--                        <button type="submit" class="btn btn-block" style="background-color:#4b204f;color:white;margin-top:5px;">Login</button><br>or<br>-->
-<!--                         <a class="btn btn-primary  btn-block" href="#" role="button" style="background-color:#4b204f;color:white;">Sign up</a>-->
-<!--                    </center>-->
-<!--                </form>-->
-<!--            </div>-->
-<!--            </div>-->
-<!--        </div>-->
+
+    {% block scripts %}
+    
+    <script>
+       
+        
+        function openNav() {
+          document.getElementById("mySidenav").style.width = "250px";
+        }
+        
+        function closeNav() {
+          document.getElementById("mySidenav").style.width = "0";
+        }
+    </script>
+    {% endblock %}
+
+   
+
+
+
+
+     
 
 {% endblock content %}
