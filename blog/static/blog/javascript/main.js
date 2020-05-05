@@ -16,7 +16,7 @@ let ajax_call = function (endpoint, request_parameters) {
 				artists_div.fadeTo('slow', 1)
 				// stop animating search icon
 				//search_icon.removeClass('blink')
-				
+				console.log("prashant chu")
 			})
 		})
 }
