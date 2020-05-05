@@ -7,7 +7,7 @@ html,body{
 body{
     background-color: #F0F0F0;
     padding-bottom: 40px;
-    font-family: 'Acme', sans-serif;
+    font-family: Helvetica;
 
 }
 
@@ -509,9 +509,13 @@ input {
     margin: 0 0 0 10px;
     width: 500px;
 }
+.profileTitle a{
+    text-decoration: none;
+}
 .profileTitle h6{
     margin: 0px;
     font-size: 16px;
+    font-weight: 600;
     color: black;
 }
 .profileTitle p{
@@ -530,7 +534,9 @@ input {
 .footerBtn{
     display: flex;
 }
-.footerBtn div{
+.footerBtn .like, .footerBtn .comment, .footerBtn .share{
+    display: flex;
+    align-items: center;
     padding-right: 15px;
 }
 .footerBtn div.save{
@@ -542,6 +548,7 @@ input {
     font-weight: bold;
     color: #0dc9ef;
     font-size: 17px;
+    padding-right: 5px;
 }
 .footerBtn div i span{
     color: black;
@@ -571,6 +578,7 @@ input {
     color: #0dc9efcf;
 }
 .like .press {
+
     animation: size .4s;
     color:#e23b3b !important;
 }
@@ -750,9 +758,9 @@ input {
   }
   
   .sidenav a {
-    padding: 6px 50px 6px 50px;
+    padding: 6px 53px 10px 50px;
     text-decoration: none;
-    font-size: 22px;
+    font-size: 20px;
     color: black;
     display: flex;
     transition: 0.3s;
@@ -1041,7 +1049,7 @@ button:focus {
     border-bottom: 1px solid #000;
     line-height: 0px;
     margin: 9px 0 9px;
-    font-size: 12px;
+    font-size: 15px;
  } 
  
  .filterDiv h2 span { 
