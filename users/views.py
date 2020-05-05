@@ -160,14 +160,19 @@ def other_user_profile(request, pk):
                        filter(to_user=user)) == 1:
             button_status = 'requested'
 
+    other_user_article_category = [name for id, name in Profile.objects.get(user=user).article_category.values_list()]
+    current_user_article_category = [name for id, name in Profile.objects.get(user=request.user).article_category.values_list()]
+    common_topics = [name for name in current_user_article_category if name in other_user_article_category]
     following_count = following_list_of_other_user.count()
     follower_count = follower_list_of_other_user.count()
     context = {
         'posts': post,
         'user_id': user,
+        'article_category': other_user_article_category,
         'button_status': button_status,
         'following_count': following_count,
         'follower_count': follower_count,
+        'common_topics':common_topics,
         'following_list': following_list_of_other_user,
         'follower_list': follower_list_of_other_user
     }
@@ -290,12 +295,10 @@ class SelectFavouriteArticleCategoryView(LoginRequiredMixin, View):
         profile_obj.article_category.set(slected_article_obj_list)
         profile_obj.save()
         return redirect("login-home")
-        # return redirect("profile")
 
 # user search view
 @login_required
 def user_search_view(request):
-    print("Reached")
     ctx = {}
     url_parameter = request.GET.get("q")
 

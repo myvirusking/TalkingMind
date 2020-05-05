@@ -38,12 +38,36 @@
 
             </div>
         </div>
-
-
-
-
-
     </div>
+
+{% if article_category %}
+    <div class="container col-lg-6 col-md-10 offset-md-1 offset-lg-3 mt-5 shadow-lg p-3 mb-5 bg-white rounded" id="profile" style="background-color: white;">
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="row">
+                        {% for topic in article_category %}
+                            {% if topic in common_topics %}
+                                <div class="card" style="margin: 5px;background: #7436ff;color: white;">
+                                    <div class="card-header" style="padding: 7px;">{{topic}}</div>
+                                </div>
+                            {% else %}
+                                <div class="card" style="margin: 5px;">
+                                    <div class="card-header" style="padding: 7px;">{{topic}}</div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    <br>
+                    <div style="align-items: center;display: flex;">
+                        <div style="height: 15px;width: 15px;background-color: #7436ff;"></div>
+                        <b style="margin-left: 10px;">Common Topics</b>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endif %}
 
     <div class="container col-8 offset-2">
 
