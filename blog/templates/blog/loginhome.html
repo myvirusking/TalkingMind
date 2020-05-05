@@ -38,7 +38,7 @@
 
         <div class="container row col-lg-6 offset-lg-3 mt-4 col-md-8 offset-md-2 col-sm-10 offset-ms-1 col-10 offset-1">
             <div class="col-md-6">
-                <a class="btn btn-primary button-block  btn-block mt-2  " id="new-post-button"  role="button" style="background-color:#4b204f;color:white; width:95%;" onclick="showNewPostForm()">
+                <a href="{% url "post-create" %}" class="btn btn-primary button-block  btn-block mt-2  " id="new-post-button"  role="button" style="background-color:#4b204f;color:white; width:95%;">
                         Add New Post
                 </a>
             </div>
@@ -63,28 +63,15 @@
                                 <h4 class="article-title" style="color: dodgerblue;">{{ post.title }}</h4>
                                 <h6 class="text-muted">{{ post.category }}</h6>
                                 <pre style="white-space:pre-wrap;" class="article-content">{{ post.content }}</pre>
+                                {% if post.image %}
+                                    <img src="/media/{{post.image}}" style="width:100%;height:auto;" alt="Loading Error : Image didn't get"/>
+                                {% endif %}
                             </div>
                         </div>
                     {% endfor %}
                 {% else %}
                     <h5>Any post regarding this topics not published</h5>
                 {% endif %}
-            </div>
-        </div>
-
-        <div class="bg-post-modal ">
-            <div class="modal-contents col-4 offset-4 mt-5">
-
-                <div class="close " onclick="closeNewPostForm()">+</div>
-                    <form method="post">
-                        {% csrf_token %}
-                        {{new_post_form.title}}
-                        {{new_post_form.content}}
-                        {{new_post_form.category}}
-                        <button type="submit" class="btn btn-block mt-2" style="background-color:#4b204f;color:white;">Post</button>
-
-                    </form>
-                </div>
             </div>
         </div>
         
