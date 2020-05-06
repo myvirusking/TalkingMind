@@ -318,3 +318,8 @@ def user_search_view(request):
         return JsonResponse(data=data_dict, safe=False)
 
     return render(request, "blog/base.html", context=ctx)
+
+
+
+
+

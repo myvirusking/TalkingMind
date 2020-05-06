@@ -1,6 +1,6 @@
 from .models import Post
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render,HttpResponse
 from django.urls import reverse_lazy
 from .forms import NewPostForm
 from django.contrib import messages
@@ -8,6 +8,10 @@ from django.views.generic.list import ListView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from users.models import ArticleCategory
+import json
+from django.template.loader import render_to_string
+from django.http import JsonResponse
+
 
 class HomeView(ListView):
     model = Post
@@ -22,6 +26,7 @@ class HomeView(ListView):
 def home(request):
     if request.method == 'POST':
         topicId = request.POST.getlist("topicId")
+
 
         if len(topicId):
             posts = Post.objects.filter(category__id__in = topicId).order_by('-date_posted')
@@ -114,6 +119,37 @@ class PostCreateView(LoginRequiredMixin,CreateView):
         messages.success(self.request, f'Your new post has been posted successfully')
         return super().form_valid(form)
 
+
+"""This view gets called as the user clicks on the like button. It get called through 
+ajax (javascript/post_like.js) the url is in the Blogging/urls with the name 'like-post' 
+State of the button is saved each time the user clicks that. Like button appearance changes
+ depending on the liked button status"""
+
+@login_required
+def post_like(request):
+    liked_button_status = 'liked'
+    if request.method == 'GET':
+        post_id = request.GET['post_id']
+        liked_post = Post.objects.filter(id=post_id).first()
+        users_who_liked_post = [user for id, user in liked_post.likes.values_list()]
+        liked_button_status = 'none'
+        if request.user.id in users_who_liked_post:
+            liked_post.likes.all()[users_who_liked_post.index(request.user.id)].delete()
+            user_count = liked_post.likes.all().count()
+            print(user_count)
+            data_dict = {'likes': user_count}
+            return JsonResponse(data=data_dict, safe=False)
+
+        else:
+            liked_post.likes.create(user=request.user)
+            user_count = liked_post.likes.all().count()
+            print(user_count)
+            data_dict = {'likes': user_count}
+            return JsonResponse(data=data_dict, safe=False)
+
+        return render(request, 'blog/loginhome.html', {'liked_button_status':liked_button_status})
+
+    return render(request, 'blog/loginhome.html',{'liked_button_status':liked_button_status})
 
 
 

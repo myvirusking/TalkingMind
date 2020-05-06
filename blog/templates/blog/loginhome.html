@@ -104,7 +104,7 @@
                                             <div class="cardHeadSection">
                                                 <div class="profileImg"><a href="{% url 'other-profile' post.author.id %}"><img src="{{post.author.profile.image.url}}"></a></div>
                                                 <div class="profileTitle">
-                                                    <a href="{% url 'other-profile' post.author.id %}"><h6>{{ post.author }}</h6></a><p>@abhishek </p>
+                                                    <a href="{% url 'other-profile' post.author.id %}"><h6>{{ post.author }}</h6></a><p>@prashant </p>
                                                 </div>
                                                 <div class="threeDot">
                                                     <p><i class="fa fa-ellipsis-v" aria-hidden="true"></i></p>                                                
@@ -115,19 +115,28 @@
                                         <div class="card-body">
                                         <h5 class="card-title">{{ post.title }}</h5>
                                         <p class="card-text">{{ post.content }}</p>
-                                        <img class="card-img-bottom" data-src="holder.js/100px180/" alt="100%x180" src="https://unknown-ag.github.io/sheetal_academy/ProjectImages/abhishek.jpeg" data-holder-rendered="true">
+<!--                                        <img class="card-img-bottom" data-src="holder.js/100px180/" alt="100%x180" src="https://unknown-ag.github.io/sheetal_academy/ProjectImages/abhishek.jpeg" data-holder-rendered="true">-->
                                         </div>
-                                        
+
+
+                                        <form>
                                         <div class="card-footer">
                                             <div class="footerBtn">
-                                                <div class="like"><i class="fa fa-heart" aria-hidden="true"></i><span>20</span></div>
+                                                {% csrf_token %}
+                                                {% if liked_button_status == 'none' %}
+                                                <div id="like"  data-catid="{{post.id}}" class="like" ><i class="fa fa-heart " aria-hidden="true"></i ><span id="total-likes">{{post.likes.all.count}}</span></div>
+                                                {% else %}
+                                                <div id="like"  data-catid="{{post.id}}" class="like" ><i class="fa fa-heart press" aria-hidden="true"></i><span id="total-likes">{{post.likes.all.count}}</span></div>
+                                                {% endif %}
                                                 <div class="comment"><i class="far fa-comments"></i><span>13</span></div>
                                                 <div class="share"><i class="fa fa-paper-plane" aria-hidden="true"></i><span>28</span></div>
                                                 <div class="save"><i class="fa fa-bookmark" aria-hidden="true"></i></div>
-                                                
+
                                             </div>
                                             <!-- {{ post.date_posted }} -->
                                          </div>
+                                        </form>
+
                                     </div> 
                                  {% endfor %}
                             {% else %}
@@ -156,7 +165,7 @@
                                                 <div class="cardHeadSection">
                                                     <div class="profileImg"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></div>
                                                     <div class="profileTitle">
-                                                        <h6>Abhishek Gupta</h6><p>@abhishek </p>
+                                                        <h6>Prashant jha</h6><p>@user </p>
                                                     </div>
                                                     <div class="recomdAddBtn">
                                                         <p><i class="fa fa-plus" aria-hidden="true"></i></p>                                                
@@ -167,7 +176,7 @@
                                                 <div class="cardHeadSection">
                                                     <div class="profileImg"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></div>
                                                     <div class="profileTitle">
-                                                        <h6>Abhishek Gupta</h6><p>@abhishek </p>
+                                                        <h6>Prashant jha</h6><p>@user </p>
                                                     </div>
                                                     <div class="recomdAddBtn">
                                                         <p><i class="fa fa-plus" aria-hidden="true"></i></p>                                                
@@ -178,7 +187,7 @@
                                                 <div class="cardHeadSection">
                                                     <div class="profileImg"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></div>
                                                     <div class="profileTitle">
-                                                        <h6>Abhishek Gupta</h6><p>@abhishek </p>
+                                                        <h6>Prashant jha</h6><p>@user </p>
                                                     </div>
                                                     <div class="recomdAddBtn">
                                                         <p><i class="fa fa-plus" aria-hidden="true"></i></p>                                                
@@ -189,7 +198,7 @@
                                                 <div class="cardHeadSection">
                                                     <div class="profileImg"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></div>
                                                     <div class="profileTitle">
-                                                        <h6>Abhishek Gupta</h6><p>@abhishek </p>
+                                                        <h6>Prashant jha</h6><p>@user </p>
                                                     </div>
                                                     <div class="recomdAddBtn">
                                                         <p><i class="fa fa-plus" aria-hidden="true"></i></p>                                                
@@ -200,7 +209,7 @@
                                                 <div class="cardHeadSection">
                                                     <div class="profileImg"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></div>
                                                     <div class="profileTitle">
-                                                        <h6>Abhishek Gupta</h6><p>@abhishek </p>
+                                                        <h6>Prashant jha</h6><p>@user </p>
                                                     </div>
                                                     <div class="recomdAddBtn">
                                                         <p><i class="fa fa-plus" aria-hidden="true"></i></p>                                                

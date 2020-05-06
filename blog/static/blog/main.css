@@ -1074,18 +1074,19 @@ button:focus {
  .postInputDiv input:focus{
     box-shadow: none;
  }
- @media screen and (min-width:360px) and (max-width:479px){
-    .postInputDiv input {
-        font-size: 12px;
-    }
-    .postBtn .btn {
-        padding-left: 18px;
-        padding-right: 18px;
-        padding-top: 3px;
-        margin-top: 10px;
-        padding-bottom: 3px;
- }
+ @media screen and (min-width:360px) and (max-width:479px) {
+     .postInputDiv input {
+         font-size: 12px;
+     }
 
+     .postBtn .btn {
+         padding-left: 18px;
+         padding-right: 18px;
+         padding-top: 3px;
+         margin-top: 10px;
+         padding-bottom: 3px;
+     }
+ }
 /*----------------- Abhishek End-------- */
 
 

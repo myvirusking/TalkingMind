@@ -23,6 +23,7 @@ from users.forms import (
 from django.conf import settings
 from django.conf.urls.static import static
 from users import views as user_views
+from blog import views as blog_views
 
 
 
@@ -63,7 +64,8 @@ urlpatterns = [
              name='password_reset_complete'
          ),
          # Search user
-             path('userSearch/',user_views.user_search_view,name="user_search"),
+    path('userSearch/',user_views.user_search_view,name="user_search"),
+    path('user/home/like/', blog_views.post_like, name='like-post'),
 
 ]
 if settings.DEBUG:
