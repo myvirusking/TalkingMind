@@ -7,7 +7,7 @@ html,body{
 body{
     background-color: #F0F0F0;
     padding-bottom: 40px;
-    font-family: Helvetica;
+    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
 
 }
 
@@ -766,11 +766,12 @@ input {
     transition: 0.3s;
   }
   .sidenav a i{
-    margin-top: 4px;
+    margin-top: 6px;
     padding-right: 8px;
   }
   .sidenav .sideMenu p{
     margin-bottom: 0px;
+    font-weight: 600;
   }  
   .sidenav a:hover {
     color: #0dc9ef;
@@ -868,7 +869,7 @@ input {
   .sideNavBottom ul li a{
     font-size: 14px;
     padding: 2px 6px;
-    font-weight: 600;
+    font-weight: 700;
     letter-spacing: 0.4px;
   }
   .sideNavBottom .copyright{
@@ -978,6 +979,12 @@ input {
     padding: 5px 6px;
     color: #0dc9ef;
     font-size: 11px;
+}
+.recomdAddBtn p i:hover{
+    border: 2px solid #0dc9ef;
+    background: #0dc9ef;
+    color: white;
+    transition: .5s ease;
 }
 
 .fa-sign-out:before {
@@ -1091,3 +1098,219 @@ button:focus {
 
 
 
+ /* profile pic */
+
+ .profileCard{
+    border-top: 5px solid #0dc9ef;
+ }
+
+ .profileHeaderDiv{
+     display: flex;
+     padding: 10px 15px 0px 15px;
+ }
+ .profileHeaderDiv div{
+     width: 50%;
+ }
+ .profileHeaderDiv .profileEditBtn{
+     text-align: end;
+     cursor: pointer;
+ }
+ .profileHeaderDiv .profileEditBtn p{
+     margin-bottom: 0px;
+ }
+ .profileHeaderDiv .profileEditBtn .fa-cog{
+    color: #0dc9ef;
+    transition:  0.6s ease-out;
+    font-size: 20px;
+ }
+ .profileHeaderDiv .profileEditBtn .fa-cog:hover{
+    transform: rotateZ(90deg);
+ }
+
+ .profilePicDiv{
+    padding: 25px 15px;
+    height: 100%;
+    display: grid;
+    align-items: center;
+ }
+ 
+ .profilePicDiv .profileImg img {
+    width: 8rem;
+    height: 8rem;
+    border-radius: 50%;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+}
+
+.profileDetailDiv{
+    padding: 25px 15px;
+    height: 100%;
+}
+.profileDetailDiv h5{
+    font-weight: 700;
+    margin-bottom: 0px;
+}
+.profileDetailDiv .email{
+    color: #00000066;
+}
+.profileDetailDiv .about{
+    font-size: 14px;
+}
+.profileDetailDiv .grpBtn {
+    width: 100%;
+    z-index: 0;
+}
+.profileDetailDiv .grpBtn button {
+    padding: 3px 0px 3px 0px;
+    width: 100px;
+    border-radius: 0px;
+    color: black;
+    background-color: #ffffff;
+    border-color: #0dc9ef;
+}
+.profileDetailDiv .grpBtn button.active {
+    background-color: #0dc9ef !important;
+    border-color: #0dc9ef !important;
+    cursor: auto !important;
+}
+.profileDetailDiv .grpBtn button:active {
+    background-color: #0dc9ef !important;
+    
+}
+.profileDetailDiv .grpBtn button:hover {
+    color: white;
+    background-color: #0dc9ef;
+}
+.profileDetailDiv .grpBtn button:focus {
+    box-shadow: none !important;
+    border-color: #0dc9ef !important;
+}
+.profileDetailDiv .grpBtn button p{
+    margin-bottom: 0px;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+}
+.profileDetailDiv .grpBtn button p.count{
+    font-size: 15px;
+}
+.profileDetailDiv .grpBtn button p.text{
+    font-size: 12px;
+}
+
+.profilePostCard{
+    background: white;
+    border-top: 5px solid #0dc9ef;
+}
+.profilePostCard nav{
+    background: white;
+    text-align: center;
+    font-weight: 700;
+}
+.nav-tabs .nav-link.active{
+    color: #0dc9ef;
+    background-color: #fff;
+    border-color: #47dbf9;
+}
+.nav-tabs .nav-link{
+    width: 50%;
+    color: black;
+}
+
+
+.mainProfiilePostCard{
+    border: 1px solid #0dc9ef;
+}
+.mainProfilePostDiv, .mainProfileAboutDiv{
+    padding: 0px 10px;
+}
+
+
+.mainProfileAboutDiv .aboutCard{
+    padding: 15px 20px;
+    border: 1px solid #5ce3ff;
+}
+.mainProfileAboutDiv .aboutCard .aboutMainDiv{
+    border-bottom: 1px solid #dfdfdf;
+}
+
+.articleCard{
+    padding: 0px 15px;
+    border-top: 5px solid #0dc9ef;
+}
+.articleMainDiv{
+    padding-top: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #dfdfdf;
+}
+.articleMainDiv .articleMainHeaderDiv{
+    display: flex;
+    width: 100%;
+}
+ .articleMainDiv .articleMainHeaderDiv .articleEditBtn{
+    width: 100%;
+    text-align: end;
+}
+ .articleMainDiv .articleMainHeaderDiv .articleEditBtn p a i{
+    color: #0dc9ef;
+}
+ .articleMainDiv .articleMainBodyDiv .btn-outline-primary:hover{
+    color: #7436ff;
+    background: none;
+    border-color: #7436ff;
+}
+
+.mainProfileAboutDiv .aboutCard .contactMainDiv{
+    padding-top: 15px;
+}
+.mainProfileAboutDiv .aboutCard .contactMainDiv .contactMainHeaderDiv{
+    display: flex;
+    width: 100%;
+}
+.mainProfileAboutDiv .aboutCard .contactMainDiv .contactMainHeaderDiv .contactDiv{
+    width: 50%;
+}
+.mainProfileAboutDiv .aboutCard .contactMainDiv .contactMainHeaderDiv .contactEditBtn{
+    width: 50%;
+    text-align: end;
+}
+.mainProfileAboutDiv .aboutCard .contactMainDiv .contactMainHeaderDiv .contactEditBtn p a i{
+    color: #0dc9ef;
+    cursor: pointer;
+}
+.mainProfileAboutDiv .aboutCard .contactMainDiv .contactMainBodyDiv .table td, .table th {
+    
+    border-top: none;
+}
+
+.followNavCard .nav-tabs .nav-link{
+    width: 33.333%;
+}
+
+
+.list-group-item{
+    border: none;
+}
+.list-group-item h6{
+    margin-bottom: 0px;
+}
+.trendingCard{
+    border-top: 5px solid #0dc9ef;
+}
+@media screen and (max-width: 767px){
+    .trendingCard{
+        display: none;
+    }
+    .peopleKnow{
+        display: none;
+    }
+}
+
+
+
+
+
+
+ /* profile pic end */
+
+/*----------------- Abhishek End-------- */
