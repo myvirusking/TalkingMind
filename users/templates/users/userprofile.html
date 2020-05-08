@@ -1,6 +1,17 @@
-{% extends 'blog/base.html' %} {% block content %}
+{% extends 'blog/base.html' %} 
 
-{% if rec_request %}
+{% block css %}
+<style>
+    .mainNav {
+        display: none;
+    }
+    
+</style>
+{% endblock css %}
+
+{% block content %}
+
+<!-- {% if rec_request %}
     <div class="container col-6 my-4">
         <h4>Follow requests:</h4><br>
         {% for r_request in rec_request %}
@@ -114,7 +125,696 @@
         </form>
 
     </div>
+</div>  -->
+
+
+<div class="sidenav" id="mySidenav">
+    <h6 class="brandName" href="#" >TalkingMind</h6>
+    <div class="menuProfileMainDiv">
+        <a href="{% url 'profile' %}" class="menuProfile">
+            <div class="profileImg"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></div>
+            <div class="profileTitle">
+                <h6>Abhishek Gupta</h6><p>@abhishek </p>
+            </div>
+        </a>            
+    </div>
+    <div class="sideMenu">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+        
+        <a href="#"><i class="fa fa-home" aria-hidden="true"></i><p>Home</p></a>
+        <a href="#"><i class="fa fa-bell" aria-hidden="true"></i><p>Notifications</p></a>
+        <a href="#"><i class="fa fa-th-large" aria-hidden="true"></i><p>Posts</p></a>
+        <a href="#"><i class="fa fa-users" aria-hidden="true"></i><p>Users</p></a>
+        <a href="#"><i class="fa fa-bookmark" aria-hidden="true"></i><p>Saved</p></a>
+        <a href="#"><i class="fa fa-cog" aria-hidden="true"></i><p>Settings</p></a>
+        <a href="#"><i class="fas fa-sign-out-alt"></i><p>Logout</p></a>
+    </div>        
+    <div class="sideNavBottom">
+        <div>
+            <ul>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Terms</a></li>
+                <li><a href="#">Privacy policy</a></li>
+            </ul>
+            <a href="#" class="copyright">&copy; 2020 TalkingMind</a>
+            
+        </div>
+    </div>
 </div>
+  
+  <div class="main">          
+    <nav class="navbar navbar-expand-md navbar-inverse regNav">
+        <div class="container-fluid">
+            <div class="navbar-brand">                    
+                <form class="form-inline searchForm">
+                    {% csrf_token %}
+                    <input class="form-control form-control-sm" type="text" autocomplete="off" placeholder="Search" id="user-input">
+                    <button class="btn btn-primary btn-sm searchBtn"><i class="fa fa-search" aria-hidden="true"></i></button>
+                    <div id="replaceable-content" class="col-6">
+                        {% include 'blog/user-search-results.html' %}
+                       
+                    </div>
+                </form>
+            </div>
+        
+    
+            <ul class="nav navbar-nav navbar-right">
+                <div class="icons">
+                    <a class="filterIcon" data-toggle="modal" data-target="#filterModal"><i class="fa fa-filter" aria-hidden="true"></i></a>
+                    <a class="menuBtn" onclick="openNav()"><i class="fa fa-bars" aria-hidden="true"></i></a>
+                </div>
+                <!-- <div class="profileImg"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></div> -->
+                <li class="profile profileImg"><a href="{% url 'profile' %}"><img src="{{user.profile.image.url}}"></a></li>
+                <!-- <li><a class="menuBtn" href="#" onclick="openNav()"><i class="fa fa-bars" aria-hidden="true"></i></a></li> -->
+                <!-- <li><a class="menuBtn" href="#" onclick="openNav()"><i class="fa fa-bars" aria-hidden="true"></i></a></li> -->
+            </ul>
+        </div>
+    
+    </nav>
+    <section>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card profileCard">
+                                <div class="profileHeaderDiv">
+                                    <div class="profileHeader">
+                                        <h5>Profile</h5>
+                                    </div>
+                                    <div class="profileEditBtn">
+                                        <p><a ><i class="fas fa-cog" data-toggle="modal" data-target="#settingModal"></i></a></p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="profilePicDiv">
+                                            <div class="profileImg"><img src="{{user.profile.image.url}}"></div>                                                                     
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div class="profileDetailDiv">
+                                            <h5 class="username">{{user.username}}</h5>
+                                            <h6 class="email">{{user.email}}</h6>
+                                            <p class="about">{{user.profile.about}}</p>
+                                            <div class="btn-group grpBtn" role="group" aria-label="Basic example">
+                                                <button type="button" class="btn btn-secondary active">
+                                                    <p class="count">20</p>
+                                                    <p class="text">posts</p>
+                                                </button>
+                                                <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#followModal">
+                                                    <p class="count">20</p>
+                                                    <p class="text">followers</p>
+                                                </button>
+                                                <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#followModal">
+                                                    <p class="count">20</p>
+                                                    <p class="text">followings</p>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>                        
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card articleCard">
+                                <div class="articleMainDiv">
+                                    <div class="articleMainHeaderDiv">
+                                        <div class="articleDiv">
+                                            <h6>Articles</h6>
+                                        </div>
+                                        <div class="articleEditBtn">
+                                            <p><a id="button" href="{% url 'fav_article_category' %}"><i class="fas fa-edit"></i></a></p>
+                                        </div>                                                 
+                                    </div>
+                                    <div class="articleMainBodyDiv">
+                                        <div class="btn-group btn-group-toggle selectBtnDiv" data-toggle="buttons">
+                                            {% if article_category %}
+                                                {% for category in article_category %}
+                                                    <label class="btn btn-outline-primary selectBtn">
+                                                        <input type="checkbox" autocomplete="off" disabled> {{category}}
+                                                    </label>
+                                                {% endfor %}
+                                            {% else %}
+                                            <p>You haven't selected any article topics</p>
+                                            <div class="row">
+                                                <div class="col-md-9">
+                                                    <p>You haven't selected any article topics</p>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <a id="button" href="{% url 'fav_article_category' %}" class="button btn btn-primary" style="color:black;display: inline;float: right; border-radius: 30px;">Select Topics</a>
+                                                </div>
+                                            </div>
+                                            {% endif %}
+            
+                                            <!-- {% for id,name in category_list %}
+                                                {% if id in category_selected_id_list %}
+                                                    <label class="btn btn-outline-primary selectBtn">
+                                                    <input type="checkbox" value="{{id}}" name="check" id="defaultUnchecked{{forloop.counter}}" checked autocomplete="off" > {{name}}
+                                                    </label>
+                                                {% else %}
+                                                    <label class="btn btn-outline-primary selectBtn">
+                                                    <input type="checkbox" value="{{id}}" name="check" id="defaultUnchecked{{forloop.counter}} autocomplete="off" > {{name}}
+                                                    </label>
+                                                {% endif %}
+                                            {%endfor%} -->
+                                          </div>
+                                    </div>
+                                </div>
+                            </div>                    
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="profilePostCard">
+                                    <nav class="cardTab">
+                                        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                                            <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">Posts</a>
+                                            <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">About</a>
+                                        </div>
+                                    </nav>
+                                    <div class="tab-content" id="nav-tabContent">
+                                        <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+                                            <div class="mainProfilePostDiv">
+                                                {% if posts.count > 0 %}
+                                                    {% for post in posts %}
+                                                        <div class="card mainProfiilePostCard">
+                                                            <div class="card-header">
+                                                                <div class="cardHeadSection">
+                                                                    <div class="profileImg"><a href="{% url 'other-profile' post.author.id %}"><img src="{{post.author.profile.image.url}}"></a></div>
+                                                                    <div class="profileTitle">
+                                                                        <a href="{% url 'other-profile' post.author.id %}"><h6>{{ post.author }}</h6></a><p>@abhishek </p>
+                                                                    </div>
+                                                                    <div class="threeDot">
+                                                                        <p><i class="fa fa-ellipsis-v" aria-hidden="true"></i></p>                                                
+                                                                    </div>
+                                                                </div>
+                                                                
+                                                            </div>
+                                                            <div class="card-body">
+                                                            <h5 class="card-title">{{ post.title }}</h5>
+                                                            <p class="card-text">{{ post.content }}</p>
+                                                            <img class="card-img-bottom" data-src="holder.js/100px180/" alt="100%x180" src="https://unknown-ag.github.io/sheetal_academy/ProjectImages/abhishek.jpeg" data-holder-rendered="true">
+                                                            </div>
+                                                            
+                                                            <div class="card-footer">
+                                                                <div class="footerBtn">
+                                                                    <div class="like"><i class="fa fa-heart" aria-hidden="true"></i><span>20</span></div>
+                                                                    <div class="comment"><i class="far fa-comments"></i><span>13</span></div>
+                                                                    <div class="share"><i class="fa fa-paper-plane" aria-hidden="true"></i><span>28</span></div>
+                                                                    <div class="save"><i class="fa fa-bookmark" aria-hidden="true"></i></div>
+                                                                    
+                                                                </div>
+                                                                <!-- {{ post.date_posted }} -->
+                                                             </div>
+                                                        </div> 
+                                                     {% endfor %}
+                                                {% else %}
+                                                    <h5>Any post regarding this topics not published</h5>
+                                                {% endif %} 
+                                             </div>
+                                        </div>
+                                        <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+                                            <div class="mainProfileAboutDiv">
+                                                <div class="card aboutCard">
+                                                    <div class="aboutMainDiv">
+                                                        <h6>About</h6>
+                                                        <p>Lorem ipsum, or lipsum as it is sometimes known, is dummy text used in laying out print, graphic or web designs. The passage is attributed to an unknown typesetter in the 15th century who is thought to have scrambled parts of Cicero's De Finibus Bonorum et Malorum for use in a type specimen book.</p>
+                                                    </div>
+                                                    <!-- <div class="articleMainDiv">
+                                                        <div class="articleMainHeaderDiv">
+                                                            <div class="articleDiv">
+                                                                <h6>Articles</h6>
+                                                            </div>
+                                                            <div class="articleEditBtn">
+                                                                <p><a id="button" href="{% url 'fav_article_category' %}"><i class="fas fa-edit"></i></a></p>
+                                                            </div>                                                 
+                                                        </div>
+                                                        <div class="articleMainBodyDiv">
+                                                            <div class="btn-group btn-group-toggle selectBtnDiv" data-toggle="buttons">
+                                                                {% if article_category %}
+                                                                    {% for category in article_category %}
+                                                                        <label class="btn btn-outline-primary selectBtn">
+                                                                            <input type="checkbox" autocomplete="off" disabled> {{category}}
+                                                                        </label>
+                                                                    {% endfor %}
+                                                                {% else %}
+                                                                <p>You haven't selected any article topics</p>
+                                                                <div class="row">
+                                                                    <div class="col-md-9">
+                                                                        <p>You haven't selected any article topics</p>
+                                                                    </div>
+                                                                    <div class="col-md-3">
+                                                                        <a id="button" href="{% url 'fav_article_category' %}" class="button btn btn-primary" style="color:black;display: inline;float: right; border-radius: 30px;">Select Topics</a>
+                                                                    </div>
+                                                                </div>
+                                                                {% endif %}                                                        
+                                                              </div>
+                                                        </div>
+                                                    </div> -->
+                                                    <div class="contactMainDiv">
+                                                        <div class="contactMainHeaderDiv">
+                                                            <div class="contactDiv">
+                                                                <h6>Personal Details</h6>
+                                                            </div>
+                                                            <div class="contactEditBtn">
+                                                                <p><a id="button"><i class="fas fa-edit" data-toggle="modal" data-target="#settingModal"></i></a></p>
+                                                            </div>                                                 
+                                                        </div>
+                                                        <div class="contactMainBodyDiv">
+                                                            <table class="table table-sm">
+                                                                <tbody>
+                                                                  <tr>
+                                                                    <td>Email</td>
+                                                                    <td>ag528927@gmail.com</td>
+                                                                  </tr>
+                                                                  <tr>
+                                                                    <td>Mobile</td>
+                                                                    <td>9876543210</td>
+                                                                  </tr>
+                                                                  <tr>
+                                                                    <td>Location</td>
+                                                                    <td>Mumbai, India</td>
+                                                                  </tr>
+                                                                </tbody>
+                                                              </table>
+                                                        </div>
+                                                    </div>                                          
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card trendingCard">
+                                <div class="card-header">
+                                  <h6>Trending Topics</h6>
+                                </div>
+                                <div class="card-body">
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item">
+                                            <h6>#corona</h6>
+                                        </li>
+                                        <li class="list-group-item">
+                                            <h6>#Language</h6>
+                                            
+                                        </li>
+                                        <li class="list-group-item">
+                                            <h6>#movies</h6>
+                                            
+                                        </li>
+                                        <li class="list-group-item">
+                                            <h6>#Songs</h6>
+                                            
+                                        </li>
+                                        <li class="list-group-item">
+                                            <h6>#education</h6>
+                                            
+                                        </li>
+                                        <li class="list-group-item">
+                                            <h6>#movies</h6>
+                                            
+                                        </li>
+                                        <li class="list-group-item">
+                                            <h6>#programming</h6>
+                                            
+                                        </li>
+                                      </ul>
+                              </div>
+                            </div>
+                            <div class="card peopleKnow">
+                                <div class="card-header">
+                                    <p class="cardHeaderName">People you may know</p>
+                                    <!-- <p class="cardHeaderIcon"><i class="fa fa-ellipsis-v" aria-hidden="true"></i></p>                                           -->
+                                </div>
+                                <div class="card-body recomdBody">
+                                    <div class="list-group">
+                                        <div class="list-group-item">
+                                            <div class="cardHeadSection">
+                                                <div class="profileImg"><a href="#"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></a></div>
+                                                <div class="profileTitle">
+                                                    <a href="#"><h6>Abhishek Gupta</h6></a><p>@abhishek </p>
+                                                </div>
+                                                <div class="recomdAddBtn">
+                                                    <p><a href="#"><i class="fa fa-plus" aria-hidden="true"></i></a></p>                                                
+                                                </div>                                   
+                                            </div>
+                                        </div>
+                                        <div class="list-group-item">
+                                            <div class="cardHeadSection">
+                                                <div class="profileImg"><a href="#"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></a></div>
+                                                <div class="profileTitle">
+                                                    <a href="#"><h6>Abhishek Gupta</h6></a><p>@abhishek </p>
+                                                </div>
+                                                <div class="recomdAddBtn">
+                                                    <p><a href="#"><i class="fa fa-plus" aria-hidden="true"></i></a></p>                                                
+                                                </div>                                   
+                                            </div>
+                                        </div>
+                                        <div class="list-group-item">
+                                            <div class="cardHeadSection">
+                                                <div class="profileImg"><a href="#"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></a></div>
+                                                <div class="profileTitle">
+                                                    <a href="#"><h6>Abhishek Gupta</h6></a><p>@abhishek </p>
+                                                </div>
+                                                <div class="recomdAddBtn">
+                                                    <p><a href="#"><i class="fa fa-plus" aria-hidden="true"></i></a></p>                                                
+                                                </div>                                   
+                                            </div>
+                                        </div>
+                                        <div class="list-group-item">
+                                            <div class="cardHeadSection">
+                                                <div class="profileImg"><a href="#"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></a></div>
+                                                <div class="profileTitle">
+                                                    <a href="#"><h6>Abhishek Gupta</h6></a><p>@abhishek </p>
+                                                </div>
+                                                <div class="recomdAddBtn">
+                                                    <p><a href="#"><i class="fa fa-plus" aria-hidden="true"></i></a></p>                                                
+                                                </div>                                   
+                                            </div>
+                                        </div>
+                                        <div class="list-group-item">
+                                            <div class="cardHeadSection">
+                                                <div class="profileImg"><a href="#"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></a></div>
+                                                <div class="profileTitle">
+                                                    <a href="#"><h6>Abhishek Gupta</h6></a><p>@abhishek </p>
+                                                </div>
+                                                <div class="recomdAddBtn">
+                                                    <p><a href="#"><i class="fa fa-plus" aria-hidden="true"></i></a></p>                                                
+                                                </div>                                   
+                                            </div>
+                                        </div>
+                                        <div class="list-group-item">
+                                            <div class="cardHeadSection">
+                                                <div class="profileImg"><a href="#"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></a></div>
+                                                <div class="profileTitle">
+                                                    <a href="#"><h6>Abhishek Gupta</h6></a><p>@abhishek </p>
+                                                </div>
+                                                <div class="recomdAddBtn">
+                                                    <p><a href="#"><i class="fa fa-plus" aria-hidden="true"></i></a></p>                                                
+                                                </div>                                   
+                                            </div>
+                                        </div>
+                                        <div class="list-group-item">
+                                            <div class="cardHeadSection">
+                                                <div class="profileImg"><a href="#"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></a></div>
+                                                <div class="profileTitle">
+                                                    <a href="#"><h6>Abhishek Gupta</h6></a><p>@abhishek </p>
+                                                </div>
+                                                <div class="recomdAddBtn">
+                                                    <p><a href="#"><i class="fa fa-plus" aria-hidden="true"></i></a></p>                                                
+                                                </div>                                   
+                                            </div>
+                                        </div>
+                                        <div class="list-group-item">
+                                            <div class="cardHeadSection">
+                                                <div class="profileImg"><a href="#"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></a></div>
+                                                <div class="profileTitle">
+                                                    <a href="#"><h6>Abhishek Gupta</h6></a><p>@abhishek </p>
+                                                </div>
+                                                <div class="recomdAddBtn">
+                                                    <p><a href="#"><i class="fa fa-plus" aria-hidden="true"></i></a></p>                                                
+                                                </div>                                   
+                                            </div>
+                                        </div>
+                                        <div class="list-group-item">
+                                            <div class="cardHeadSection">
+                                                <div class="profileImg"><a href="#"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></a></div>
+                                                <div class="profileTitle">
+                                                    <a href="#"><h6>Abhishek Gupta</h6></a><p>@abhishek </p>
+                                                </div>
+                                                <div class="recomdAddBtn">
+                                                    <p><a href="#"><i class="fa fa-plus" aria-hidden="true"></i></a></p>                                                
+                                                </div>                                   
+                                            </div>
+                                        </div>
+                                        
+                                    </div>
+                                </div>                                       
+                                
+                                <div class="card-footer recomdFooter text-center">
+                                    <a href="">See More</a>
+                                </div>
+                              </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            
+            
+        </div>
+        </section>
+  </div>
+
+  <!-- Modal -->
+<div class="modal fade" id="settingModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">New Post</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form enctype="multipart/form-data" method="post">
+                    {% csrf_token %} {{user_form.username}} {{user_form.email}} {{profile_form.about}} {{profile_form.image}}
+        
+                    <button type="submit" class="btn btn-block " style="background-color:#4b204f;color:white; ">Update</button>
+        
+                </form>
+            </div>
+            <!-- <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div> -->
+        </div>
+    </div>
+</div>
+<div class="modal fade followModal" id="followModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">followers</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <nav class="cardTab followNavCard">
+                    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                        <a class="nav-item nav-link active" id="nav-mutual-tab" data-toggle="tab" href="#nav-mutual" role="tab" aria-controls="nav-home" aria-selected="true">Mutuals</a>
+                        <a class="nav-item nav-link" id="nav-follower-tab" data-toggle="tab" href="#nav-follower" role="tab" aria-controls="nav-profile" aria-selected="false">Followers</a>
+                        <a class="nav-item nav-link" id="nav-following-tab" data-toggle="tab" href="#nav-following" role="tab" aria-controls="nav-profile" aria-selected="false">Followings</a>
+                    </div>
+                </nav>
+                <div class="tab-content" id="nav-tabContent">
+                    <div class="tab-pane fade show active" id="nav-mutual" role="tabpanel" aria-labelledby="nav-home-tab">
+                        
+                        <div class="list-group">
+                            <div class="list-group-item">
+                                <div class="cardHeadSection">
+                                    <div class="profileImg"><a href="#"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></a></div>
+                                    <div class="profileTitle">
+                                        <a href="#"><h6>Abhishek Gupta</h6></a><p>@abhishek </p>
+                                    </div>                                    
+                                </div>
+                            </div>
+                            <div class="list-group-item">
+                                <div class="cardHeadSection">
+                                    <div class="profileImg"><a href="#"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></a></div>
+                                    <div class="profileTitle">
+                                        <a href="#"><h6>Abhishek Gupta</h6></a><p>@abhishek </p>
+                                    </div>                                    
+                                </div>
+                            </div>                          
+                            
+                        </div>
+                        
+                    </div>
+                    <div class="tab-pane fade" id="nav-follower" role="tabpanel" aria-labelledby="nav-profile-tab">
+                        <div class="list-group">
+                            <div class="list-group-item">
+                                <div class="cardHeadSection">
+                                    <div class="profileImg"><a href="#"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></a></div>
+                                    <div class="profileTitle">
+                                        <a href="#"><h6>Abhishek Gupta</h6></a><p>@abhishek </p>
+                                    </div>
+                                    <div class="recomdAddBtn">
+                                        <p><a href="#"><i class="fa fa-plus" aria-hidden="true"></i></a></p>                                                
+                                    </div>                                   
+                                </div>
+                            </div>
+                            <div class="list-group-item">
+                                <div class="cardHeadSection">
+                                    <div class="profileImg"><a href="#"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></a></div>
+                                    <div class="profileTitle">
+                                        <a href="#"><h6>Abhishek Gupta</h6></a><p>@abhishek </p>
+                                    </div>
+                                    <!-- <div class="recomdAddBtn">
+                                        <p><a href="#"><i class="fa fa-plus" aria-hidden="true"></i></a></p>                                                
+                                    </div>                                    -->
+                                </div>
+                            </div>
+                            <div class="list-group-item">
+                                <div class="cardHeadSection">
+                                    <div class="profileImg"><a href="#"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></a></div>
+                                    <div class="profileTitle">
+                                        <a href="#"><h6>Abhishek Gupta</h6></a><p>@abhishek </p>
+                                    </div>
+                                    <!-- <div class="recomdAddBtn">
+                                        <p><a href="#"><i class="fa fa-plus" aria-hidden="true"></i></a></p>                                                
+                                    </div>                                    -->
+                                </div>
+                            </div>
+                            <div class="list-group-item">
+                                <div class="cardHeadSection">
+                                    <div class="profileImg"><a href="#"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></a></div>
+                                    <div class="profileTitle">
+                                        <a href="#"><h6>Abhishek Gupta</h6></a><p>@abhishek </p>
+                                    </div>
+                                    <div class="recomdAddBtn">
+                                        <p><a href="#"><i class="fa fa-plus" aria-hidden="true"></i></a></p>                                                
+                                    </div>                                   
+                                </div>
+                            </div>
+                            
+                            
+                            
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="nav-following" role="tabpanel" aria-labelledby="nav-profile-tab">
+                        <div class="list-group">
+                            <div class="list-group-item">
+                                <div class="cardHeadSection">
+                                    <div class="profileImg"><a href="#"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></a></div>
+                                    <div class="profileTitle">
+                                        <a href="#"><h6>Abhishek Gupta</h6></a><p>@abhishek </p>
+                                    </div>
+                                    <!-- <div class="recomdAddBtn">
+                                        <p><a href="#"><i class="fa fa-plus" aria-hidden="true"></i></a></p>                                                
+                                    </div>                                    -->
+                                </div>
+                            </div>
+                            <div class="list-group-item">
+                                <div class="cardHeadSection">
+                                    <div class="profileImg"><a href="#"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></a></div>
+                                    <div class="profileTitle">
+                                        <a href="#"><h6>Abhishek Gupta</h6></a><p>@abhishek </p>
+                                    </div>
+                                    <!-- <div class="recomdAddBtn">
+                                        <p><a href="#"><i class="fa fa-plus" aria-hidden="true"></i></a></p>                                                
+                                    </div>                                    -->
+                                </div>
+                            </div>
+                            <div class="list-group-item">
+                                <div class="cardHeadSection">
+                                    <div class="profileImg"><a href="#"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></a></div>
+                                    <div class="profileTitle">
+                                        <a href="#"><h6>Abhishek Gupta</h6></a><p>@abhishek </p>
+                                    </div>
+                                    <!-- <div class="recomdAddBtn">
+                                        <p><a href="#"><i class="fa fa-plus" aria-hidden="true"></i></a></p>                                                
+                                    </div>                                    -->
+                                </div>
+                            </div>
+                            <div class="list-group-item">
+                                <div class="cardHeadSection">
+                                    <div class="profileImg"><a href="#"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></a></div>
+                                    <div class="profileTitle">
+                                        <a href="#"><h6>Abhishek Gupta</h6></a><p>@abhishek </p>
+                                    </div>
+                                    <!-- <div class="recomdAddBtn">
+                                        <p><a href="#"><i class="fa fa-plus" aria-hidden="true"></i></a></p>                                                
+                                    </div>                                    -->
+                                </div>
+                            </div>
+                            <div class="list-group-item">
+                                <div class="cardHeadSection">
+                                    <div class="profileImg"><a href="#"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></a></div>
+                                    <div class="profileTitle">
+                                        <a href="#"><h6>Abhishek Gupta</h6></a><p>@abhishek </p>
+                                    </div>
+                                    <!-- <div class="recomdAddBtn">
+                                        <p><a href="#"><i class="fa fa-plus" aria-hidden="true"></i></a></p>                                                
+                                    </div>                                    -->
+                                </div>
+                            </div>
+                            
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>            
+        </div>
+    </div>
+</div>
+
+
+
+    <!-- <div id="myNav2" class="overlay2">
+        <a href="javascript:void(0)" class="closebtn2" onclick="closeNav2()">&times;</a>
+         <div> -->
+            <!-- <div class="overlay2-content">
+                <a href="#">About</a>
+                <a href="#">Services</a>
+                <a href="#">Clients</a>
+                <a href="#">Contact</a>
+                <a href="#">Clients</a>
+                <a href="#">About</a>
+                <a href="#">Services</a>
+                <a href="#">Contact</a>
+                <a href="#">Clients</a>
+                <a href="#">About</a>
+                <a href="#">Services</a>
+                <a href="#">Contact</a>
+                <a href="#">About</a>
+                <a href="#">Services</a>
+              </div> -->
+        <!-- </div> -->
+        
+    
+<!-- </div> -->
+
+  <!-- <script>
+    function openNav2() {
+      document.getElementById("myNav2").style.height = "50%";
+    }
+    
+    function closeNav2() {
+      document.getElementById("myNav2").style.height = "0%";
+    }
+    </script>  -->
+  
+
+
+
+
+{% block scripts %}
+
+<script>
+   
+    
+    function openNav() {
+      document.getElementById("mySidenav").style.width = "250px";
+    }
+    
+    function closeNav() {
+      document.getElementById("mySidenav").style.width = "0";
+    }
+</script>
+{% endblock %}
 
 
 {% endblock content %}
