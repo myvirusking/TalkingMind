@@ -1,6 +1,9 @@
 $(document).ready(function(){
-    $("#like").click(function(e){
-        var postid;
+    $(".footerBtn .like i").click(function(e){
+        var thisLike = $(this);
+        $(this).toggleClass("press");
+
+        var post_id;
         catid = $(this).attr("data-catid");
         $.ajax({
             type: "GET",
@@ -10,11 +13,23 @@ $(document).ready(function(){
             },
             success:function(data)
             {
-                $("#total-likes").text(data['likes']);
+
+                var exists =$( ".footerBtn .like i" ).hasClass( "press" );
+                if(exists) {
+                    $(thisLike[0]).find(".total-likes").text(data['likes']);
+                }
+                else {
+                    $(thisLike[0]).find(".total-likes").text(data['likes']);
+
+                }
+
             },
             error:function (xhr,status, error) {
-                console.log("Error");
+                console.log(error);
             }
-        })
-    })
+        });
+
+    });
 });
+
+

@@ -3,7 +3,6 @@ from django.contrib.auth.models import User
 from .forms import RegisterForm, UserUpdateForm, ProfileUpdateForm
 from django.contrib import messages
 from django.views.generic.list import ListView
-from blog.models import Post
 from django.contrib.auth.decorators import login_required
 from django.views.generic import View
 from .models import *
@@ -13,6 +12,7 @@ from django.contrib.auth import views as auth_views
 from django.conf import settings
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth import authenticate, login
+from blog.models import Post
 
 
 from django.template.loader import render_to_string
@@ -102,8 +102,9 @@ def profile(request):
     article_category = [name for id, name in Profile.objects.get(user=request.user).article_category.values_list()]
     current_user_profile = Profile.objects.filter(user=request.user).first()
 
-    following_count = current_user_profile.following.all().count()
-    followers_count = current_user_profile.followers.all().count()
+
+    following_count = current_user_profile.following_count
+    followers_count = current_user_profile.followers_count
 
     following_list = current_user_profile.following.all()
     followers_list = current_user_profile.followers.all()
@@ -163,8 +164,10 @@ def other_user_profile(request, pk):
     other_user_article_category = [name for id, name in Profile.objects.get(user=user).article_category.values_list()]
     current_user_article_category = [name for id, name in Profile.objects.get(user=request.user).article_category.values_list()]
     common_topics = [name for name in current_user_article_category if name in other_user_article_category]
-    following_count = following_list_of_other_user.count()
-    follower_count = follower_list_of_other_user.count()
+
+    following_count = profile_other.following_count
+    follower_count = profile_other.followers_count
+
     context = {
         'posts': post,
         'user_id': user,
@@ -193,7 +196,7 @@ def send_follow_request(request, pk):
             to_user=user
         )
 
-        return HttpResponseRedirect('/profile')
+        return HttpResponseRedirect('/other-profile/{}/'.format(pk))
 
 
 """  This function gets called when the user cancels the follow request sent to  some other user. 
@@ -244,11 +247,15 @@ def unfollow_user(request, pk):
     follower_list = [user for id, user in unfollowed_user.followers.values_list()]
     follower_user_index = follower_list.index(request.user.id)
     unfollowed_user.followers.all()[follower_user_index].delete()
+    unfollowed_user.followers_count -= 1
+    unfollowed_user.save()
 
     follower = Profile.objects.get(user=request.user)
     following_list = [user for id, user in follower.following.values_list()]
     following_user_index = following_list.index(pk)
     follower.following.all()[following_user_index].delete()
+    follower.following_count -= 1
+    follower.save()
     return HttpResponseRedirect('/other-profile/{}/'.format(pk))
 
 
@@ -267,8 +274,14 @@ def accept_follow_request(request, pk):
 
     request_sender = from_user
     requested_user = frequest.to_user
+
     request_sender.profile.following.create(user=requested_user)
+    request_sender.profile.following_count += 1
+    request_sender.profile.save()
+
     requested_user.profile.followers.create(user=request_sender)
+    requested_user.profile.followers_count += 1
+    requested_user.profile.save()
 
     frequest.delete()
 

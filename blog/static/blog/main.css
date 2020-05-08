@@ -42,7 +42,7 @@ body{
     margin-left:30px;
     border-radius:10px;
     width:70%;
-    
+
 }
 
 .first-div{
@@ -293,7 +293,7 @@ input {
 
 @media screen and (max-width: 767px){
     .centerDiv{
-        margin: 0px 20px;    
+        margin: 0px 20px;
     }
     .leftDiv{
         display: none;
@@ -559,7 +559,7 @@ input {
 }
 .card-img-bottom{
     height: 100%;
-     width: 100%; 
+     width: 100%;
      display: block;
      border-radius: 6px;
 }
@@ -582,6 +582,20 @@ input {
     animation: size .4s;
     color:#e23b3b !important;
 }
+
+
+/* --------------------Added by prashant ---------------------------  */
+
+.save .saved {
+
+    animation: size .4s;
+    color: black !important;
+
+}
+
+ /* -----------------------------------------------------------------  */
+
+
 @keyframes size {
     from {font-size: 14px;}
     to {font-size: 18px;text-shadow: 0 3px 6px #b74bf98a, 0 3px 3px #b74bf98a}
@@ -756,7 +770,7 @@ input {
     transition: 0.5s;
     /* padding-top: 20px; */
   }
-  
+
   .sidenav a {
     padding: 6px 53px 10px 50px;
     text-decoration: none;
@@ -772,7 +786,7 @@ input {
   .sidenav .sideMenu p{
     margin-bottom: 0px;
     font-weight: 600;
-  }  
+  }
   .sidenav a:hover {
     color: #0dc9ef;
   }
@@ -783,13 +797,13 @@ input {
     margin-left: 170px;
   }
 
-  
+
   .main {
     margin-left: 250px; /* Same as the width of the sidenav */
     /* font-size: 28px; Increased text to enable scrolling */
     /* padding: 0px 10px; */
   }
-  
+
   @media screen and (max-height: 450px) {
     .sidenav {padding-top: 15px;}
     .sidenav a {font-size: 18px;}
@@ -797,7 +811,7 @@ input {
 
   @media screen and (max-width: 991px) {
     .sidenav {
-        width: 0px;        
+        width: 0px;
     }
     .main{
         margin-left: 0px;
@@ -807,16 +821,16 @@ input {
     }
   }
 
-  
+
   @media screen and (min-width: 992px) {
     .closebtn{
         display: none !important;
     }
     .navbar-right .icons{
         display: none !important;
-        
+
     }
-    
+
   }
 
   .navbar-right .icons a{
@@ -849,7 +863,7 @@ input {
         color: #0dc9ef;
   }
 
-  
+
 
   .sideNavBottom{
     background: #fff;
@@ -905,9 +919,9 @@ input {
   .filterBtnBody:hover {
     background: #f7f7f7;
   }
-  
 
-  
+
+
 .recomdCard{
     box-shadow: none;
 }
@@ -1057,13 +1071,13 @@ button:focus {
     line-height: 0px;
     margin: 9px 0 9px;
     font-size: 15px;
- } 
- 
- .filterDiv h2 span { 
-    background: #f0f0f0;
-     padding:0 10px; 
  }
- .filterDiv h2 span i{ 
+
+ .filterDiv h2 span {
+    background: #f0f0f0;
+     padding:0 10px;
+ }
+ .filterDiv h2 span i{
     line-height: 0px;
     color: #0dc9ef;
  }
@@ -1133,7 +1147,7 @@ button:focus {
     display: grid;
     align-items: center;
  }
- 
+
  .profilePicDiv .profileImg img {
     width: 8rem;
     height: 8rem;
@@ -1176,7 +1190,7 @@ button:focus {
 }
 .profileDetailDiv .grpBtn button:active {
     background-color: #0dc9ef !important;
-    
+
 }
 .profileDetailDiv .grpBtn button:hover {
     color: white;
@@ -1279,7 +1293,7 @@ button:focus {
     cursor: pointer;
 }
 .mainProfileAboutDiv .aboutCard .contactMainDiv .contactMainBodyDiv .table td, .table th {
-    
+
     border-top: none;
 }
 
@@ -1305,12 +1319,3 @@ button:focus {
         display: none;
     }
 }
-
-
-
-
-
-
- /* profile pic end */
-
-/*----------------- Abhishek End-------- */

@@ -1,5 +1,6 @@
 from .models import Post
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.shortcuts import redirect, render,HttpResponse
 from django.urls import reverse_lazy
 from .forms import NewPostForm
@@ -8,8 +9,7 @@ from django.views.generic.list import ListView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from users.models import ArticleCategory
-import json
-from django.template.loader import render_to_string
+from users.models import Profile, SavedPost
 from django.http import JsonResponse
 
 
@@ -125,31 +125,90 @@ ajax (javascript/post_like.js) the url is in the Blogging/urls with the name 'li
 State of the button is saved each time the user clicks that. Like button appearance changes
  depending on the liked button status"""
 
+
 @login_required
 def post_like(request):
-    liked_button_status = 'liked'
     if request.method == 'GET':
         post_id = request.GET['post_id']
         liked_post = Post.objects.filter(id=post_id).first()
         users_who_liked_post = [user for id, user in liked_post.likes.values_list()]
-        liked_button_status = 'none'
         if request.user.id in users_who_liked_post:
+
             liked_post.likes.all()[users_who_liked_post.index(request.user.id)].delete()
-            user_count = liked_post.likes.all().count()
-            print(user_count)
-            data_dict = {'likes': user_count}
+
+            liked_post.likes_count -= 1
+            liked_post.save()
+
+            likes_count = liked_post.likes_count
+            data_dict = {'likes': likes_count}
             return JsonResponse(data=data_dict, safe=False)
 
         else:
             liked_post.likes.create(user=request.user)
-            user_count = liked_post.likes.all().count()
-            print(user_count)
-            data_dict = {'likes': user_count}
+            liked_post.likes_count += 1
+            liked_post.save()
+            likes_count = liked_post.likes_count
+            data_dict = {'likes': likes_count}
             return JsonResponse(data=data_dict, safe=False)
 
-        return render(request, 'blog/loginhome.html', {'liked_button_status':liked_button_status})
+    return render(request, 'blog/loginhome.html')
 
-    return render(request, 'blog/loginhome.html',{'liked_button_status':liked_button_status})
+
+"""This view gets called when the user clicks on save post button. It gets called through 
+'javascript/post_save.js'. The url for the view is in 'Blogging/urls' and the name of the path is
+ 'save-post'. If the user saves the post then the color of button will turn to black and if the
+  user again clicks on the button the post will be removed from his saved list.  Each time user saves
+a post the save_count in the profile model will be incremented and if he remove the post from saved
+list the counter will be decremented"""
+
+
+@login_required
+def save_post(request):
+    if request.method == 'GET':
+        post_id = request.GET['post_id']
+        profile = Profile.objects.filter(user=request.user).first()
+        saved_post = Post.objects.filter(id=post_id).first()
+        saved_posts_list = [id for post, id, date in profile.saved_posts.values_list()]
+
+        if saved_post.id in saved_posts_list:
+            profile.saved_posts.all()[saved_posts_list.index(saved_post.id)].delete()
+            profile.saved_posts_count -= 1
+            print("This is ")
+            profile.save()
+
+            save_count = profile.saved_posts_count
+            data_dict = {'saves': save_count}
+            return JsonResponse(data=data_dict, safe=False)
+
+        else:
+            profile.saved_posts.create(post=saved_post)
+            profile.saved_posts_count += 1
+            profile.save()
+
+            save_count = profile.saved_posts_count
+            data_dict = {'saves': save_count}
+            return JsonResponse(data=data_dict, safe=False)
+
+    return render(request, 'blog/loginhome.html')
+
+
+"""This view gets called when the user clicks on the saved button in the navbar. This view will 
+redirect the user to the page where he can see all the posts he has ever saved and if he wants he 
+can remove the post from that list. The template of the view internally calls the ajax if the post 
+is unsaved the ajax in turn calls the 'save_post' view whose url is in the 'Blogging/urls'  with name 
+'save-post2' """
+
+
+class SavedPostView(ListView, LoginRequiredMixin):
+    model = Profile
+    template_name = 'blog/saved_posts.html'
+    context_object_name = 'saved_posts'
+
+    def get_queryset(self):
+        user = User.objects.filter(id=self.request.user.id).first()
+        profile = Profile.objects.filter(user = user).first()
+
+        return profile.saved_posts.all().order_by('-date')
 
 
 

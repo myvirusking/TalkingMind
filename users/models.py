@@ -1,7 +1,12 @@
 from django.db import models
+from django.utils import timezone
 from django.contrib.auth.models import User
 from PIL import Image
-from Blogging import settings
+
+
+class SavedPost(models.Model):
+    post = models.ForeignKey("blog.Post", on_delete=models.CASCADE)
+    date = models.DateTimeField(default=timezone.now)
 
 
 class ArticleCategory(models.Model):
@@ -25,13 +30,18 @@ class Following(models.Model):
         return self.user.username
 
 
+
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     image = models.ImageField(default='default.jpeg', upload_to='profile_pics')
     about = models.CharField(max_length=150, default="I am using TalkingMind")
     article_category = models.ManyToManyField(ArticleCategory)
-    followers = models.ManyToManyField(Followers, null=True)
-    following = models.ManyToManyField(Following, null=True)
+    followers = models.ManyToManyField(Followers)
+    following = models.ManyToManyField(Following)
+    following_count = models.PositiveIntegerField(default=0)
+    followers_count = models.PositiveIntegerField(default=0)
+    saved_posts = models.ManyToManyField(SavedPost)
+    saved_posts_count = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return f'{self.user.username} Profile'

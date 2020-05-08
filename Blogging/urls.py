@@ -65,7 +65,13 @@ urlpatterns = [
          ),
          # Search user
     path('userSearch/',user_views.user_search_view,name="user_search"),
-    path('user/home/like/', blog_views.post_like, name='like-post'),
+    path('user/home/like/', blog_views.post_like, name="like-post"),
+
+    path('user/home/save/', blog_views.save_post, name="save-post"),
+
+    path('user/saved_post/', blog_views.SavedPostView.as_view(), name='saved-post-list'),
+
+    path('user/saved_post/save/', blog_views.save_post, name="save-post2"),
 
 ]
 if settings.DEBUG:

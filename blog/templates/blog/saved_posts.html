@@ -3,12 +3,15 @@
 {% load custom_tag %}
 
 {% block css %}
+
 <style>
     .mainNav {
         display: none;
     }
     
 </style>
+
+
 {% endblock css %}
 
 {% block content %}
@@ -33,7 +36,7 @@
             <a href="#"><i class="fa fa-bell" aria-hidden="true"></i><p>Notifications</p></a>
             <a href="#"><i class="fa fa-th-large" aria-hidden="true"></i><p>Posts</p></a>
             <a href="#"><i class="fa fa-users" aria-hidden="true"></i><p>Users</p></a>
-            <a href="{% url 'saved-post-list' %}"><i class="fa fa-bookmark" aria-hidden="true"></i><p>Saved</p></a>
+            <a href="#"><i class="fa fa-bookmark" aria-hidden="true"></i><p>Saved</p></a>
             <a href="#"><i class="fa fa-cog" aria-hidden="true"></i><p>Settings</p></a>
             <a href="#"><i class="fas fa-sign-out-alt"></i><p>Logout</p></a>
         </div>        
@@ -83,26 +86,27 @@
             <div class="container-fluid">
                 <div class="row">
                     
-                    <div class="col-lg-8 col-md-8">
-                        <a href="{% url 'post-create' %}" class="card" >
-                            <div class="postBtnBody">
-                                <div class="profileImg"><img src="{{user.profile.image.url}}"></div>
-                                <div class="postInputDiv"><input class="form-control form-control-sm" type="text"  placeholder="What's in your mind.." ></div>
-                                <p class="postBtn"><button class="btn btn-primary">Post</button></p>                                          
-                            </div>
-                        </a>
+                    <div class="col-lg-8 col-md-8 mt-2">
+<!--                        <a href="{% url 'post-create' %}" class="card" >-->
+<!--                            <div class="postBtnBody">-->
+<!--                                <div class="profileImg"><img src="{{user.profile.image.url}}"></div>-->
+<!--                                <div class="postInputDiv"><input class="form-control form-control-sm" type="text"  placeholder="What's in your mind.." ></div>-->
+<!--                                <p class="postBtn"><button class="btn btn-primary">Post</button></p>                                          -->
+<!--                            </div>-->
+<!--                        </a>-->
                         <div class="filterDiv">
                             <h2><span>Filter by: <i class="fa fa-filter" aria-hidden="true" data-toggle="modal" data-target="#filterModal"></i></span></h2>
                         </div>
                         <div class="mainCenterDiv">
-                            {% if posts.count > 0 %}
-                                {% for post in posts %}
+                            {% if saved_posts.count > 0 %}
+
+                                {% for saved in saved_posts %}
                                     <div class="card">
                                         <div class="card-header">
                                             <div class="cardHeadSection">
-                                                <div class="profileImg"><a href="{% url 'other-profile' post.author.id %}"><img src="{{post.author.profile.image.url}}"></a></div>
+                                                <div class="profileImg"><a href="{% url 'other-profile' saved.post.author.id %}"><img src="{{saved.post.author.profile.image.url}}"></a></div>
                                                 <div class="profileTitle">
-                                                    <a href="{% url 'other-profile' post.author.id %}"><h6>{{ post.author }}</h6></a><p>@prashant </p>
+                                                    <a href="{% url 'other-profile' saved.post.author.id %}"><h6>{{ saved.post.author }}</h6></a><p>@prashant </p>
                                                 </div>
                                                 <div class="threeDot">
                                                     <p><i class="fa fa-ellipsis-v" aria-hidden="true"></i></p>                                                
@@ -111,8 +115,8 @@
                                             
                                         </div>
                                         <div class="card-body">
-                                        <h5 class="card-title">{{ post.title }}</h5>
-                                        <p class="card-text">{{ post.content }}</p>
+                                        <h5 class="card-title">{{ saved.post.title }}</h5>
+                                        <p class="card-text">{{ saved.post.content }}</p>
 <!--                                        <img class="card-img-bottom" data-src="holder.js/100px180/" alt="100%x180" src="https://unknown-ag.github.io/sheetal_academy/ProjectImages/abhishek.jpeg" data-holder-rendered="true">-->
                                         </div>
 
@@ -121,17 +125,17 @@
                                         <div class="card-footer">
                                             <div class="footerBtn">
                                                 {% csrf_token %}
-                                                {% if user.id in post|liked_list  %}
+                                                {% if user.id in saved.post|liked_list  %}
                                                     <div id="like"  class="like" ><i id="heart" class="fa fa-heart press" aria-hidden="true" data-catid="{{post.id}}"><span class="total-likes" >{{post.likes_count}}</span></i ></div>
                                                 {% else %}
                                                     <div id="like"  class="like" ><i id="heart" class="fa fa-heart" aria-hidden="true" data-catid="{{post.id}}"><span class="total-likes" >{{post.likes_count}}</span></i ></div>
                                                 {% endif %}
                                                 <div class="comment"><i class="far fa-comments"></i><span>13</span></div>
                                                 <div class="share"><i class="fa fa-paper-plane" aria-hidden="true"></i><span>28</span></div>
-                                                {% if post.id in user.profile|saved_post %}
-                                                    <div class="save"><i class="fa fa-bookmark saved" aria-hidden="true" data-catid = {{post.id}}></i></div>
+                                                {% if saved.post.id in user.profile|saved_post %}
+                                                    <div class="save"><i class="fa fa-bookmark saved" aria-hidden="true" data-catid = {{saved.post.id}}></i></div>
                                                 {% else %}
-                                                    <div class="save"><i class="fa fa-bookmark " aria-hidden="true" data-catid = {{post.id}}></i></div>
+                                                    <div class="save"><i class="fa fa-bookmark " aria-hidden="true" data-catid = {{saved.post.id}}></i></div>
                                                 {% endif %}
 
 
@@ -144,7 +148,7 @@
                                     </div> 
                                  {% endfor %}
                             {% else %}
-                                <h5>Any post regarding this topics not published</h5>
+                                <h5>You haven't saved any posts yet</h5>
                             {% endif %} 
                          </div>
                     </div>
@@ -221,7 +225,7 @@
                                                 </div>
                                             </a>
                                             
-                                        </div>
+                                          </div>
                                     </div>                                       
                                     
                                     <div class="card-footer recomdFooter text-center">

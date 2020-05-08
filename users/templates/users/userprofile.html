@@ -20,14 +20,10 @@
             <small><a class='btn btn-warning' href=" {% url 'delete_follow_request' r_request.from_user.id %}">Delete</a></small>
             <br>
         {% endfor %}
-
     </div>
 {% endif %}
-
 <div class="container col-lg-6 col-md-10 offset-md-1 offset-lg-3 mt-5 shadow-lg p-3 mb-5 bg-white rounded" id="profile" style="background-color: white;">
-
     <div class="row container">
-
         <img class="rounded-circle account-img col-3 mt-2" height="150px" src="{{user.profile.image.url}}">
         <div class="col-9 profile-content ">
             <h4 class="account-heading" style="color:#4b204f;display: inline">{{user.username}}</h4>
@@ -35,7 +31,6 @@
             <p class="text-secondary">{{user.email}}</p>
             <p class="content">{{user.profile.about}}</p>
             <br>
-
                 <div style="float: left; margin-left: 50px;">
                     <strong style="color: rebeccapurple">Followers<br></strong>
                     <center>{{followers_count}}</center>
@@ -44,20 +39,13 @@
                     <strong style="color: rebeccapurple">Following<br></strong>
                     <center>{{following_count}}</center>
                 </div>
-
                 <div style="float: left;margin-left: 50px">
                     <strong style="color: rebeccapurple">Posts<br></strong>
                     <center>{{posts.count}}</center>
                 </div>
-
-
         </div>
-
-
-
     </div>
 </div>
-
 <div class="container col-lg-6 col-md-10 offset-md-1 offset-lg-3 mt-5 shadow-lg p-3 mb-5 bg-white rounded" id="profile" style="background-color: white;">
     <div class="col-md-12">
         {% if article_category %}
@@ -87,9 +75,7 @@
         {% endif %}
     </div>
 </div>
-
 <div class=" container col-8 offset-2 ">
-
     <div class="container col-10 offset-1 mt-2 ">
         <h4 class="mt-4 "><strong>Your posts</strong></h4>
         {% if posts.count > 0 %}
@@ -105,25 +91,16 @@
             {% endfor %}
         {% else %}
                     <h5>You haven't posted anything yet</h5>
-
         {% endif %}
     </div>
-
 </div>
-
-
 <div class="bg-modal ">
     <div class="modal-contents col-4 offset-4 mt-5 ">
-
         <div class="close " onclick="closeModal() ">+</div>
-
         <form enctype="multipart/form-data" method="post">
             {% csrf_token %} {{user_form.username}} {{user_form.email}} {{profile_form.about}} {{profile_form.image}}
-
             <button type="submit" class="btn btn-block " style="background-color:#4b204f;color:white; ">Update</button>
-
         </form>
-
     </div>
 </div>  -->
 
