@@ -1,4 +1,3 @@
-from .models import Post
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.shortcuts import redirect, render,HttpResponse
@@ -11,7 +10,7 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from users.models import ArticleCategory
 from users.models import Profile, SavedPost
 from django.http import JsonResponse
-
+from .models import *
 
 class HomeView(ListView):
     model = Post
@@ -78,16 +77,22 @@ class PostUpdateView(LoginRequiredMixin, UpdateView, UserPassesTestMixin):
 
     def form_valid(self, form):
         form.instance.author = self.request.user
-        return super().form_valid(form)
+        imgSelectedList = self.request.FILES.getlist("images")
+        postImgId = self.request.POST.getlist("postImgId")
+        self.object = form.save()
+        dbPostImgId = [str(postImage.id) for postImage in self.object.images.all()]
+        deletedPostImgId = [imgId for imgId in dbPostImgId if imgId not in postImgId]
+        if imgSelectedList:
+            for imgSelected in imgSelectedList:
+                postImgObj= PostImages.objects.create(user=self.request.user,image=imgSelected)
+                self.object.images.add(postImgObj)
+        if deletedPostImgId:
+            for imgId in deletedPostImgId:
+                postImgObj = PostImages.objects.get(id=int(imgId))
+                postImgObj.image.delete()
+                postImgObj.delete()
 
-    def post(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        try:
-            image = self.request.FILES["image"]
-            self.object.image.delete(save=True)
-        except Exception as e:
-            pass
-        return super().post(request, *args, **kwargs)
+        return super().form_valid(form)
 
     def test_func(self):
         post = self.get_object()
@@ -116,8 +121,15 @@ class PostCreateView(LoginRequiredMixin,CreateView):
 
     def form_valid(self, form):
         form.instance.author = self.request.user
-        messages.success(self.request, f'Your new post has been posted successfully')
+        imgSelectedList = self.request.FILES.getlist("images")
+        self.object = form.save()
+        if len(imgSelectedList)>0:
+            postImgList = [PostImages.objects.create(user=self.request.user,image=imgSelected) for imgSelected in imgSelectedList]
+            self.object.images.set(postImgList)
         return super().form_valid(form)
+    
+    def post(self, request, *args, **kwargs):     
+        return super().post(request, *args, **kwargs)
 
 
 """This view gets called as the user clicks on the like button. It get called through 
