@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponseRedirect
 from django.contrib.auth.models import User
-from .forms import RegisterForm, UserUpdateForm, ProfileUpdateForm
+from .forms import RegisterForm, UserUpdateForm, ProfileUpdateForm, AboutForm
 from django.contrib import messages
 from django.views.generic.list import ListView
 from django.contrib.auth.decorators import login_required
@@ -13,8 +13,6 @@ from django.conf import settings
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth import authenticate, login
 from blog.models import Post
-
-
 from django.template.loader import render_to_string
 from django.http import JsonResponse
 
@@ -42,7 +40,7 @@ def user_register(request):
         if form.is_valid():
             if User.objects.filter(username=form.cleaned_data['username']).exists():
                 return render(request, template, {'form': form,
-                                                  'error_message': 'Username is not available'})
+                                                  'error_message': 'Username is already taken '})
             elif User.objects.filter(email=form.cleaned_data['email']).exists():
                 return render(request, template, {'form': form,
                                                   'error_message': 'Email already exists'})
@@ -51,6 +49,8 @@ def user_register(request):
                                                   'error_message': 'Passwords do not match'})
             else:
                 user = User.objects.create_user(
+                    form.cleaned_data['first_name'],
+                    form.cleaned_data['last_name'],
                     form.cleaned_data['username'],
                     form.cleaned_data['email'],
                     form.cleaned_data['password']
@@ -87,38 +87,49 @@ def profile(request):
     if request.method == 'POST':
         user_form = UserUpdateForm(request.POST, instance=request.user)
         profile_form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user.profile)
+        about_form = AboutForm(request.POST, instance = request.user.profile)
 
         if user_form.is_valid() and profile_form.is_valid():
             user_form.save()
             profile_form.save()
-            messages.success(request, f'Your profile has been updated successfully')
+            return redirect('profile')
+        else:
+            print("Invalid")
+
+        if about_form.is_valid():
+            about_form.save()
             return redirect('profile')
 
     else:
         user_form = UserUpdateForm(instance=request.user)
         profile_form = ProfileUpdateForm(instance=request.user.profile)
+        about_form = AboutForm(instance=request.user.profile)
 
-    post = Post.objects.filter(author_id=request.user)
+    post = Post.objects.filter(author_id=request.user).order_by('-date_posted')
     article_category = [name for id, name in Profile.objects.get(user=request.user).article_category.values_list()]
     current_user_profile = Profile.objects.filter(user=request.user).first()
-
 
     following_count = current_user_profile.following_count
     followers_count = current_user_profile.followers_count
 
+    following_users = [user for id, user in request.user.profile.following.values_list()]
+
     following_list = current_user_profile.following.all()
     followers_list = current_user_profile.followers.all()
+
 
     context = {
         'user_form': user_form,
         'profile_form': profile_form,
+        'about_form':about_form,
         'article_category': article_category,
         'posts': post,
         'rec_request': rec_request,
         'following_count': following_count,
         'followers_count': followers_count,
         'following_list': following_list,
-        'followers_list': followers_list
+        'followers_list': followers_list,
+        'following_users': following_users,
 
     }
 

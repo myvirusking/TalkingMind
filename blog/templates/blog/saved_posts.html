@@ -126,9 +126,9 @@
                                             <div class="footerBtn">
                                                 {% csrf_token %}
                                                 {% if user.id in saved.post|liked_list  %}
-                                                    <div id="like"  class="like" ><i id="heart" class="fa fa-heart press" aria-hidden="true" data-catid="{{post.id}}"><span class="total-likes" >{{post.likes_count}}</span></i ></div>
+                                                    <div id="like"  class="like" ><i id="heart" class="fa fa-heart press" aria-hidden="true" data-catid="{{saved.post.id}}"><span class="total-likes" >{{saved.post.likes_count}}</span></i ></div>
                                                 {% else %}
-                                                    <div id="like"  class="like" ><i id="heart" class="fa fa-heart" aria-hidden="true" data-catid="{{post.id}}"><span class="total-likes" >{{post.likes_count}}</span></i ></div>
+                                                    <div id="like"  class="like" ><i id="heart" class="fa fa-heart" aria-hidden="true" data-catid="{{saved.post.id}}"><span class="total-likes" >{{saved.post.likes_count}}</span></i ></div>
                                                 {% endif %}
                                                 <div class="comment"><i class="far fa-comments"></i><span>13</span></div>
                                                 <div class="share"><i class="fa fa-paper-plane" aria-hidden="true"></i><span>28</span></div>

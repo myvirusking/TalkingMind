@@ -35,7 +35,7 @@
             <a href="#"><i class="fa fa-users" aria-hidden="true"></i><p>Users</p></a>
             <a href="{% url 'saved-post-list' %}"><i class="fa fa-bookmark" aria-hidden="true"></i><p>Saved</p></a>
             <a href="#"><i class="fa fa-cog" aria-hidden="true"></i><p>Settings</p></a>
-            <a href="#"><i class="fas fa-sign-out-alt"></i><p>Logout</p></a>
+            <a href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i><p>Logout</p></a>
         </div>        
         <div class="sideNavBottom">
             <div>
@@ -102,7 +102,7 @@
                                             <div class="cardHeadSection">
                                                 <div class="profileImg"><a href="{% url 'other-profile' post.author.id %}"><img src="{{post.author.profile.image.url}}"></a></div>
                                                 <div class="profileTitle">
-                                                    <a href="{% url 'other-profile' post.author.id %}"><h6>{{ post.author }}</h6></a><p>@prashant </p>
+                                                    <a href="{% url 'other-profile' post.author.id %}"><h6>{{ post.author.profile.first_name }} {{post.author.profile.last_name}}</h6></a><p>{{post.date_posted}} </p>
                                                 </div>
                                                 <div class="threeDot">
                                                     <p><i class="fa fa-ellipsis-v" aria-hidden="true"></i></p>                                                
@@ -111,6 +111,7 @@
                                             
                                         </div>
                                         <div class="card-body">
+
                                             <a href="{% url 'single-post' post.id %}">
                                                 <h5 class="card-title">{{ post.title }}</h5>
                                                 <pre class="card-text">{{ post.content }}</pre>
@@ -118,6 +119,22 @@
                                         
                                         
 <!--                                        <img class="card-img-bottom" data-src="holder.js/100px180/" alt="100%x180" src="https://unknown-ag.github.io/sheetal_academy/ProjectImages/abhishek.jpeg" data-holder-rendered="true">-->
+
+                                        <h5 class="card-title">{{ post.title }}</h5>
+                                        <p class="card-text">{{ post.content }}</p>
+                                        {% if post.images.all %}
+                                        <div class="row">
+                                            {% for postImage in post.images.all %}
+                                                <div class="col">
+                                                    <a href="{{postImage.image.url}}" target="_blank">
+                                                        <img class="card-img-bottom" data-src="holder.js/100px180/" alt="100%x180" src="{{postImage.image.url}}" data-holder-rendered="true">
+                                                    </a>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                        {% endif %}
+<!--                                         <img class="card-img-bottom" data-src="holder.js/100px180/" alt="100%x180" src="https://unknown-ag.github.io/sheetal_academy/ProjectImages/abhishek.jpeg" data-holder-rendered="true">-->
+
                                         </div>
 
 
