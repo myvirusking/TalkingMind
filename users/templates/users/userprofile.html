@@ -1,4 +1,5 @@
-{% extends 'blog/base.html' %} 
+{% extends 'blog/base.html' %}
+{% load custom_tag %}
 
 {% block css %}
 <style>
@@ -11,7 +12,7 @@
 
 {% block content %}
 
-<!-- {% if rec_request %}
+{% if rec_request %}
     <div class="container col-6 my-4">
         <h4>Follow requests:</h4><br>
         {% for r_request in rec_request %}
@@ -22,6 +23,7 @@
         {% endfor %}
     </div>
 {% endif %}
+<!--
 <div class="container col-lg-6 col-md-10 offset-md-1 offset-lg-3 mt-5 shadow-lg p-3 mb-5 bg-white rounded" id="profile" style="background-color: white;">
     <div class="row container">
         <img class="rounded-circle account-img col-3 mt-2" height="150px" src="{{user.profile.image.url}}">
@@ -105,6 +107,7 @@
 </div>  -->
 
 
+
 <div class="sidenav" id="mySidenav">
     <h6 class="brandName" href="#" >TalkingMind</h6>
     <div class="menuProfileMainDiv">
@@ -118,13 +121,13 @@
     <div class="sideMenu">
         <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
         
-        <a href="#"><i class="fa fa-home" aria-hidden="true"></i><p>Home</p></a>
+        <a href="{% url 'login-home' %}"><i class="fa fa-home" aria-hidden="true"></i><p>Home</p></a>
         <a href="#"><i class="fa fa-bell" aria-hidden="true"></i><p>Notifications</p></a>
         <a href="#"><i class="fa fa-th-large" aria-hidden="true"></i><p>Posts</p></a>
         <a href="#"><i class="fa fa-users" aria-hidden="true"></i><p>Users</p></a>
-        <a href="#"><i class="fa fa-bookmark" aria-hidden="true"></i><p>Saved</p></a>
+        <a href="{% url 'saved-post-list' %}"><i class="fa fa-bookmark" aria-hidden="true"></i><p>Saved</p></a>
         <a href="#"><i class="fa fa-cog" aria-hidden="true"></i><p>Settings</p></a>
-        <a href="#"><i class="fas fa-sign-out-alt"></i><p>Logout</p></a>
+        <a href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i><p>Logout</p></a>
     </div>        
     <div class="sideNavBottom">
         <div>
@@ -191,20 +194,20 @@
                                     </div>
                                     <div class="col-md-8">
                                         <div class="profileDetailDiv">
-                                            <h5 class="username">{{user.username}}</h5>
-                                            <h6 class="email">{{user.email}}</h6>
-                                            <p class="about">{{user.profile.about}}</p>
+                                            <h5 class="name">{{user.profile.first_name}} {{user.profile.last_name}}</h5>
+                                            <h6 class="username">@{{user.username}}</h6>
+                                            <p class="about">{{user.profile.bio}}</p>
                                             <div class="btn-group grpBtn" role="group" aria-label="Basic example">
                                                 <button type="button" class="btn btn-secondary active">
-                                                    <p class="count">20</p>
+                                                    <p class="count">{{posts.count}}</p>
                                                     <p class="text">posts</p>
                                                 </button>
                                                 <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#followModal">
-                                                    <p class="count">20</p>
+                                                    <p class="count">{{followers_count}}</p>
                                                     <p class="text">followers</p>
                                                 </button>
                                                 <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#followModal">
-                                                    <p class="count">20</p>
+                                                    <p class="count">{{following_count}}</p>
                                                     <p class="text">followings</p>
                                                 </button>
                                             </div>
@@ -299,87 +302,47 @@
                                                             
                                                             <div class="card-footer">
                                                                 <div class="footerBtn">
-                                                                    <div class="like"><i class="fa fa-heart" aria-hidden="true"></i><span>20</span></div>
+                                                                  {% csrf_token %}
+                                                                    {% if user.id in post|liked_list  %}
+                                                                        <div id="like"  class="like" ><i id="heart" class="fa fa-heart press" aria-hidden="true" data-catid="{{post.id}}"><span class="total-likes" >{{post.likes_count}}</span></i ></div>
+                                                                    {% else %}
+                                                                        <div id="like"  class="like" ><i id="heart" class="fa fa-heart" aria-hidden="true" data-catid="{{post.id}}"><span class="total-likes" >{{post.likes_count}}</span></i ></div>
+                                                                    {% endif %}
                                                                     <div class="comment"><i class="far fa-comments"></i><span>13</span></div>
                                                                     <div class="share"><i class="fa fa-paper-plane" aria-hidden="true"></i><span>28</span></div>
-                                                                    <div class="save"><i class="fa fa-bookmark" aria-hidden="true"></i></div>
-                                                                    
+                                                                    {% if post.id in user.profile|saved_post %}
+                                                                        <div class="save"><i class="fa fa-bookmark saved" aria-hidden="true" data-catid = {{post.id}}></i></div>
+                                                                    {% else %}
+                                                                        <div class="save"><i class="fa fa-bookmark " aria-hidden="true" data-catid = {{post.id}}></i></div>
+                                                                    {% endif %}
                                                                 </div>
                                                                 <!-- {{ post.date_posted }} -->
                                                              </div>
                                                         </div> 
                                                      {% endfor %}
                                                 {% else %}
-                                                    <h5>Any post regarding this topics not published</h5>
+                                                <h6><strong>You haven't posted anything yet</strong></h6>
                                                 {% endif %} 
                                              </div>
                                         </div>
                                         <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
                                             <div class="mainProfileAboutDiv">
                                                 <div class="card aboutCard">
-                                                    <div class="aboutMainDiv">
-                                                        <h6>About</h6>
-                                                        <p>Lorem ipsum, or lipsum as it is sometimes known, is dummy text used in laying out print, graphic or web designs. The passage is attributed to an unknown typesetter in the 15th century who is thought to have scrambled parts of Cicero's De Finibus Bonorum et Malorum for use in a type specimen book.</p>
-                                                    </div>
-                                                    <!-- <div class="articleMainDiv">
-                                                        <div class="articleMainHeaderDiv">
-                                                            <div class="articleDiv">
-                                                                <h6>Articles</h6>
-                                                            </div>
-                                                            <div class="articleEditBtn">
-                                                                <p><a id="button" href="{% url 'fav_article_category' %}"><i class="fas fa-edit"></i></a></p>
-                                                            </div>                                                 
-                                                        </div>
-                                                        <div class="articleMainBodyDiv">
-                                                            <div class="btn-group btn-group-toggle selectBtnDiv" data-toggle="buttons">
-                                                                {% if article_category %}
-                                                                    {% for category in article_category %}
-                                                                        <label class="btn btn-outline-primary selectBtn">
-                                                                            <input type="checkbox" autocomplete="off" disabled> {{category}}
-                                                                        </label>
-                                                                    {% endfor %}
-                                                                {% else %}
-                                                                <p>You haven't selected any article topics</p>
-                                                                <div class="row">
-                                                                    <div class="col-md-9">
-                                                                        <p>You haven't selected any article topics</p>
-                                                                    </div>
-                                                                    <div class="col-md-3">
-                                                                        <a id="button" href="{% url 'fav_article_category' %}" class="button btn btn-primary" style="color:black;display: inline;float: right; border-radius: 30px;">Select Topics</a>
-                                                                    </div>
-                                                                </div>
-                                                                {% endif %}                                                        
-                                                              </div>
-                                                        </div>
-                                                    </div> -->
+
                                                     <div class="contactMainDiv">
                                                         <div class="contactMainHeaderDiv">
                                                             <div class="contactDiv">
-                                                                <h6>Personal Details</h6>
+                                                                <h6>About</h6>
                                                             </div>
                                                             <div class="contactEditBtn">
-                                                                <p><a id="button"><i class="fas fa-edit" data-toggle="modal" data-target="#settingModal"></i></a></p>
-                                                            </div>                                                 
+                                                                <p><a id="button"><i class="fas fa-edit" data-toggle="modal" data-target="#aboutModal"></i></a></p>
+                                                            </div>
                                                         </div>
-                                                        <div class="contactMainBodyDiv">
-                                                            <table class="table table-sm">
-                                                                <tbody>
-                                                                  <tr>
-                                                                    <td>Email</td>
-                                                                    <td>ag528927@gmail.com</td>
-                                                                  </tr>
-                                                                  <tr>
-                                                                    <td>Mobile</td>
-                                                                    <td>9876543210</td>
-                                                                  </tr>
-                                                                  <tr>
-                                                                    <td>Location</td>
-                                                                    <td>Mumbai, India</td>
-                                                                  </tr>
-                                                                </tbody>
-                                                              </table>
+                                                        <div>
+                                                            <p>{{user.profile.about}}</p>
                                                         </div>
-                                                    </div>                                          
+
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -559,17 +522,42 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">New Post</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Edit Profile</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
                 <form enctype="multipart/form-data" method="post">
-                    {% csrf_token %} {{user_form.username}} {{user_form.email}} {{profile_form.about}} {{profile_form.image}}
+                    {% csrf_token %} {{profile_form.first_name}} {{profile_form.last_name}} {{user_form.username}} {{user_form.email}} {{profile_form.bio}} {{profile_form.image}}
         
                     <button type="submit" class="btn btn-block " style="background-color:#4b204f;color:white; ">Update</button>
         
+                </form>
+            </div>
+            <!-- <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div> -->
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="aboutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">About</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form method="post">
+                    {% csrf_token %}
+                    {{about_form.about}}
+
+                    <button type="submit" class="btn btn-block " style="background-color:#4b204f;color:white; ">Update</button>
+
                 </form>
             </div>
             <!-- <div class="modal-footer">
@@ -598,136 +586,143 @@
                 </nav>
                 <div class="tab-content" id="nav-tabContent">
                     <div class="tab-pane fade show active" id="nav-mutual" role="tabpanel" aria-labelledby="nav-home-tab">
-                        
-                        <div class="list-group">
-                            <div class="list-group-item">
-                                <div class="cardHeadSection">
-                                    <div class="profileImg"><a href="#"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></a></div>
-                                    <div class="profileTitle">
-                                        <a href="#"><h6>Abhishek Gupta</h6></a><p>@abhishek </p>
-                                    </div>                                    
-                                </div>
-                            </div>
-                            <div class="list-group-item">
-                                <div class="cardHeadSection">
-                                    <div class="profileImg"><a href="#"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></a></div>
-                                    <div class="profileTitle">
-                                        <a href="#"><h6>Abhishek Gupta</h6></a><p>@abhishek </p>
-                                    </div>                                    
-                                </div>
-                            </div>                          
-                            
+
+
+<!--                        <div class="list-group">-->
+<!--                            {% for follower in followers_list %}-->
+<!--                                <div class="list-group-item">-->
+<!--                                    <div class="cardHeadSection">-->
+<!--                                        <div class="profileImg"><a href="#"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></a></div>-->
+<!--                                        <div class="profileTitle">-->
+<!--                                            <a href="#"><h6>{{follower.profile.first_name}}</h6></a><p>@{{follower.username}}</p>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            {% endfor %}-->
+<!--                            <div class="list-group-item">-->
+<!--                                <div class="cardHeadSection">-->
+<!--                                    <div class="profileImg"><a href="#"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></a></div>-->
+<!--                                    <div class="profileTitle">-->
+<!--                                        <a href="#"><h6>Abhishek Gupta</h6></a><p>@abhishek </p>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+
                         </div>
-                        
+
                     </div>
                     <div class="tab-pane fade" id="nav-follower" role="tabpanel" aria-labelledby="nav-profile-tab">
                         <div class="list-group">
+                            {% for follower in followers_list %}
                             <div class="list-group-item">
                                 <div class="cardHeadSection">
-                                    <div class="profileImg"><a href="#"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></a></div>
+                                    <div class="profileImg"><a href="{% url 'other-profile' follower.user.id %}"><img src="{{follower.user.profile.image.url}}"></a></div>
                                     <div class="profileTitle">
-                                        <a href="#"><h6>Abhishek Gupta</h6></a><p>@abhishek </p>
+                                        <a href="{% url 'other-profile' follower.user.id %}"><h6>{{follower.user.profile.first_name}} {{follower.user.profile.last_name}}</h6></a><p>@{{follower.user.username}}</p>
                                     </div>
+                                    {% if follower.user.id not in following_users %}
                                     <div class="recomdAddBtn">
-                                        <p><a href="#"><i class="fa fa-plus" aria-hidden="true"></i></a></p>                                                
-                                    </div>                                   
-                                </div>
-                            </div>
-                            <div class="list-group-item">
-                                <div class="cardHeadSection">
-                                    <div class="profileImg"><a href="#"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></a></div>
-                                    <div class="profileTitle">
-                                        <a href="#"><h6>Abhishek Gupta</h6></a><p>@abhishek </p>
+                                        <p><a href="#"><i class="fa fa-plus" aria-hidden="true"></i></a></p>
                                     </div>
-                                    <!-- <div class="recomdAddBtn">
-                                        <p><a href="#"><i class="fa fa-plus" aria-hidden="true"></i></a></p>                                                
-                                    </div>                                    -->
+                                    {% endif %}
                                 </div>
                             </div>
-                            <div class="list-group-item">
-                                <div class="cardHeadSection">
-                                    <div class="profileImg"><a href="#"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></a></div>
-                                    <div class="profileTitle">
-                                        <a href="#"><h6>Abhishek Gupta</h6></a><p>@abhishek </p>
-                                    </div>
-                                    <!-- <div class="recomdAddBtn">
-                                        <p><a href="#"><i class="fa fa-plus" aria-hidden="true"></i></a></p>                                                
-                                    </div>                                    -->
-                                </div>
-                            </div>
-                            <div class="list-group-item">
-                                <div class="cardHeadSection">
-                                    <div class="profileImg"><a href="#"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></a></div>
-                                    <div class="profileTitle">
-                                        <a href="#"><h6>Abhishek Gupta</h6></a><p>@abhishek </p>
-                                    </div>
-                                    <div class="recomdAddBtn">
-                                        <p><a href="#"><i class="fa fa-plus" aria-hidden="true"></i></a></p>                                                
-                                    </div>                                   
-                                </div>
-                            </div>
-                            
-                            
-                            
+                            {% endfor %}
+<!--                            <div class="list-group-item">-->
+<!--                                <div class="cardHeadSection">-->
+<!--                                    <div class="profileImg"><a href="#"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></a></div>-->
+<!--                                    <div class="profileTitle">-->
+<!--                                        <a href="#"><h6>Abhishek Gupta</h6></a><p>@abhishek </p>-->
+<!--                                    </div>-->
+<!--                                    &lt;!&ndash; <div class="recomdAddBtn">-->
+<!--                                        <p><a href="#"><i class="fa fa-plus" aria-hidden="true"></i></a></p>-->
+<!--                                    </div>                                    &ndash;&gt;-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                            <div class="list-group-item">-->
+<!--                                <div class="cardHeadSection">-->
+<!--                                    <div class="profileImg"><a href="#"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></a></div>-->
+<!--                                    <div class="profileTitle">-->
+<!--                                        <a href="#"><h6>Abhishek Gupta</h6></a><p>@abhishek </p>-->
+<!--                                    </div>-->
+<!--                                    &lt;!&ndash; <div class="recomdAddBtn">-->
+<!--                                        <p><a href="#"><i class="fa fa-plus" aria-hidden="true"></i></a></p>-->
+<!--                                    </div>                                    &ndash;&gt;-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                            <div class="list-group-item">-->
+<!--                                <div class="cardHeadSection">-->
+<!--                                    <div class="profileImg"><a href="#"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></a></div>-->
+<!--                                    <div class="profileTitle">-->
+<!--                                        <a href="#"><h6>Abhishek Gupta</h6></a><p>@abhishek </p>-->
+<!--                                    </div>-->
+<!--                                    <div class="recomdAddBtn">-->
+<!--                                        <p><a href="#"><i class="fa fa-plus" aria-hidden="true"></i></a></p>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+
                         </div>
                     </div>
                     <div class="tab-pane fade" id="nav-following" role="tabpanel" aria-labelledby="nav-profile-tab">
                         <div class="list-group">
-                            <div class="list-group-item">
-                                <div class="cardHeadSection">
-                                    <div class="profileImg"><a href="#"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></a></div>
-                                    <div class="profileTitle">
-                                        <a href="#"><h6>Abhishek Gupta</h6></a><p>@abhishek </p>
+                            {% for following in following_list %}
+                                <div class="list-group-item">
+                                    <div class="cardHeadSection">
+                                        <div class="profileImg"><a href="{% url 'other-profile' following.user.id %}"><img src="{{following.user.profile.image.url}}"></a></div>
+                                        <div class="profileTitle">
+                                            <a href="{% url 'other-profile' following.user.id %}"><h6>{{following.user.profile.first_name}} {{following.user.profile.last_name}}</h6></a><p>@{{following.user.username}}</p>
+                                        </div>
+                                        <!-- <div class="recomdAddBtn">
+                                            <p><a href="#"><i class="fa fa-plus" aria-hidden="true"></i></a></p>
+                                        </div>                                    -->
                                     </div>
-                                    <!-- <div class="recomdAddBtn">
-                                        <p><a href="#"><i class="fa fa-plus" aria-hidden="true"></i></a></p>                                                
-                                    </div>                                    -->
                                 </div>
-                            </div>
-                            <div class="list-group-item">
-                                <div class="cardHeadSection">
-                                    <div class="profileImg"><a href="#"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></a></div>
-                                    <div class="profileTitle">
-                                        <a href="#"><h6>Abhishek Gupta</h6></a><p>@abhishek </p>
-                                    </div>
-                                    <!-- <div class="recomdAddBtn">
-                                        <p><a href="#"><i class="fa fa-plus" aria-hidden="true"></i></a></p>                                                
-                                    </div>                                    -->
-                                </div>
-                            </div>
-                            <div class="list-group-item">
-                                <div class="cardHeadSection">
-                                    <div class="profileImg"><a href="#"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></a></div>
-                                    <div class="profileTitle">
-                                        <a href="#"><h6>Abhishek Gupta</h6></a><p>@abhishek </p>
-                                    </div>
-                                    <!-- <div class="recomdAddBtn">
-                                        <p><a href="#"><i class="fa fa-plus" aria-hidden="true"></i></a></p>                                                
-                                    </div>                                    -->
-                                </div>
-                            </div>
-                            <div class="list-group-item">
-                                <div class="cardHeadSection">
-                                    <div class="profileImg"><a href="#"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></a></div>
-                                    <div class="profileTitle">
-                                        <a href="#"><h6>Abhishek Gupta</h6></a><p>@abhishek </p>
-                                    </div>
-                                    <!-- <div class="recomdAddBtn">
-                                        <p><a href="#"><i class="fa fa-plus" aria-hidden="true"></i></a></p>                                                
-                                    </div>                                    -->
-                                </div>
-                            </div>
-                            <div class="list-group-item">
-                                <div class="cardHeadSection">
-                                    <div class="profileImg"><a href="#"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></a></div>
-                                    <div class="profileTitle">
-                                        <a href="#"><h6>Abhishek Gupta</h6></a><p>@abhishek </p>
-                                    </div>
-                                    <!-- <div class="recomdAddBtn">
-                                        <p><a href="#"><i class="fa fa-plus" aria-hidden="true"></i></a></p>                                                
-                                    </div>                                    -->
-                                </div>
-                            </div>
+                            {% endfor %}
+<!--                            <div class="list-group-item">-->
+<!--                                <div class="cardHeadSection">-->
+<!--                                    <div class="profileImg"><a href="#"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></a></div>-->
+<!--                                    <div class="profileTitle">-->
+<!--                                        <a href="#"><h6>Abhishek Gupta</h6></a><p>@abhishek </p>-->
+<!--                                    </div>-->
+<!--                                    &lt;!&ndash; <div class="recomdAddBtn">-->
+<!--                                        <p><a href="#"><i class="fa fa-plus" aria-hidden="true"></i></a></p>                                                -->
+<!--                                    </div>                                    &ndash;&gt;-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                            <div class="list-group-item">-->
+<!--                                <div class="cardHeadSection">-->
+<!--                                    <div class="profileImg"><a href="#"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></a></div>-->
+<!--                                    <div class="profileTitle">-->
+<!--                                        <a href="#"><h6>Abhishek Gupta</h6></a><p>@abhishek </p>-->
+<!--                                    </div>-->
+<!--                                    &lt;!&ndash; <div class="recomdAddBtn">-->
+<!--                                        <p><a href="#"><i class="fa fa-plus" aria-hidden="true"></i></a></p>                                                -->
+<!--                                    </div>                                    &ndash;&gt;-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                            <div class="list-group-item">-->
+<!--                                <div class="cardHeadSection">-->
+<!--                                    <div class="profileImg"><a href="#"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></a></div>-->
+<!--                                    <div class="profileTitle">-->
+<!--                                        <a href="#"><h6>Abhishek Gupta</h6></a><p>@abhishek </p>-->
+<!--                                    </div>-->
+<!--                                    &lt;!&ndash; <div class="recomdAddBtn">-->
+<!--                                        <p><a href="#"><i class="fa fa-plus" aria-hidden="true"></i></a></p>                                                -->
+<!--                                    </div>                                    &ndash;&gt;-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                            <div class="list-group-item">-->
+<!--                                <div class="cardHeadSection">-->
+<!--                                    <div class="profileImg"><a href="#"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></a></div>-->
+<!--                                    <div class="profileTitle">-->
+<!--                                        <a href="#"><h6>Abhishek Gupta</h6></a><p>@abhishek </p>-->
+<!--                                    </div>-->
+<!--                                    &lt;!&ndash; <div class="recomdAddBtn">-->
+<!--                                        <p><a href="#"><i class="fa fa-plus" aria-hidden="true"></i></a></p>                                                -->
+<!--                                    </div>                                    &ndash;&gt;-->
+<!--                                </div>-->
+<!--                            </div>-->
                             
                             
                         </div>
@@ -736,7 +731,7 @@
             </div>            
         </div>
     </div>
-</div>
+
 
 
 

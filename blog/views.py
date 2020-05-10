@@ -1,3 +1,4 @@
+from .models import Post
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.shortcuts import redirect, render,HttpResponse
@@ -127,8 +128,8 @@ class PostCreateView(LoginRequiredMixin,CreateView):
             postImgList = [PostImages.objects.create(user=self.request.user,image=imgSelected) for imgSelected in imgSelectedList]
             self.object.images.set(postImgList)
         return super().form_valid(form)
-    
-    def post(self, request, *args, **kwargs):     
+
+    def post(self, request, *args, **kwargs):
         return super().post(request, *args, **kwargs)
 
 
@@ -221,6 +222,9 @@ class SavedPostView(ListView, LoginRequiredMixin):
         profile = Profile.objects.filter(user = user).first()
 
         return profile.saved_posts.all().order_by('-date')
+
+
+
 
 
 

@@ -108,6 +108,12 @@
                             <form method="post">
                                 {% csrf_token %}
                                 <div class="form-group">
+                                    {{form.first_name}}
+                                </div>
+                                <div class="form-group">
+                                    {{form.last_name}}
+                                </div>
+                                <div class="form-group">
                                     {{form.username}}
                                 </div>
                                 <div class="form-group">
@@ -119,6 +125,7 @@
                                 <div class="form-group">
                                     {{form.repeat_password}}
                                 </div>
+
                                 <button type="submit" class="btn registerBtn">Register</button>
                               </form>
                         </div>

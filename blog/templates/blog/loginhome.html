@@ -35,7 +35,7 @@
             <a href="#"><i class="fa fa-users" aria-hidden="true"></i><p>Users</p></a>
             <a href="{% url 'saved-post-list' %}"><i class="fa fa-bookmark" aria-hidden="true"></i><p>Saved</p></a>
             <a href="#"><i class="fa fa-cog" aria-hidden="true"></i><p>Settings</p></a>
-            <a href="#"><i class="fas fa-sign-out-alt"></i><p>Logout</p></a>
+            <a href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i><p>Logout</p></a>
         </div>        
         <div class="sideNavBottom">
             <div>
@@ -102,7 +102,7 @@
                                             <div class="cardHeadSection">
                                                 <div class="profileImg"><a href="{% url 'other-profile' post.author.id %}"><img src="{{post.author.profile.image.url}}"></a></div>
                                                 <div class="profileTitle">
-                                                    <a href="{% url 'other-profile' post.author.id %}"><h6>{{ post.author }}</h6></a><p>@prashant </p>
+                                                    <a href="{% url 'other-profile' post.author.id %}"><h6>{{ post.author.profile.first_name }} {{post.author.profile.last_name}}</h6></a><p>{{post.date_posted}} </p>
                                                 </div>
                                                 <div class="threeDot">
                                                     <p><i class="fa fa-ellipsis-v" aria-hidden="true"></i></p>                                                

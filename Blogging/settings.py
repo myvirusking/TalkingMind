@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'blog.templatetags.custom_tag'
+    'blog.templatetags.custom_tag',
+    'phonenumber_field',
 ]
 
 
