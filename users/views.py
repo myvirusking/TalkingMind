@@ -98,7 +98,7 @@ def profile(request):
         user_form = UserUpdateForm(instance=request.user)
         profile_form = ProfileUpdateForm(instance=request.user.profile)
 
-    post = Post.objects.filter(author_id=request.user)
+    post = Post.objects.filter(author_id=request.user).order_by('-date_posted')
     article_category = [name for id, name in Profile.objects.get(user=request.user).article_category.values_list()]
     current_user_profile = Profile.objects.filter(user=request.user).first()
 

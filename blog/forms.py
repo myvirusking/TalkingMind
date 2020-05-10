@@ -10,11 +10,10 @@ class NewPostForm(forms.ModelForm):
     category = forms.ChoiceField(choices=[(category.id, category.name) for category in ArticleCategory.objects.all()],widget=forms.Select(
         attrs={'class': 'form-control','style':'margin-top:2px;'}
     ))
-    image = forms.ImageField(widget=forms.FileInput(attrs={'class': 'form-control','style':'margin-top:2px;'}),required=False)
 
     class Meta:
         model = Post
-        fields = ['title', 'content','category','image']
+        fields = ['title', 'content','category']
 
     def clean_category(self):
         category_id = self.cleaned_data['category']
