@@ -570,9 +570,11 @@ input {
 }
 .card-text {
     font-size: 14px;
-    color: #6c757d;
-    font-weight: 100;
-    margin-bottom: 8px;
+    color: #525252;
+    font-weight: 600;
+    line-height: 17px;
+
+    margin-bottom: 8px !important;
 }
 .footerBtn div i:hover{
     color: #0dc9efcf;
@@ -1235,6 +1237,10 @@ button:focus {
 .mainProfiilePostCard{
     border: 1px solid #0dc9ef;
 }
+.mainProfiileNoPostCard{
+    border: 1px solid #0dc9ef;
+    padding: 10px;
+}
 .mainProfilePostDiv, .mainProfileAboutDiv{
     padding: 0px 10px;
 }
@@ -1318,4 +1324,84 @@ button:focus {
     .peopleKnow{
         display: none;
     }
+}
+
+
+.footerCommentDiv{
+    display: flex;
+    align-items: center;
+}
+.footerCommentDiv .commentBox{
+    display: flex;
+    width: 100%;
+}
+.footerCommentDiv .commentBox form{
+    display: flex;
+    width: 100%;
+}
+.footerCommentDiv .commentBox form input{
+    margin: 0px auto;
+    border: none;
+    border-radius: 0px;
+    background: #f7f7f7;
+    font-weight: 500;
+    color: #52525d;
+}
+.footerCommentDiv .commentBox form input:focus{
+    box-shadow: none !important;
+}
+.footerCommentDiv .commentBox form button{
+    padding: 2px 10px;
+}
+.footerCommentDiv .commentBox form button:focus{
+    box-shadow: none !important;
+}
+.footerCommentDiv .commentBox form button:hover{
+    background-color: #0dc9ef;
+    border-color: #0dc9ef;
+}
+
+
+pre{
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+a{
+    text-decoration: none !important;
+}
+
+.allCommentDiv{
+    padding-top: 15px;
+}
+.allCommentDiv ul li .profilePic{
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+}
+.allCommentDiv ul li{
+    margin-bottom: 6px;
+}
+.allCommentDiv ul li h6 a{
+    color: black;
+    font-size: 15px;
+}
+
+
+.commentText{
+    font-size: 12px;
+    color: #525252;
+    font-weight: 600;
+    line-height: 17px;
+    letter-spacing: 0.3px;
+    margin-bottom: 0px;
+}
+.commentTextBottomBtn .textBtn{
+    font-size: 12px;
+    margin-right: 10px;
+    cursor: pointer;
+}
+.commentlikeBtn{
+    font-size: 12px;
+    color: red;
+    cursor: pointer;
 }

@@ -111,6 +111,15 @@
                                             
                                         </div>
                                         <div class="card-body">
+
+                                            <a href="{% url 'single-post' post.id %}">
+                                                <h5 class="card-title">{{ post.title }}</h5>
+                                                <pre class="card-text">{{ post.content }}</pre>
+                                            </a>
+                                        
+                                        
+<!--                                        <img class="card-img-bottom" data-src="holder.js/100px180/" alt="100%x180" src="https://unknown-ag.github.io/sheetal_academy/ProjectImages/abhishek.jpeg" data-holder-rendered="true">-->
+
                                         <h5 class="card-title">{{ post.title }}</h5>
                                         <p class="card-text">{{ post.content }}</p>
                                         {% if post.images.all %}
@@ -125,10 +134,11 @@
                                         </div>
                                         {% endif %}
 <!--                                         <img class="card-img-bottom" data-src="holder.js/100px180/" alt="100%x180" src="https://unknown-ag.github.io/sheetal_academy/ProjectImages/abhishek.jpeg" data-holder-rendered="true">-->
+
                                         </div>
 
 
-                                        <form>
+                                        
                                         <div class="card-footer">
                                             <div class="footerBtn">
                                                 {% csrf_token %}
@@ -137,7 +147,7 @@
                                                 {% else %}
                                                     <div id="like"  class="like" ><i id="heart" class="fa fa-heart" aria-hidden="true" data-catid="{{post.id}}"><span class="total-likes" >{{post.likes_count}}</span></i ></div>
                                                 {% endif %}
-                                                <div class="comment"><i class="far fa-comments"></i><span>13</span></div>
+                                                <div class="comment"><a href="{% url 'single-post' post.id %}"><i class="far fa-comments"></i></a><span>13</span></div>
                                                 <div class="share"><i class="fa fa-paper-plane" aria-hidden="true"></i><span>28</span></div>
                                                 {% if post.id in user.profile|saved_post %}
                                                     <div class="save"><i class="fa fa-bookmark saved" aria-hidden="true" data-catid = {{post.id}}></i></div>
@@ -150,7 +160,21 @@
                                             </div>
                                             <!-- {{ post.date_posted }} -->
                                          </div>
-                                        </form>
+                                         <div class="card-footer">                                            
+                                            <div class="footerCommentDiv">
+                                                <div class="commentBox">
+                                                    <form >
+                                                        {% csrf_token %}
+                                                        <input type="text" class="form-control form-control-sm mr-3"  placeholder="Write a comment...">
+                                                        <button type="submit" class="btn btn-outline-info"><i class="fas fa-paper-plane"></i></button>
+                                                    </form>
+                                                </div>
+
+
+                                            </div>
+                                            <!-- {{ post.date_posted }} -->
+                                         </div>
+                                        
 
                                     </div> 
                                  {% endfor %}

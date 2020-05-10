@@ -75,7 +75,13 @@ urlpatterns = [
 
     path('user/saved_post/save/', blog_views.save_post, name="save-post2"),
 
+
+    path('post/<int:pid>/', blog_views.single_post, name="single-post"),
+
+    path('post/<int:pid>/save/', blog_views.save_post, name="post-detail-save")
+
     path('profile/save/', blog_views.save_post, name="profile-save-post"),
+
 
 ]
 if settings.DEBUG:

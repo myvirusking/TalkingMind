@@ -205,6 +205,11 @@ def save_post(request):
     return render(request, 'blog/loginhome.html')
 
 
+def single_post(request, pid):   
+    singlePost = Post.objects.filter(id = pid)
+    return render(request, 'blog/singlePost.html', {'singlePost': singlePost[0]})
+
+
 """This view gets called when the user clicks on the saved button in the navbar. This view will 
 redirect the user to the page where he can see all the posts he has ever saved and if he wants he 
 can remove the post from that list. The template of the view internally calls the ajax if the post 
