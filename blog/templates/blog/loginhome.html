@@ -31,7 +31,7 @@
             
             <a href="{% url 'login-home' %}"><i class="fa fa-home" aria-hidden="true"></i><p>Home</p></a>
             <a href="#"><i class="fa fa-bell" aria-hidden="true"></i><p>Notifications</p></a>
-            <a href="#"><i class="fa fa-th-large" aria-hidden="true"></i><p>Posts</p></a>
+            <a href="{% url 'post-create' %}"><i class="fa fa-th-large" aria-hidden="true"></i><p>Posts</p></a>
             <a href="#"><i class="fa fa-users" aria-hidden="true"></i><p>Users</p></a>
             <a href="{% url 'saved-post-list' %}"><i class="fa fa-bookmark" aria-hidden="true"></i><p>Saved</p></a>
             <a href="#"><i class="fa fa-cog" aria-hidden="true"></i><p>Settings</p></a>
@@ -118,10 +118,6 @@
                                             </a>
                                         
                                         
-<!--                                        <img class="card-img-bottom" data-src="holder.js/100px180/" alt="100%x180" src="https://unknown-ag.github.io/sheetal_academy/ProjectImages/abhishek.jpeg" data-holder-rendered="true">-->
-
-                                        <h5 class="card-title">{{ post.title }}</h5>
-                                        <p class="card-text">{{ post.content }}</p>
                                         {% if post.images.all %}
                                         <div class="row">
                                             {% for postImage in post.images.all %}

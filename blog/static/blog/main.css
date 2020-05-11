@@ -794,8 +794,9 @@ input {
   }
   .sidenav .closebtn {
     position: absolute;
-    top: -13px;
-    font-size: 36px;
+    top: -12px;
+    font-size: 25px;
+    font-weight: 800;
     margin-left: 170px;
   }
 
@@ -1247,7 +1248,7 @@ button:focus {
 
 
 .mainProfileAboutDiv .aboutCard{
-    padding: 15px 20px;
+    padding: 0px 20px;
     border: 1px solid #5ce3ff;
 }
 .mainProfileAboutDiv .aboutCard .aboutMainDiv{
@@ -1314,7 +1315,7 @@ button:focus {
 .list-group-item h6{
     margin-bottom: 0px;
 }
-.trendingCard{
+.trendingCard, .peopleKnow{
     border-top: 5px solid #0dc9ef;
 }
 @media screen and (max-width: 767px){
@@ -1346,6 +1347,7 @@ button:focus {
     background: #f7f7f7;
     font-weight: 500;
     color: #52525d;
+    border-bottom: 1px solid #adb5bd;
 }
 .footerCommentDiv .commentBox form input:focus{
     box-shadow: none !important;
@@ -1405,3 +1407,100 @@ a{
     color: red;
     cursor: pointer;
 }
+
+.followerModalBody, .followingsModalBody{
+    max-height: 450px !important;
+}
+.followerModalBody .followerListDiv,.followingsModalBody .followingListDiv{
+    height: 100%;
+    overflow-y: scroll;
+}
+.followerModalBody .followerListDiv::-webkit-scrollbar {
+    display: none;
+  }
+  .followingsModalBody .followingListDiv::-webkit-scrollbar {
+    display: none;
+  }
+
+.updateFormFLname, .regFormFLname{
+    display: flex;
+}
+
+input:focus, textarea:focus{
+    box-shadow: none !important;
+}
+
+
+.overlay {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    width: 100%;
+    opacity: 0;
+    transition: .3s ease;
+    background-color: red;
+  }
+  
+  .profileImg:hover .overlay {
+    opacity: 0.5;
+  }
+  
+  .icon {
+    color: white;
+    font-size: 100px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    text-align: center;
+  }
+  .commonTopics{
+    background: #7436ff;
+    color: white;
+  }
+  .commonTopics:hover{
+    background: #7436ff !important;
+    color: white !important;
+  }
+
+
+.articleMainBodyDiv div .commonIcon i{
+    color: #7436ff;
+}
+
+.profileEditBtn p .btn{
+    font-weight: 700;
+    font-size: 13px;
+    padding: 2px 15px;
+    border-radius: 20px;
+    background: #0dc9ef;
+    border-color: #0dc9ef;
+}
+.profileEditBtn p .btn:active{
+    background: #0dc9ef !important;
+    border-color: #0dc9ef !important;
+}
+.profileEditBtn p .btn:hover{
+    background: #30ddff !important;
+    border-color: #30ddff !important;
+}
+.profileEditBtn p .btn:focus{
+    box-shadow: none !important;
+}
+.profileEditBtn p a.cancelRequestBtn{
+    background: #ff3333;
+    border-color: #ff3333;
+}
+.profileEditBtn p a.cancelRequestBtn:active{
+    background: #ff3333 !important;
+    border-color: #ff3333 !important;
+}
+.profileEditBtn p a.cancelRequestBtn:hover{
+    background: #ff4e4e !important;
+    border-color: #ff4e4e !important;
+}
+  
