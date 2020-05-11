@@ -117,7 +117,19 @@
                                         <div class="card-body">
                                         <h5 class="card-title">{{ saved.post.title }}</h5>
                                         <p class="card-text">{{ saved.post.content }}</p>
-<!--                                        <img class="card-img-bottom" data-src="holder.js/100px180/" alt="100%x180" src="https://unknown-ag.github.io/sheetal_academy/ProjectImages/abhishek.jpeg" data-holder-rendered="true">-->
+                                        
+                                        {% if saved.post.images.all %}
+                                        <div class="row">
+                                            {% for postImage in saved.post.images.all %}
+                                                <div class="col">
+                                                    <a href="{{postImage.image.url}}" target="_blank">
+                                                        <img class="card-img-bottom" data-src="holder.js/100px180/" alt="100%x180" src="{{postImage.image.url}}" data-holder-rendered="true">
+                                                    </a>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                        {% endif %}
+                                        <!-- <img class="card-img-bottom" data-src="holder.js/100px180/" alt="100%x180" src="https://unknown-ag.github.io/sheetal_academy/ProjectImages/abhishek.jpeg" data-holder-rendered="true">-->
                                         </div>
 
 
