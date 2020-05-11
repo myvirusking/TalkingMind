@@ -12,11 +12,11 @@ import re
 
 class RegisterForm(forms.ModelForm):
     first_name = forms.CharField(widget=forms.TextInput(attrs={
-        'class': 'form-control regInput', 'placeholder': 'First name', 'id': 'fname'
+        'class': 'form-control regInput mr-1 mb-0', 'placeholder': 'First name', 'id': 'fname'
     }))
 
     last_name = forms.CharField(widget=forms.TextInput(attrs={
-        'class':'form-control regInput', 'placeholder': 'Last name', 'id':'lname'
+        'class':'form-control regInput ml-1 mb-0', 'placeholder': 'Last name', 'id':'lname'
     }))
 
     username = forms.CharField(widget=forms.TextInput(attrs={
@@ -74,8 +74,8 @@ class UserUpdateForm(forms.ModelForm):
 
 
 class ProfileUpdateForm(forms.ModelForm):
-    first_name = forms.CharField(widget=forms.TextInput(attrs={'class':'form-control','rows':'3', 'placeholder':'First name'}))
-    last_name = forms.CharField(widget=forms.TextInput(attrs={'class':'form-control','rows':'3', 'placeholder':'Last name'}))
+    first_name = forms.CharField(widget=forms.TextInput(attrs={'class':'form-control mr-1 mb-0','rows':'3', 'placeholder':'First name'}))
+    last_name = forms.CharField(widget=forms.TextInput(attrs={'class':'form-control ml-1 mb-0','rows':'3', 'placeholder':'Last name'}))
     bio = forms.CharField(widget=forms.Textarea(attrs={'class':'form-control','rows':'3'}))
 
     class Meta:
