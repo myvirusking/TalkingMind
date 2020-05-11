@@ -32,12 +32,9 @@ urlpatterns = [
     path('blog/', include('blog.urls')),
     path('user/', include('users.urls')),
     path('profile/',user_views.profile, name='profile'),
-    path('login/', auth_views.LoginView.as_view(template_name='users/login.html', authentication_form=CustomAuthForm), name='login'),
-    path('logout/', auth_views.LogoutView.as_view(template_name='users/login.html', next_page='/login/'), name='logout'),
-    path('other-profile/<int:pk>/',user_views.other_user_profile, name='other-profile'),
-    path('logout/', auth_views.LogoutView.as_view(template_name='users/login.html', next_page='/login/'), name='logout'),
     path('login/', user_views.CustomLoginView.as_view(),name='login'),
     path('logout/', auth_views.LogoutView.as_view(template_name='users/login.html', next_page='/login/'), name='logout'),
+    path('other-profile/<int:pk>/',user_views.other_user_profile, name='other-profile'),
     path('user/follow-request/send/<int:pk>', user_views.send_follow_request ,name='send_follow_request'),
     path('user/follow-request/cancel/<int:pk>', user_views.cancel_follow_request ,name='cancel_follow_request'),
     path('user/follow-request/accept/<int:pk>', user_views.accept_follow_request ,name='accept_follow_request'),
@@ -78,7 +75,7 @@ urlpatterns = [
 
     path('post/<int:pid>/', blog_views.single_post, name="single-post"),
 
-    path('post/<int:pid>/save/', blog_views.save_post, name="post-detail-save")
+    path('post/<int:pid>/save/', blog_views.save_post, name="post-detail-save"),
 
     path('profile/save/', blog_views.save_post, name="profile-save-post"),
 
