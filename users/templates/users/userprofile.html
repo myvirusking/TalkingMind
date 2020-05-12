@@ -111,19 +111,13 @@
                                             <div class="profileImg">
                                                 
                                                 <img src="{{user.profile.image.url}}">
-                                                <!-- <i class="fas fa-camera"></i> -->
-                                                <!-- <div class="overlay">
-                                                    <a href="#" class="icon" title="User Profile">
-                                                        <i class="fas fa-camera"></i>
-                                                    </a>
-                                                </div>  -->
                                             </div>                                                                     
                                                                                                                 
                                         </div>
                                     </div>
                                     <div class="col-md-8">
                                         <div class="profileDetailDiv">
-                                            <h5 class="name">{{user.profile.first_name}} {{user.profile.last_name}}</h5>
+                                            <h5 class="name">{{user.first_name}} {{user.last_name}}</h5>
                                             <h6 class="username">@{{user.username}}</h6>
                                             <p class="about">{{user.profile.bio}}</p>
                                             <div class="btn-group grpBtn" role="group" aria-label="Basic example">
@@ -212,11 +206,20 @@
                                                             <div class="card-header">
                                                                 <div class="cardHeadSection">
                                                                     <div class="profileImg"><a href="{% url 'other-profile' post.author.id %}"><img src="{{post.author.profile.image.url}}"></a></div>
-                                                                    <div class="profileTitle">
+                                                                    <div class="profileTitle postProfileTitle">
                                                                         <a href="{% url 'other-profile' post.author.id %}"><h6>{{ post.author }}</h6></a><p>@abhishek </p>
                                                                     </div>
                                                                     <div class="threeDot">
-                                                                        <p><i class="fa fa-ellipsis-v" aria-hidden="true"></i></p>                                                
+                                                                        <div class="dropdown dropleft">
+                                                                            <p  class="dropdown-toggle" data-toggle="dropdown">
+                                                                                <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
+                                                                            </p>
+                                                                            <div class="dropdown-menu">
+                                                                              <a class="dropdown-item" href="{% url 'post-update' pk=post.id %}">Edit</a>
+                                                                              <a class="dropdown-item deleteModal" id="{{ post.id }}" data-toggle="modal" data-target="#deleteModal">Delete</a>
+                                                                            </div>
+                                                                          </div>
+                                                                        <!-- <p><i class="fa fa-ellipsis-v" aria-hidden="true"></i></p>                                                 -->
                                                                     </div>
                                                                 </div>
                                                                 
@@ -546,82 +549,106 @@
 
 
 
-    <div class="modal fade" id="followersModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Followers</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body followerModalBody">
-                    <div class="followerListDiv">
-                        <div class="list-group">
-                            {% for follower in followers_list %}
+<div class="modal fade" id="followersModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Followers</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body followerModalBody">
+                <div class="followerListDiv">
+                    <div class="list-group">
+                        {% for follower in followers_list %}
+                        <div class="list-group-item">
+                            <div class="cardHeadSection">
+                                <div class="profileImg"><a href="{% url 'other-profile' follower.user.id %}"><img src="{{follower.user.profile.image.url}}"></a></div>
+                                <div class="profileTitle">
+                                    <a href="{% url 'other-profile' follower.user.id %}"><h6>{{follower.user.profile.first_name}} {{follower.user.profile.last_name}}</h6></a><p>@{{follower.user.username}}</p>
+                                </div>
+                                {% if follower.user.id not in following_users %}
+                                <div class="recomdAddBtn">
+                                    <p><a href="#"><i class="fa fa-plus" aria-hidden="true"></i></a></p>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endfor %}                            
+                        
+                    </div>
+                    </div>
+            </div>
+        </div>
+            <!-- <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div> -->
+    </div>
+</div>
+
+
+<div class="modal fade" id="followingsModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">followings</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body followingsModalBody">
+                <div class="followingListDiv">
+                    <div class="list-group">
+                        {% for following in following_list %}
                             <div class="list-group-item">
                                 <div class="cardHeadSection">
-                                    <div class="profileImg"><a href="{% url 'other-profile' follower.user.id %}"><img src="{{follower.user.profile.image.url}}"></a></div>
+                                    <div class="profileImg"><a href="{% url 'other-profile' following.user.id %}"><img src="{{following.user.profile.image.url}}"></a></div>
                                     <div class="profileTitle">
-                                        <a href="{% url 'other-profile' follower.user.id %}"><h6>{{follower.user.profile.first_name}} {{follower.user.profile.last_name}}</h6></a><p>@{{follower.user.username}}</p>
+                                        <a href="{% url 'other-profile' following.user.id %}"><h6>{{following.user.profile.first_name}} {{following.user.profile.last_name}}</h6></a><p>@{{following.user.username}}</p>
                                     </div>
-                                    {% if follower.user.id not in following_users %}
                                     <div class="recomdAddBtn">
-                                        <p><a href="#"><i class="fa fa-plus" aria-hidden="true"></i></a></p>
-                                    </div>
-                                    {% endif %}
+                                        <p><a href="#"><i class="fas fa-minus"></i></a></p>
+                                    </div>                                   
                                 </div>
                             </div>
-                            {% endfor %}                            
-                            
-                        </div>
-                        </div>
-                </div>
+                        {% endfor %}
+                        
+                    </div>
+                    </div>
             </div>
-                <!-- <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
-                </div> -->
+        </div>
+            <!-- <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div> -->
+    </div>
+</div>
+
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Delete Post</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body followingsModalBody">
+                <form id="deleteForm" method="post" action="post/1/delete/">
+                    {% csrf_token %}
+                    <h5>Are you sure, you want to delete the post ?</h5>
+                    <p class="postIdd"></p>
+                    <div class="d-flex flex-row-reverse mt-3 w-100">
+                        <button type="submit" class="btn btn-outline-danger ml-1 " >Confirm</button>
+                        <button type="button" class="btn btn-outline-success mr-1 " data-dismiss="modal" aria-label="Close">Cancel</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
-
-
-    <div class="modal fade" id="followingsModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">followings</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body followingsModalBody">
-                    <div class="followingListDiv">
-                        <div class="list-group">
-                            {% for following in following_list %}
-                                <div class="list-group-item">
-                                    <div class="cardHeadSection">
-                                        <div class="profileImg"><a href="{% url 'other-profile' following.user.id %}"><img src="{{following.user.profile.image.url}}"></a></div>
-                                        <div class="profileTitle">
-                                            <a href="{% url 'other-profile' following.user.id %}"><h6>{{following.user.profile.first_name}} {{following.user.profile.last_name}}</h6></a><p>@{{following.user.username}}</p>
-                                        </div>
-                                        <div class="recomdAddBtn">
-                                            <p><a href="#"><i class="fas fa-minus"></i></a></p>
-                                        </div>                                   
-                                    </div>
-                                </div>
-                            {% endfor %}
-                            
-                        </div>
-                        </div>
-                </div>
-            </div>
-                <!-- <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
-                </div> -->
-        </div>
-    </div>
+</div>
     <!-- </div> -->
 
 
@@ -638,6 +665,14 @@
     function closeNav() {
       document.getElementById("mySidenav").style.width = "0";
     }
+</script>
+
+<script>
+    $('.deleteModal').click(function(e){
+        var postId = $(this).attr('id');
+        var url =  "/blog/post/"+postId+"/delete/";
+        $('#deleteForm').attr('action', url);
+    })
 </script>
 {% endblock %}
 

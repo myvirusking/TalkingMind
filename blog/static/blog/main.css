@@ -488,9 +488,13 @@ input {
 
 }
 .cardHeadSection .threeDot{
-    width: 100%;
+    
     text-align: end;
 }
+.dropleft .dropdown-toggle::before{
+    display: none;
+}
+
 .cardHeadSection .threeDot p{
     margin: 0px;
     font-size: 18px;
@@ -507,7 +511,25 @@ input {
 }
 .profileTitle{
     margin: 0 0 0 10px;
-    width: 500px;
+    width: 100%;
+}
+.postProfileTitle{
+    margin: 0 8rem 0 10px;
+}
+@media screen and (max-width: 479px){
+    .postProfileTitle{
+        margin: 0 2rem 0 10px;
+    }
+}
+@media screen and (min-width: 480px) and (max-width: 575px){
+    .postProfileTitle{
+        margin: 0 6rem 0 10px;
+    }
+}
+@media screen and (min-width: 576px) and (max-width: 767px){
+    .postProfileTitle{
+        margin: 0 10rem 0 10px;
+    }
 }
 .profileTitle a{
     text-decoration: none;
@@ -1502,5 +1524,35 @@ input:focus, textarea:focus{
 .profileEditBtn p a.cancelRequestBtn:hover{
     background: #ff4e4e !important;
     border-color: #ff4e4e !important;
+}
+
+
+.createPostCard{
+    padding: 15px 20px;
+    border-top: 5px solid #0dc9ef;
+}
+.addImageBtn{
+    cursor: pointer;
+    width: 100%;
+    border: 1px solid #0dc9ef;
+    border-radius: 4px;
+    color: #0dc9ef;
+    padding: .375rem .75rem;
+    text-align: center;
+    margin-bottom: 0px;
+}
+.addImageBtn.disable{
+    cursor: pointer;
+    width: 100%;
+    border: 1px solid grey;
+    border-radius: 4px;
+    color: grey;
+    padding: .375rem .75rem;
+    text-align: center;
+    margin-bottom: 0px;
+}
+
+input:disabled{
+    color: red !important;
 }
   
