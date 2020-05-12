@@ -146,11 +146,17 @@
 
             <script type="text/javascript" src="{% static 'blog/javascript/post_save.js' %}"></script>
 
-<!--            <script>-->
-<!--                $(".footerBtn .like i").click(function(e){-->
-<!--                    $(this).toggleClass("press");-->
-<!--                })-->
-<!--            </script>-->
+            <script>
+   
+    
+                function openNav() {
+                  document.getElementById("mySidenav").style.width = "250px";
+                }
+                
+                function closeNav() {
+                  document.getElementById("mySidenav").style.width = "0";
+                }
+            </script>
          
        {% endblock %}
 
