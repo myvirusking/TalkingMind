@@ -225,19 +225,34 @@
                                                                 
                                                             </div>
                                                             <div class="card-body">
-                                                            <h5 class="card-title">{{ post.title }}</h5>
-                                                            <p class="card-text">{{ post.content }}</p>
+                                                                <a href="{% url 'single-post' post.id %}">
+                                                                    <h5 class="card-title">{{ post.title }}</h5>
+                                                                    <pre class="card-text showLess">{{ post.content }}</pre>
+                                                                </a>
+                                                            
                                                             {% if post.images.all %}
-                                                            <div class="row">
-                                                                {% for postImage in post.images.all %}
-                                                                    <div class="col">
-                                                                        <a href="{{postImage.image.url}}" target="_blank">
-                                                                            <img class="card-img-bottom" data-src="holder.js/100px180/" alt="100%x180" src="{{postImage.image.url}}" data-holder-rendered="true">
-                                                                        </a>
-                                                                    </div>
-                                                                {% endfor %}
-                                                            </div>
-                                                            {% endif %}
+                                                                <div class="row image-row mt-3">
+                                                                    {% for postImage in post.images.all %}
+                                                                        {%if forloop.counter == 1 %}
+                                                                            <div class="col">
+                                                                                <img class="card-img-bottom" data-src="holder.js/100px180/" alt="100%x180" src="{{postImage.image.url}}" data-holder-rendered="true">
+                                                                                
+                                                                            </div>
+                                                                        {%elif forloop.counter == 2 %}
+                                                                            <div class="col">
+                                                                                <img class="card-img-bottom" data-src="holder.js/100px180/" alt="100%x180" src="{{postImage.image.url}}" data-holder-rendered="true">
+                                                                                <a href="{% url 'single-post' post.id %}" class="middleImgText d-none">
+                                                                                    <div class="text">+1</div>
+                                                                                </a>
+                                                                            </div>
+                                                                        {%elif forloop.counter == 3 %}
+                                                                            <script>
+                                                                                $(".image-row div:nth-child(2)").addClass("secondImageDiv");
+                                                                            </script>
+                                                                        {% endif %}                                                
+                                                                    {% endfor %}
+                                                                </div>
+                                                                {% endif %}
                                                             <!-- <img class="card-img-bottom" data-src="holder.js/100px180/" alt="100%x180" src="https://unknown-ag.github.io/sheetal_academy/ProjectImages/abhishek.jpeg" data-holder-rendered="true"> -->
                                                             </div>
                                                             

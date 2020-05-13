@@ -59,6 +59,19 @@
     }
 
     </script>
+    <script>
+        $(document).ready(function(){
+            $(".showLess").each(function(){
+                var content = $(this).html();
+                if(content.length > 100){
+                    var substring = content.substr(0, 100);
+                    var subStringShow = substring + "...<span class='text-info'>read more</span>"
+                    $(this).html(subStringShow);
+                }
+            });
+        });
+        
+    </script>
 
     {% block scripts %}
         <!--- some scripts that apply to all pages -->
