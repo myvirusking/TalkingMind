@@ -141,22 +141,9 @@
                                     </div>
                                 {% endif %}
                                 
-                                <!-- {% if singlePost.images.all %}
-                                    <div class="row image-row mt-3">
-                                        {% for postImage in singlePost.images.all %}
-                                            <div class="col-12 mb-2">
-                                                <img class="cardImgBottom" data-src="holder.js/100px180/" alt="100%x180" src="{{postImage.image.url}}" data-holder-rendered="true">
-                                            </div>
-                                        {% endfor %}
-                                    </div>
-                                {% endif %} -->
                             
                             
-<!--                                        <img class="card-img-bottom" data-src="holder.js/100px180/" alt="100%x180" src="https://unknown-ag.github.io/sheetal_academy/ProjectImages/abhishek.jpeg" data-holder-rendered="true">-->
                             </div>
-
-
-                            
                             <div class="card-footer">
                                 <div class="footerBtn">
                                     {% csrf_token %}
@@ -172,75 +159,45 @@
                                     {% else %}
                                         <div class="save"><i class="fa fa-bookmark " aria-hidden="true" data-catid = {{singlePost.id}}></i></div>
                                     {% endif %}
-
-
-
                                 </div>
                                 <!-- {{ post.date_posted }} -->
                              </div>
                              <div class="card-footer card-footer-comment" id="comment">
                                 <div class="footerCommentDiv">
                                     <div class="commentBox">
-                                        <form >
+                                        <form id="commentForm">
                                             {% csrf_token %}
-                                            <input type="text" class="form-control form-control-sm mr-3"  placeholder="Write a comment...">
-                                            <button type="submit" class="btn btn-outline-info"><i class="fas fa-paper-plane"></i></button>
+                                            {{comment_form.commented_text}}
+                                            <!-- <input type="text" class="form-control form-control-sm mr-3"  placeholder="Write a comment..."> -->
+                                            <button id="commentBtn" type="submit" class="btn btn-outline-info" data-catid="{{singlePost.id}}"><i class="fas fa-paper-plane"></i></button>
                                         </form>
                                     </div>
                                 </div>
-                                <div class="allCommentDiv">
-                                    <ul class="list-unstyled">
-                                        <li class="media">
-                                            <a href="#"><img class="mr-3 profilePic" src="/media/default.jpeg" alt="img"></a>
-                                          <div class="media-body">
-                                            <h6 class="mt-0 mb-1 profileName"><a href="#">Jhaa Babu</a><span class="ml-3 commentlikeBtn"><i class="far fa-heart"></i></span></h6>
-                                            <p class="commentText">Cras sit amet nibh libero, in gravida nulla. Nulla vel metus in gravida sit amet nibh scelerisque ante sit amet nibh sollicitudin</p>
-                                            <div class="commentTextBottomBtn">
-                                                <span class="textBtn">9h</span>
-                                                <span class="textBtn"><span>5</span> likes</span>
-                                                <span class="textBtn">reply</span>
-                                            </div>
-                                          </div>
-                                        </li>
-                                        <li class="media">
-                                            <a href="#"><img class="mr-3 profilePic" src="/media/default.jpeg" alt="img"></a>
-                                          <div class="media-body">
-                                            <h6 class="mt-0 mb-1 profileName"><a href="#">Abhishek</a><span class="ml-3 commentlikeBtn"><i class="far fa-heart"></i></span></h6>
-                                            <p class="commentText">Cras sit amet nibh libero, in gravida nulla. Nulla vel metus in gravida sit amet nibh scelerisque ante sit amet nibh sollicitudin</p>
-                                            <div class="commentTextBottomBtn">
-                                                <span class="textBtn">9h</span>
-                                                <span class="textBtn"><span>5</span> likes</span>
-                                                <span class="textBtn">reply</span>
-                                            </div>
-                                          </div>
-                                        </li>
-                                        <li class="media">
-                                            <a href="#"><img class="mr-3 profilePic" src="/media/default.jpeg" alt="img"></a>
-                                          <div class="media-body">
-                                            <h6 class="mt-0 mb-1 profileName"><a href="#">LeeJhand King</a><span class="ml-3 commentlikeBtn"><i class="far fa-heart"></i></span></h6>
-                                            <p class="commentText">Cras sit amet nibh libero, in gravida nulla. Nulla vel metus in gravida sit amet nibh scelerisque ante sit amet nibh sollicitudin</p>
-                                            <div class="commentTextBottomBtn">
-                                                <span class="textBtn">9h</span>
-                                                <span class="textBtn"><span>5</span> likes</span>
-                                                <span class="textBtn">reply</span>
-                                            </div>
-                                          </div>
-                                        </li>
-                                        <li class="media">
-                                            <a href="#"><img class="mr-3 profilePic" src="/media/default.jpeg" alt="img"></a>
-                                          <div class="media-body">
-                                            <h6 class="mt-0 mb-1 profileName"><a href="#">Abhishek Gupta</a><span class="ml-3 commentlikeBtn"><i class="far fa-heart"></i></span></h6>
-                                            <p class="commentText">Cras sit amet nibh libero, in gravida nulla. Nulla vel metus in gravida sit amet nibh scelerisque ante sit amet nibh sollicitudin</p>
-                                            <div class="commentTextBottomBtn">
-                                                <span class="textBtn">9h</span>
-                                                <span class="textBtn"><span>5</span> likes</span>
-                                                <span class="textBtn">reply</span>
-                                            </div>
-                                          </div>
-                                        </li>
+                                
+                                    <div class="allCommentDiv">
                                         
-                                      </ul>
-                                </div>
+                                        <ul class="list-unstyled single-post-cmt-div mb-0">
+                                            {% if allComments %}
+                                            {% for comment in allComments %}
+                                                <li class="media">
+                                                    <a href="#"><img class="mr-3 profilePic" src="/media/default.jpeg" alt="img"></a>
+                                                    <div class="media-body w-50">
+                                                        <h6 class="mt-0 mb-1 profileName"><a href="#">{{comment.author.first_name}} {{comment.author.last_name}}</a><span class="ml-3 commentlikeBtn"><i class="far fa-heart"></i></span></h6>
+                                                        <p class="commentText">{{comment.commented_text}}</p>
+                                                        <div class="commentTextBottomBtn">
+                                                            <span class="textBtn">9h</span>
+                                                            <span class="textBtn"><span>5</span> likes</span>
+                                                            <span class="textBtn">reply</span>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            {% endfor %} 
+                                            {% endif %}                                           
+                                        </ul>
+                                        
+                                    </div>  
+                                
+                                
                                 
                                 <!-- {{ post.date_posted }} -->
                              </div>

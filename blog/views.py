@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.shortcuts import redirect, render,HttpResponse
 from django.urls import reverse_lazy
-from .forms import NewPostForm
+from .forms import NewPostForm, CommentForm
 from django.contrib import messages
 from django.views.generic.list import ListView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
@@ -12,6 +12,7 @@ from users.models import ArticleCategory
 from users.models import Profile, SavedPost
 from django.http import JsonResponse
 from .models import *
+from django.views.decorators.csrf import csrf_exempt
 
 class HomeView(ListView):
     model = Post
@@ -207,9 +208,33 @@ def save_post(request):
     return render(request, 'blog/loginhome.html')
 
 
-def single_post(request, pid):   
-    singlePost = Post.objects.filter(id = pid)
-    return render(request, 'blog/singlePost.html', {'singlePost': singlePost[0]})
+def single_post(request, pid):
+    singlePost = Post.objects.filter(id = pid).first()
+    comment_form = CommentForm()
+    allComments = singlePost.comments.all().order_by('comment_date').reverse()
+        
+    return render(request, 'blog/singlePost.html', {
+            'singlePost': singlePost,
+            'comment_form': comment_form,
+            'allComments': allComments,
+        })
+
+@csrf_exempt
+def comment(request):
+    if request.method == 'POST':
+        text = request.POST['commentText']
+        postId = request.POST['postId']        
+        post = Post.objects.filter(id = postId).first() 
+        full_name = request.user.first_name +' ' +request.user.last_name
+        
+        post.comments.create(commented_post=post, author=request.user,commented_text=text)
+        
+        data_obj = {
+            'text': text,
+            'author': full_name
+        }
+
+    return JsonResponse(data_obj, safe=False)
 
 
 """This view gets called when the user clicks on the saved button in the navbar. This view will 
@@ -243,3 +268,22 @@ class SavedPostView(ListView, LoginRequiredMixin):
 #         'posts': posts
 #     }
 #     return render(request, 'blog/about.html', context)
+
+
+# singlePost = Post.objects.filter(id = pid).first()
+#     if request.method  == 'POST':
+#         comment_form = CommentForm(request.POST)
+
+#         if comment_form.is_valid():
+#             text = comment_form.cleaned_data['commented_text']
+#             singlePost.comments.create(commented_post=singlePost, author=request.user,commented_text=text)
+#         else:
+#             print(comment_form.errors)
+
+#     else:
+#         comment_form = CommentForm()
+    
+#     return render(request, 'blog/singlePost.html', {
+#             'singlePost': singlePost,
+#             'comment_form': comment_form
+#         })

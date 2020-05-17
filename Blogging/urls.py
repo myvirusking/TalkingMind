@@ -79,6 +79,8 @@ urlpatterns = [
 
     path('profile/save/', blog_views.save_post, name="profile-save-post"),
 
+    path('comment/', blog_views.comment, name="comment"),
+
 
 ]
 if settings.DEBUG:
