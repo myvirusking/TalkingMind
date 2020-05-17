@@ -466,6 +466,35 @@ input {
 .mainCenterDiv{
     margin: 20px 0px;
 }
+.image-div{
+    height: 20rem;
+}
+@media screen and (min-width: 360px) and (max-width: 479px){
+    .image-div{
+        height: 14rem;
+    }
+}
+@media screen and (min-width: 480px) and (max-width: 575px){
+    .image-div{
+        height: 17rem;
+    }
+}
+@media screen and (min-width: 576px) and (max-width: 767px){
+    .image-div{
+        height: 17rem;
+    }
+}
+.image-div .image-group .card{
+    background-size: cover !important;
+    background-repeat: no-repeat !important;
+    background-position: center !important;
+    margin:0px;
+}
+.image-div .image-group .card .card-in-image{
+    background-size: cover !important;
+    background-repeat: no-repeat !important;
+    background-position: center !important;
+}
 .card{
     margin: 10px 0px;
 }
@@ -797,14 +826,19 @@ input {
   }
 
   .sidenav a {
-    padding: 6px 53px 10px 50px;
+    padding: 6px 30px 10px 40px;
     text-decoration: none;
     font-size: 20px;
     color: black;
-    display: flex;
+    display: inline-flex;
     transition: 0.3s;
   }
+  .sidenav a.active {
+      color: #0dc9ef;
+  }
   .sidenav a i{
+    width: 1.685714em;
+    display: inline-block;
     margin-top: 6px;
     padding-right: 8px;
   }
