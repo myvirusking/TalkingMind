@@ -31,9 +31,9 @@
         <div class="sideMenu">
             <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
             
-            <a href="{% url 'login-home' %}"><i class="fa fa-home" aria-hidden="true"></i><p>Home</p></a>
+            <a href="{% url 'login-home' %}" class="{{home_page}}"><i class="fa fa-home" aria-hidden="true"></i><p>Home</p></a>
             <a href="#"><i class="fa fa-bell" aria-hidden="true"></i><p>Notifications</p></a>
-            <a href="{% url 'post-create' %}"><i class="fa fa-th-large" aria-hidden="true"></i><p>Posts</p></a>
+            <a href="{% url 'post-create' %}" class="{{create_post}}"><i class="fa fa-th-large" aria-hidden="true"></i><p>Posts</p></a>
             <a href="#"><i class="fa fa-users" aria-hidden="true"></i><p>Users</p></a>
             <a href="{% url 'saved-post-list' %}"><i class="fa fa-bookmark" aria-hidden="true"></i><p>Saved</p></a>
             <a href="#"><i class="fa fa-cog" aria-hidden="true"></i><p>Settings</p></a>
@@ -104,7 +104,7 @@
                                             <div class="cardHeadSection">
                                                 <div class="profileImg"><a href="{% url 'other-profile' post.author.id %}"><img src="{{post.author.profile.image.url}}"></a></div>
                                                 <div class="profileTitle">
-                                                    <a href="{% url 'other-profile' post.author.id %}"><h6>{{ post.author.profile.first_name }} {{post.author.profile.last_name}}</h6></a><p>{{post.date_posted}} </p>
+                                                    <a href="{% url 'other-profile' post.author.id %}"><h6>{{ post.author.first_name }} {{post.author.last_name}}</h6></a><p>{{post.date_posted|timesince}} ago </p>
                                                 </div>
                                                 <div class="threeDot">
                                                     <p><i class="fa fa-ellipsis-v" aria-hidden="true"></i></p>                                                
@@ -118,9 +118,46 @@
                                                 <h5 class="card-title">{{ post.title }}</h5>
                                                 <pre class="card-text showLess">{{ post.content }}</pre>
                                             </a>
-                                        
-                                        
-                                        {% if post.images.all %}
+
+                                            {% if post.images.all %}
+                                                <div class="image-div" data-toggle="modal" data-target="#imageModal" data-id="{{post.images.all}}">
+                                                    <div class="card-group image-group h-100 d-flex" style="flex-direction: row;">
+                                                        {% if post.images.all.count > 2 %}
+                                                                <div class="card w-100" style='background: url("{{post.images.all.0.image.url}}");'>
+                                                                </div>
+                                                                <div class="card w-100">
+                                                                    <div class="card-header card-in-image h-50" style='background: url("{{post.images.all.1.image.url}}");'></div>
+                                                                    <div class="card-footer card-in-image h-50" style='background: url("{{post.images.all.2.image.url}}");'></div>
+                                                                </div>
+                                                        {%else%}
+                                                            {% for postImage in post.images.all %}
+                                                                <div class="card w-100" style='background: url("{{postImage.image.url}}");'>
+                                                                </div>
+                                                            {% endfor %}
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+
+                                            <!-- {% if post.images.all %}
+                                            <div class="image-div">
+                                                <div class="card-group image-group h-100">
+                                                    {% if post.images.all.count > 2 %}
+
+                                                    {% endif %}
+                                                    {% for postImage in post.images.all %}
+                                                    <div class="card" style='background: url("{{postImage.image.url}}");'>
+                                                    </div>
+                                                    <div class="card">
+                                                        <div class="card-header">Header</div>
+                                                        <div class="card-footer">Footer</div>
+                                                    </div>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                            {% endif %} -->
+
+                                        <!-- {% if post.images.all %}
                                         <div class="row image-row mt-3">
                                             {% for postImage in post.images.all %}
                                                 {%if forloop.counter == 1 %}
@@ -135,17 +172,17 @@
                                                             <div class="text">+1</div>
                                                         </a>
                                                     </div>
-                                                {%elif forloop.counter == 3 %}
+                                                {%elif forloop.counter == 3 %} 
                                                     <script>
                                                         $(".image-row div:nth-child(2)").addClass("secondImageDiv");
                                                     </script>
                                                 {% endif %}                                                
                                             {% endfor %}
                                         </div>
-                                        {% endif %}
-<!--                                         <img class="card-img-bottom" data-src="holder.js/100px180/" alt="100%x180" src="https://unknown-ag.github.io/sheetal_academy/ProjectImages/abhishek.jpeg" data-holder-rendered="true">-->
+                                        {% endif %} -->
 
-                                        </div>
+
+                                    </div>
 
 
                                         
@@ -282,28 +319,71 @@
       </div>
 
       <!-- Modal -->
-    <div class="modal fade" id="postModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
+      
+    <!-- <div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" >
+        
+        <div style="    height: 100vh;
+        display: flex;
+        flex-direction: row;
+        align-items: center;">
+            <div class="container">
+                <div class="row" style="justify-content: center;">
+                    <div class="col-8 bg-white">
+                        a<br>
+                        a<br>
+                        a<br>
+                        a<br>
+                        a<br>
+                        a<br>
+                        a<br>
+                        a<br>                        
+                    </div>
+                </div>
+            </div>
+        </div>|
+        
+    </div> -->
+    <div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">New Post</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Images</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form method="post">
-                        {% csrf_token %}
-                        {{new_post_form.title}}
-                        {{new_post_form.content}}
-                        {{new_post_form.category}}
-                        <button type="submit" class="btn btn-block mt-2" style="background-color:#4b204f;color:white;">Post</button>
-                    </form>
+                    <div id="demo" class="carousel slide" data-ride="carousel">
+
+                        <!-- Indicators -->
+                        <!-- <ul class="carousel-indicators">
+                          <li data-target="#demo" data-slide-to="0" class="active"></li>
+                          <li data-target="#demo" data-slide-to="1"></li>
+                          <li data-target="#demo" data-slide-to="2"></li>
+                        </ul> -->
+                        
+                        <!-- The slideshow -->
+                        <div class="carousel-inner">
+                          <div class="carousel-item">
+                            <div class="carousel-image-div" style="background: url(https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg);"></div>
+                          </div>
+                          <div class="carousel-item">
+                            <div class="carousel-image-div" style="background: url(https://i.pinimg.com/originals/ca/76/0b/ca760b70976b52578da88e06973af542.jpg);"></div>
+                          </div>
+                          <div class="carousel-item">
+                            <div class="carousel-image-div" style="background: url(https://killerattitudestatus.in/wp-content/uploads/2019/12/gud-night-images.jpg);"></div>
+                          </div>
+                        </div>
+                        
+                        <!-- Left and right controls -->
+                        <a class="carousel-control-prev" href="#demo" data-slide="prev">
+                          <span class="carousel-control-prev-icon"></span>
+                        </a>
+                        <a class="carousel-control-next" href="#demo" data-slide="next">
+                          <span class="carousel-control-next-icon"></span>
+                        </a>
+                      </div>
                 </div>
-                <!-- <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
-                </div> -->
             </div>
         </div>
     </div>
@@ -353,6 +433,9 @@
             </div>
         </div>
     </div>
+
+
+    
 
 
     {% block scripts %}

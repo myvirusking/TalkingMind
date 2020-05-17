@@ -42,6 +42,7 @@ def home(request):
     context = {}
     posts = Post.objects.all().order_by('-date_posted')
     context['posts'] = posts
+    context['home_page'] = 'active'
     context["category_list"] = [(category.id, category.name) for category in ArticleCategory.objects.all()]
     return render(request, 'blog/loginhome.html', context)
 
@@ -119,6 +120,7 @@ class PostCreateView(LoginRequiredMixin,CreateView):
     template_name = 'blog/create_post.html'
     success_url = reverse_lazy("login-home")
     form_class = NewPostForm
+    
 
     def form_valid(self, form):
         form.instance.author = self.request.user

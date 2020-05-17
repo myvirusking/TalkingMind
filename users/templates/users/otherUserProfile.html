@@ -332,16 +332,25 @@
                                                                 <div class="card-body">
                                                                 <h5 class="card-title">{{ post.title }}</h5>
                                                                 <p class="card-text">{{ post.content }}</p>
+
                                                                 {% if post.images.all %}
-                                                                <div class="row">
-                                                                    {% for postImage in post.images.all %}
-                                                                        <div class="col">
-                                                                            <a href="{{postImage.image.url}}" target="_blank">
-                                                                                <img class="card-img-bottom" data-src="holder.js/100px180/" alt="100%x180" src="{{postImage.image.url}}" data-holder-rendered="true">
-                                                                            </a>
+                                                                    <div class="image-div">
+                                                                        <div class="card-group image-group h-100 d-flex" style="flex-direction: row;">
+                                                                            {% if post.images.all.count > 2 %}
+                                                                                    <div class="card card-one w-100" style='background: url("{{post.images.all.0.image.url}}");'>
+                                                                                    </div>
+                                                                                    <div class="card card-one w-100">
+                                                                                        <div class="card-header card-in-image h-50" style='background: url("{{post.images.all.1.image.url}}");'></div>
+                                                                                        <div class="card-footer card-in-image h-50" style='background: url("{{post.images.all.2.image.url}}");'></div>
+                                                                                    </div>
+                                                                            {%else%}
+                                                                                {% for postImage in post.images.all %}
+                                                                                    <div class="card w-100" style='background: url("{{postImage.image.url}}");'>
+                                                                                    </div>
+                                                                                {% endfor %}
+                                                                            {% endif %}
                                                                         </div>
-                                                                    {% endfor %}
-                                                                </div>
+                                                                    </div>
                                                                 {% endif %}
                                                                 <!-- <img class="card-img-bottom" data-src="holder.js/100px180/" alt="100%x180" src="https://unknown-ag.github.io/sheetal_academy/ProjectImages/abhishek.jpeg" data-holder-rendered="true"> -->
                                                                 </div>
