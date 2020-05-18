@@ -487,8 +487,8 @@
                 <form enctype="multipart/form-data" method="post">
                     {% csrf_token %}
                     <div class="updateFormFLname">
-                        {{profile_form.first_name}} 
-                        {{profile_form.last_name}}
+                        {{user_form.first_name}} 
+                        {{user_form.last_name}}
                     </div>                      
                     {{user_form.username}} 
                     {{user_form.email}} 
