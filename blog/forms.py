@@ -28,7 +28,7 @@ class NewPostForm(forms.ModelForm):
         return category_obj
 
 class CommentForm(forms.ModelForm):
-    commented_text = forms.CharField(widget=forms.TextInput(attrs={'class':'form-control form-control-sm mr-3','placeholder':'Write a comment...', 'id':'commentInpt', 'autocomplete':'off'}))
+    commented_text = forms.CharField(widget=forms.TextInput(attrs={'class':'form-control form-control-sm mr-3 commentInpt','placeholder':'Write a comment...', 'autocomplete':'off'}))
 
     class Meta:
         model = Comment

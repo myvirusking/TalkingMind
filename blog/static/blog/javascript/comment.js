@@ -1,9 +1,16 @@
 $(document).ready(function(){
-    $("#commentForm").submit(function(e){
+    $(".comment-form").submit(function(e){
         e.preventDefault();
+        var thisLike = $(this);
 
-        var postId = $("#commentBtn").attr("data-catid");
-        var commentText = $("#commentInpt").val();
+        var input = $('input.commentInpt', this).val();
+        console.log('input '+input)
+
+        var postId = $(".commentBtn", this).attr("data-catid");
+        var commentText = $("input.commentInpt", this).val();
+
+        // var postId = $(".commentBtn").attr("data-catid");
+        // var commentText = $(".commentInpt").val();
 
         $.ajax({
             type: "POST",
@@ -13,8 +20,9 @@ $(document).ready(function(){
                 postId: postId
             },
             success:function(data){
-                console.log(data);
-                $('.allCommentDiv .single-post-cmt-div').
+                $("#allCommentDiv ul.single-post-cmt-div"+postId+" li:nth-child(1)").remove();
+                
+                $('.single-post-cmt-div'+postId).
                 prepend('<li class="media">\
                     <a href="#"><img class="mr-3 profilePic" src="/media/default.jpeg" alt="img"></a>\
                     <div class="media-body">\
@@ -32,6 +40,8 @@ $(document).ready(function(){
                 console.log(error);
             }
         })
-        $("#commentInpt").val('');
+        $("input.commentInpt", this).val('');
+        
     })
+    
 })

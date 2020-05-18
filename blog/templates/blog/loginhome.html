@@ -139,49 +139,6 @@
                                                 </div>
                                             {% endif %}
 
-                                            <!-- {% if post.images.all %}
-                                            <div class="image-div">
-                                                <div class="card-group image-group h-100">
-                                                    {% if post.images.all.count > 2 %}
-
-                                                    {% endif %}
-                                                    {% for postImage in post.images.all %}
-                                                    <div class="card" style='background: url("{{postImage.image.url}}");'>
-                                                    </div>
-                                                    <div class="card">
-                                                        <div class="card-header">Header</div>
-                                                        <div class="card-footer">Footer</div>
-                                                    </div>
-                                                    {% endfor %}
-                                                </div>
-                                            </div>
-                                            {% endif %} -->
-
-                                        <!-- {% if post.images.all %}
-                                        <div class="row image-row mt-3">
-                                            {% for postImage in post.images.all %}
-                                                {%if forloop.counter == 1 %}
-                                                    <div class="col">
-                                                        <img class="card-img-bottom" data-src="holder.js/100px180/" alt="100%x180" src="{{postImage.image.url}}" data-holder-rendered="true">
-                                                        
-                                                    </div>
-                                                {%elif forloop.counter == 2 %}
-                                                    <div class="col">
-                                                        <img class="card-img-bottom" data-src="holder.js/100px180/" alt="100%x180" src="{{postImage.image.url}}" data-holder-rendered="true">
-                                                        <a href="{% url 'single-post' post.id %}" class="middleImgText d-none">
-                                                            <div class="text">+1</div>
-                                                        </a>
-                                                    </div>
-                                                {%elif forloop.counter == 3 %} 
-                                                    <script>
-                                                        $(".image-row div:nth-child(2)").addClass("secondImageDiv");
-                                                    </script>
-                                                {% endif %}                                                
-                                            {% endfor %}
-                                        </div>
-                                        {% endif %} -->
-
-
                                     </div>
 
 
@@ -210,16 +167,33 @@
                                          <div class="card-footer">                                            
                                             <div class="footerCommentDiv">
                                                 <div class="commentBox">
-                                                    <form >
+                                                    <form class="comment-form">
                                                         {% csrf_token %}
-                                                        <input type="text" class="form-control form-control-sm mr-3"  placeholder="Write a comment...">
-                                                        <button type="submit" class="btn btn-outline-info"><i class="fas fa-paper-plane"></i></button>
+                                                        {{comment_form.commented_text}}
+                                                        <!-- <input type="text" class="form-control form-control-sm mr-3"  placeholder="Write a comment..."> -->
+                                                        <button type="submit" class="btn btn-outline-info commentBtn" data-catid="{{post.id}}"><i class="fas fa-paper-plane"></i></button>
                                                     </form>
                                                 </div>
-
-
                                             </div>
-                                            <!-- {{ post.date_posted }} -->
+                                            <div class="allCommentDiv" id="allCommentDiv">
+                                                <ul class="list-unstyled single-post-cmt-div{{post.id}} mb-0">
+                                                    {% if post.comments.all %}
+                                                     <li class="media">
+                                                        <a href="#"><img class="mr-3 profilePic" src="/media/default.jpeg" alt="img"></a>
+                                                        <div class="media-body w-50">
+                                                            <h6 class="mt-0 mb-1 profileName"><a href="#">{{post.comments.all.0.author.first_name}} {{post.comments.all.0.author.last_name}}</a><span class="ml-3 commentlikeBtn"><i class="far fa-heart"></i></span></h6>
+                                                            <p class="commentText">{{post.comments.all.0.commented_text}}</p>
+                                                            <div class="commentTextBottomBtn">
+                                                                <span class="textBtn">9h</span>
+                                                                <span class="textBtn"><span>5</span> likes</span>
+                                                                <span class="textBtn">reply</span>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                    {% endif %}                                 
+                                                </ul>
+                                                
+                                            </div> 
                                          </div>
                                         
 
@@ -450,6 +424,9 @@
         function closeNav() {
           document.getElementById("mySidenav").style.width = "0";
         }
+    </script>
+    <script>
+        
     </script>
 
     

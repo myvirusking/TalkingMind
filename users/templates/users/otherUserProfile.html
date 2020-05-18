@@ -190,7 +190,7 @@
                                         </div>
                                         <div class="profileEditBtn">
                                             {% if button_status == 'not_following' %}
-                                                <p><a class='btn btn-primary followBtn'  href="{% url 'send_follow_request' user_id.id %}">Follow</a></p>
+                                                <p><a class='btn btn-primary {{followBtn}}'  href="{% url 'send_follow_request' user_id.id %}">Follow</a></p>
                                             {% elif button_status == 'requested' %}
                                                 <p><a class='btn btn-primary cancelRequestBtn' href="{% url 'cancel_follow_request' user_id.id %}">Cancel Request</a></p>
                                             {% elif button_status == 'none' %}
@@ -366,6 +366,37 @@
                                                                         
                                                                     </div>
                                                                     <!-- {{ post.date_posted }} -->
+                                                                 </div>
+                                                                 <div class="card-footer">                                            
+                                                                    <div class="footerCommentDiv">
+                                                                        <div class="commentBox">
+                                                                            <form class="comment-form">
+                                                                                {% csrf_token %}
+                                                                                {{comment_form.commented_text}}
+                                                                                <!-- <input type="text" class="form-control form-control-sm mr-3"  placeholder="Write a comment..."> -->
+                                                                                <button type="submit" class="btn btn-outline-info commentBtn" data-catid="{{post.id}}"><i class="fas fa-paper-plane"></i></button>
+                                                                            </form>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="allCommentDiv" id="allCommentDiv">
+                                                                        <ul class="list-unstyled single-post-cmt-div{{post.id}} mb-0">
+                                                                            {% if post.comments.all %}
+                                                                             <li class="media">
+                                                                                <a href="#"><img class="mr-3 profilePic" src="/media/default.jpeg" alt="img"></a>
+                                                                                <div class="media-body w-50">
+                                                                                    <h6 class="mt-0 mb-1 profileName"><a href="#">{{post.comments.all.0.author.first_name}} {{post.comments.all.0.author.last_name}}</a><span class="ml-3 commentlikeBtn"><i class="far fa-heart"></i></span></h6>
+                                                                                    <p class="commentText">{{post.comments.all.0.commented_text}}</p>
+                                                                                    <div class="commentTextBottomBtn">
+                                                                                        <span class="textBtn">9h</span>
+                                                                                        <span class="textBtn"><span>5</span> likes</span>
+                                                                                        <span class="textBtn">reply</span>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </li>
+                                                                            {% endif %}                                 
+                                                                        </ul>
+                                                                        
+                                                                    </div> 
                                                                  </div>
                                                             </div> 
                                                          {% endfor %}
