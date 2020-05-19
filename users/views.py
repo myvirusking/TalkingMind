@@ -8,6 +8,7 @@ from django.views.generic import View
 from .models import *
 from django.contrib.auth.mixins import LoginRequiredMixin
 from users.forms import CustomAuthForm
+from blog.forms import NewPostForm, CommentForm
 from django.contrib.auth import views as auth_views
 from django.conf import settings
 from django.contrib.auth.decorators import user_passes_test
@@ -119,6 +120,7 @@ def profile(request):
     following_list = current_user_profile.following.all()
     followers_list = current_user_profile.followers.all()
 
+    comment_form = CommentForm(auto_id=False)
 
     context = {
         'user_form': user_form,
@@ -132,6 +134,7 @@ def profile(request):
         'following_list': following_list,
         'followers_list': followers_list,
         'following_users': following_users,
+        'comment_form': comment_form,
 
     }
 
@@ -181,6 +184,8 @@ def other_user_profile(request, pk):
     following_count = profile_other.following_count
     follower_count = profile_other.followers_count
 
+    comment_form = CommentForm(auto_id=False)
+
     context = {
         'posts': post,
         'user_id': user,
@@ -190,7 +195,8 @@ def other_user_profile(request, pk):
         'follower_count': follower_count,
         'common_topics':common_topics,
         'following_list': following_list_of_other_user,
-        'follower_list': follower_list_of_other_user
+        'follower_list': follower_list_of_other_user,
+        'comment_form': comment_form
     }
 
     return render(request, 'users/otherUserProfile.html', context)

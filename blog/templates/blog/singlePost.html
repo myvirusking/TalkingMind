@@ -165,37 +165,36 @@
                              <div class="card-footer card-footer-comment" id="comment">
                                 <div class="footerCommentDiv">
                                     <div class="commentBox">
-                                        <form id="commentForm">
+                                        <form class="comment-form">
                                             {% csrf_token %}
                                             {{comment_form.commented_text}}
                                             <!-- <input type="text" class="form-control form-control-sm mr-3"  placeholder="Write a comment..."> -->
-                                            <button id="commentBtn" type="submit" class="btn btn-outline-info" data-catid="{{singlePost.id}}"><i class="fas fa-paper-plane"></i></button>
+                                            <button id="commentBtn" type="submit" class="btn btn-outline-info commentBtn" data-catid="{{singlePost.id}}"><i class="fas fa-paper-plane"></i></button>
                                         </form>
                                     </div>
                                 </div>
-                                
-                                    <div class="allCommentDiv">
-                                        
-                                        <ul class="list-unstyled single-post-cmt-div mb-0">
-                                            {% if allComments %}
-                                            {% for comment in allComments %}
-                                                <li class="media">
-                                                    <a href="#"><img class="mr-3 profilePic" src="/media/default.jpeg" alt="img"></a>
-                                                    <div class="media-body w-50">
-                                                        <h6 class="mt-0 mb-1 profileName"><a href="#">{{comment.author.first_name}} {{comment.author.last_name}}</a><span class="ml-3 commentlikeBtn"><i class="far fa-heart"></i></span></h6>
-                                                        <p class="commentText">{{comment.commented_text}}</p>
-                                                        <div class="commentTextBottomBtn">
-                                                            <span class="textBtn">9h</span>
-                                                            <span class="textBtn"><span>5</span> likes</span>
-                                                            <span class="textBtn">reply</span>
-                                                        </div>
+
+                                <div class="allCommentDiv">                                    
+                                    <ul class="list-unstyled single-post-cmt-div{{singlePost.id}} mb-0">
+                                        {% if allComments %}
+                                        {% for comment in allComments %}
+                                            <li class="media">
+                                                <a href="#"><img class="mr-3 profilePic" src="/media/default.jpeg" alt="img"></a>
+                                                <div class="media-body w-50">
+                                                    <h6 class="mt-0 mb-1 profileName"><a href="#">{{comment.author.first_name}} {{comment.author.last_name}}</a><span class="ml-3 commentlikeBtn"><i class="far fa-heart"></i></span></h6>
+                                                    <p class="commentText">{{comment.commented_text}}</p>
+                                                    <div class="commentTextBottomBtn">
+                                                        <span class="textBtn">9h</span>
+                                                        <span class="textBtn"><span>5</span> likes</span>
+                                                        <span class="textBtn">reply</span>
                                                     </div>
-                                                </li>
-                                            {% endfor %} 
-                                            {% endif %}                                           
-                                        </ul>
-                                        
-                                    </div>  
+                                                </div>
+                                            </li>
+                                        {% endfor %} 
+                                        {% endif %}                                           
+                                    </ul>
+                                    
+                                </div>  
                                 
                                 
                                 

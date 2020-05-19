@@ -41,8 +41,10 @@ def home(request):
             return render(request, 'blog/loginhome.html', context)
 
     context = {}
+    comment_form = CommentForm(auto_id=False)
     posts = Post.objects.all().order_by('-date_posted')
     context['posts'] = posts
+    context['comment_form'] = comment_form
     context['home_page'] = 'active'
     context["category_list"] = [(category.id, category.name) for category in ArticleCategory.objects.all()]
     return render(request, 'blog/loginhome.html', context)

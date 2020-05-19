@@ -65,22 +65,23 @@ class CustomPasswordResetEmailForm(PasswordResetForm):
 
 
 class UserUpdateForm(forms.ModelForm):
+    first_name = forms.CharField(widget=forms.TextInput(attrs={'class':'form-control mr-1 mb-0','rows':'3', 'placeholder':'First name'}))
+    last_name = forms.CharField(widget=forms.TextInput(attrs={'class':'form-control ml-1 mb-0','rows':'3', 'placeholder':'Last name'}))
     email = forms.EmailField(widget=TextInput(attrs={'class':'form-control'}))
     username = forms.CharField(widget=TextInput(attrs={'class':'form-control'}))
 
     class Meta:
         model = User
-        fields = ['username', 'email']
+        fields = ['first_name','last_name','username', 'email']
 
 
 class ProfileUpdateForm(forms.ModelForm):
-    first_name = forms.CharField(widget=forms.TextInput(attrs={'class':'form-control mr-1 mb-0','rows':'3', 'placeholder':'First name'}))
-    last_name = forms.CharField(widget=forms.TextInput(attrs={'class':'form-control ml-1 mb-0','rows':'3', 'placeholder':'Last name'}))
+    
     bio = forms.CharField(widget=forms.Textarea(attrs={'class':'form-control','rows':'3'}))
 
     class Meta:
         model = Profile
-        fields = ['first_name','last_name', 'bio','image']
+        fields = [ 'bio','image']
 
 
 class AboutForm(forms.ModelForm):
