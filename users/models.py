@@ -32,8 +32,6 @@ class Following(models.Model):
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
-    first_name = models.CharField(max_length=30, null=False)
-    last_name = models.CharField(max_length=30, null=False )
     image = models.ImageField(default='default.jpeg', upload_to='profile_pics')
     bio = models.CharField(max_length=100, default="I am using TalkingMind")
     about = models.CharField(max_length=400, default="I am using TalkingMind")

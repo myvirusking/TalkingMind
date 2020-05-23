@@ -1,4 +1,6 @@
 {% extends 'blog/base.html' %}
+{% load custom_tag %}
+
 {% block css %}
 <style>
     .mainNav {
@@ -12,48 +14,8 @@
 
 {% block content %}
 
-    <!-- <div class = "container col-lg-6 col-md-10 offset-md-1 offset-lg-3 mt-5 shadow-lg p-3 mb-5 bg-white rounded" id = "profile" style="background-color: white;" >
-
-        <div class="row container">
-
-            <img class="rounded-circle account-img col-3 mt-2" height="150px"  src="{{user_id.profile.image.url}}">
-            <div class="col-9 profile-content ">
-                <h4 class="account-heading" style="color:#4b204f;display: inline" >{{user_id.username}}</h4>
-
-
-                {% if button_status == 'not_following' %}
-                    <small><a style="display: inline;float: right; border-radius: 30px;" class='btn btn-primary'  href="{% url 'send_follow_request' user_id.id %}">Follow</a></small>
-                {% elif button_status == 'requested' %}
-                    <small><a style="display: inline;float: right; border-radius: 30px; background-color: darkslategrey" class='btn btn-primary' href="{% url 'cancel_follow_request' user_id.id %}">Cancel request</a></small>
-                {% elif button_status == 'none' %}
-                    <small><a style="display: inline;float: right; border-radius: 30px; background-color: red; color:white;" class='btn btn-primary' href="{% url 'unfollow_user' user_id.id %}">Unfollow</a></small>
-                {% endif %}
-                <p class="content">{{user_id.profile.about}}</p>
-
-                <div style="float: left; margin-left: 50px;">
-                    <strong style="color: rebeccapurple">Followers<br></strong>
-                    <center>{{follower_count}}</center>
-                </div>
-                <div style="float: left;margin-left: 50px">
-                    <strong style="color: rebeccapurple">Following<br></strong>
-                    <center>{{following_count}}</center>
-                </div>
-                <div style="float: left;margin-left: 50px">
-                    <strong style="color: rebeccapurple">Posts<br></strong>
-                    <center>{{posts.count}}</center>
-                </div>
-
-
-            </div>
-        </div>
-    </div> -->
-
 <!-- {% if article_category %}
-    <div class="container col-lg-6 col-md-10 offset-md-1 offset-lg-3 mt-5 shadow-lg p-3 mb-5 bg-white rounded" id="profile" style="background-color: white;">
-        <div class="col-md-12">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="row">
+
                         {% for topic in article_category %}
                             {% if topic in common_topics %}
                                 <div class="card" style="margin: 5px;background: #7436ff;color: white;">
@@ -189,13 +151,7 @@
                                             <h5>Profile</h5>
                                         </div>
                                         <div class="profileEditBtn">
-                                            {% if button_status == 'not_following' %}
-                                                <p><a class='btn btn-primary {{followBtn}}'  href="{% url 'send_follow_request' user_id.id %}">Follow</a></p>
-                                            {% elif button_status == 'requested' %}
-                                                <p><a class='btn btn-primary cancelRequestBtn' href="{% url 'cancel_follow_request' user_id.id %}">Cancel Request</a></p>
-                                            {% elif button_status == 'none' %}
-                                                <p><a style="background-color: red; color:white;" class='btn btn-primary unFollowBtn' href="{% url 'unfollow_user' user_id.id %}">Unfollow</a></p>
-                                            {% endif %}
+                                            <p><a class='btn btn-primary {{button_class}}' id="follow-user" data-id="{{user_id.id}}" >{{button_text}}</a></p>
                                             <!-- <p><a ><i class="fas fa-cog" data-toggle="modal" data-target="#settingModal"></i></a></p> -->
                                         </div>
                                     </div>
@@ -211,9 +167,9 @@
                                         </div>
                                         <div class="col-md-8">
                                             <div class="profileDetailDiv">
-                                                <h5 class="name">{{user.profile.first_name}} {{user.profile.last_name}}</h5>
+                                                <h5 class="name">{{user_id.first_name}} {{user_id.last_name}}</h5>
                                                 <h6 class="username">@{{user_id.username}}</h6>
-                                                <p class="about">{{user_id.bio}}bio hai hi nhi iska kuch dekh </p>
+                                                <p class="about">{{user_id.profile.bio}} </p>
                                                 <div class="btn-group grpBtn" role="group" aria-label="Basic example">
                                                     <button type="button" class="btn btn-secondary active">
                                                         <p class="count">{{posts.count}}</p>
@@ -367,7 +323,7 @@
                                                                     </div>
                                                                     <!-- {{ post.date_posted }} -->
                                                                  </div>
-                                                                 <div class="card-footer">                                            
+                                                                 <div class="card-footer">
                                                                     <div class="footerCommentDiv">
                                                                         <div class="commentBox">
                                                                             <form class="comment-form">
@@ -393,10 +349,10 @@
                                                                                     </div>
                                                                                 </div>
                                                                             </li>
-                                                                            {% endif %}                                 
+                                                                            {% endif %}
                                                                         </ul>
-                                                                        
-                                                                    </div> 
+
+                                                                    </div>
                                                                  </div>
                                                             </div> 
                                                          {% endfor %}
@@ -619,13 +575,22 @@
                                     <div class="cardHeadSection">
                                         <div class="profileImg"><a href="{% url 'other-profile' follower.user.id %}"><img src="{{follower.user.profile.image.url}}"></a></div>
                                         <div class="profileTitle">
-                                            <a href="{% url 'other-profile' follower.user.id %}"><h6>{{follower.user.profile.first_name}} {{follower.user.profile.last_name}}</h6></a><p>@{{follower.user.username}}</p>
+                                            <a href="{% url 'other-profile' follower.user.id %}"><h6>{{follower.user.first_name}} {{follower.user.last_name}}</h6></a><p>@{{follower.user.username}}</p>
                                         </div>
-                                        {% if follower.user.id not in following_users %}
-                                        <div class="recomdAddBtn">
-                                            <p><a href="#"><i class="fa fa-plus" aria-hidden="true"></i></a></p>
+                                        <div class="modal-follow-request-button">
+                                            {% if follower.user.id != user.id %}
+                                                {% if  user|user_in_follow_request:follower.user %}
+                                                    <a style="color:dodgerblue"   class=" {{follower.user.id}}requested" data-id="{{follower.user.id}}">Requested</a>
+
+                                                {% elif follower.user.id not in following_list_of_current_user %}
+                                                    <a style="color:dodgerblue"  class="{{follower.user.id}}follow" data-id="{{follower.user.id}}">Follow</a>
+                                                {% elif follower.user.id in following_list_of_current_user %}
+                                                    <a style="color:dodgerblue"  class="{{follower.user.id}}unfollow" data-id="{{follower.user.id}}">Unfollow</a>
+
+                                                {% endif %}
+                                            {% endif %}
                                         </div>
-                                        {% endif %}
+
                                     </div>
                                 </div>
                                 {% endfor %}                            
@@ -655,11 +620,21 @@
                                         <div class="cardHeadSection">
                                             <div class="profileImg"><a href="{% url 'other-profile' following.user.id %}"><img src="{{following.user.profile.image.url}}"></a></div>
                                             <div class="profileTitle">
-                                                <a href="{% url 'other-profile' following.user.id %}"><h6>{{following.user.profile.first_name}} {{following.user.profile.last_name}}</h6></a><p>@{{following.user.username}}</p>
+                                                <a href="{% url 'other-profile' following.user.id %}"><h6>{{following.user.first_name}} {{following.user.last_name}}</h6></a><p>@{{following.user.username}}</p>
                                             </div>
-                                            <div class="recomdAddBtn">
-                                                <p><a href="#"><i class="fas fa-minus"></i></a></p>
-                                            </div>                                   
+                                            <div class="modal-follow-request-button">
+                                                {% if following.user.id != user.id %}
+                                                    {% if  user|user_in_follow_request:following.user %}
+                                                        <a style="color:dodgerblue"   class=" {{follower.user.id}}requested" data-id="{{following.user.id}}">Requested</a>
+
+                                                    {% elif following.user.id not in following_list_of_current_user %}
+                                                        <a style="color:dodgerblue"  class="{{following.user.id}}follow" data-id="{{following.user.id}}">Follow</a>
+                                                    {% elif follower.user.id in following_list_of_current_user %}
+                                                        <a style="color:dodgerblue"  class="{{following.user.id}}unfollow" data-id="{{following.user.id}}">Unfollow</a>
+
+                                                    {% endif %}
+                                                {% endif %}
+                                            </div>
                                         </div>
                                     </div>
                                 {% endfor %}

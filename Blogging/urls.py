@@ -34,12 +34,12 @@ urlpatterns = [
     path('profile/',user_views.profile, name='profile'),
     path('login/', user_views.CustomLoginView.as_view(),name='login'),
     path('logout/', auth_views.LogoutView.as_view(template_name='users/login.html', next_page='/login/'), name='logout'),
-    path('other-profile/<int:pk>/',user_views.other_user_profile, name='other-profile'),
-    path('user/follow-request/send/<int:pk>', user_views.send_follow_request ,name='send_follow_request'),
-    path('user/follow-request/cancel/<int:pk>', user_views.cancel_follow_request ,name='cancel_follow_request'),
-    path('user/follow-request/accept/<int:pk>', user_views.accept_follow_request ,name='accept_follow_request'),
-    path('user/follow-request/delete/<int:pk>', user_views.delete_follow_request ,name='delete_follow_request'),
-    path('user/other-profile/unfollow/<int:pk>', user_views.unfollow_user, name='unfollow_user'),
+    path('other-profile/<int:pk>/', user_views.other_user_profile, name='other-profile'),
+    path('user/follow-request/send/', user_views.send_follow_request ,name='send_follow_request'),
+    path('user/follow-request/cancel/', user_views.cancel_follow_request ,name='cancel_follow_request'),
+    path('user/follow-request/accept/<int:pk>/', user_views.accept_follow_request ,name='accept_follow_request'),
+    path('user/follow-request/delete/<int:pk>/', user_views.delete_follow_request ,name='delete_follow_request'),
+    path('user/other-profile/unfollow/', user_views.unfollow_user, name='unfollow_user'),
     path('password-reset/',
          auth_views.PasswordResetView.as_view(
              template_name = 'users/password_reset.html', form_class = CustomPasswordResetEmailForm,
@@ -80,6 +80,8 @@ urlpatterns = [
     path('profile/save/', blog_views.save_post, name="profile-save-post"),
 
     path('comment/', blog_views.comment, name="comment"),
+
+    path('remove-from-followers/', user_views.remove_from_followers_list, name='remove-from-follower-list')
 
 
 ]
