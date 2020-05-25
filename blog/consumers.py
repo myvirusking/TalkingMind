@@ -1,0 +1,15 @@
+from channels.generic.websocket import AsyncConsumer
+import json
+
+class NotificationConsumer(AsyncConsumer):
+
+    async def websocket_connect(self,event):
+        await self.send({
+            "type": "websocket.accept"
+        })
+
+    async def websocket_receive(self,event):
+        await self.send({
+            "type": "websocket.send",
+            "text": event["text"]
+        })

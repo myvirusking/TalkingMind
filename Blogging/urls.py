@@ -24,7 +24,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from users import views as user_views
 from blog import views as blog_views
-
+from users.views import notification
 
 
 urlpatterns = [
@@ -80,6 +80,12 @@ urlpatterns = [
     path('profile/save/', blog_views.save_post, name="profile-save-post"),
 
     path('comment/', blog_views.comment, name="comment"),
+
+    # Social auth
+    #path('oauth/', include('social_django.urls', namespace='social')),
+
+    path('notification/',user_views.notification,name="notification"),
+    path('accounts/', include('allauth.urls')),
 
 
 ]

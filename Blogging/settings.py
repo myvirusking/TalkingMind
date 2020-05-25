@@ -31,6 +31,8 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'django.contrib.sites',
+    'channels',
     'blog.apps.BlogConfig',
     'users.apps.UsersConfig',
     'crispy_forms',
@@ -41,7 +43,21 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'blog.templatetags.custom_tag',
-    'phonenumber_field',
+
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.facebook',
+]
+
+AUTHENTICATION_BACKENDS = [
+    # Needed to login by username in Django admin, regardless of `allauth`
+    'django.contrib.auth.backends.ModelBackend',
+
+    # `allauth` specific authentication methods, such as login by e-mail
+    'allauth.account.auth_backends.AuthenticationBackend',
+
 ]
 
 
@@ -143,7 +159,7 @@ MEDIA_URL = '/media/'
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 LOGIN_REDIRECT_URL = 'login-home'
-LOGIN_URL = 'login'
+#LOGIN_URL = 'login'
 
 LOGOUT_URL = 'login-home'
 
@@ -153,3 +169,24 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'talkingmindblog@gmail.com'
 EMAIL_HOST_PASSWORD = 'account@#007$1132'
+
+# This is used for ASGI server
+
+ASGI_APPLICATION = 'Blogging.routing.application'
+
+LOGIN_URL = 'login'
+LOGOUT_URL = 'logout'
+LOGIN_REDIRECT_URL = 'profile'
+
+
+# This is for google OAuth
+
+# SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '1064110796353-fqusib2lm1nfmchrvqcq81s4pj2j71dg.apps.googleusercontent.com'
+# SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '9fR_QDEo0raYcMk4aVgJjnpc'
+
+# LOGIN_URL = '/auth/login/google-oauth2/'
+
+SITE_ID = 1
+
+# Will change to https in production, but also note that to change to https in google developers API console
+ACCOUNT_DEFAULT_HTTP_PROTOCOL='http'

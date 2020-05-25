@@ -160,7 +160,7 @@ def other_user_profile(request, pk):
     user = User.objects.get(id=pk)
 
     profile_other = Profile.objects.filter(id=pk).first()
-    profile_current = Profile.objects.filter(id=request.user.id).first()
+    profile_current = Profile.objects.filter(user=request.user).first()
 
     following_list = profile_current.following.all()
 
@@ -353,5 +353,13 @@ def user_search_view(request):
 
 
 
+def notification(request):
+    rec_request = FollowRequest.objects.filter(to_user=request.user.id)
+
+    context = {
+        'rec_request': rec_request,
+    }
+
+    return render(request, 'users/notification.html', context)
 
 
