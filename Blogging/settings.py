@@ -32,7 +32,6 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'django.contrib.sites',
-    'channels',
     'blog.apps.BlogConfig',
     'users.apps.UsersConfig',
     'crispy_forms',
@@ -172,7 +171,7 @@ EMAIL_HOST_PASSWORD = 'account@#007$1132'
 
 # This is used for ASGI server
 
-ASGI_APPLICATION = 'Blogging.routing.application'
+#ASGI_APPLICATION = 'Blogging.routing.application'
 
 LOGIN_URL = 'login'
 LOGOUT_URL = 'logout'
@@ -190,3 +189,17 @@ SITE_ID = 1
 
 # Will change to https in production, but also note that to change to https in google developers API console
 ACCOUNT_DEFAULT_HTTP_PROTOCOL='http'
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        }
+    }
+}
+
+SOCIALACCOUNT_QUERY_EMAIL = True
