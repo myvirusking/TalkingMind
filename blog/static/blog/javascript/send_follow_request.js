@@ -27,9 +27,21 @@ $(document).ready(function(){
                 },
                 success:function(data)
                 {
-                    $(".profileEditBtn p a").removeClass("followBtn").
-                    addClass("cancelRequestBtn").
-                    text("Cancel request");
+                    if(data['profile_privacy']==='private')
+                    {
+                        console.log("Private");
+                        $(".profileEditBtn p a").removeClass("followBtn").
+                        addClass("cancelRequestBtn").
+                        text("Cancel request");
+                    }
+                    else if(data['profile_privacy']==='public')
+                    {
+                        console.log("Public");
+                        $(".profileEditBtn p a").removeClass("followBtn").
+                        addClass("unfollowBtn").
+                        text("Unfollow");
+                    }
+
 
                 },
                 error:function (xhr,status, error) {
@@ -108,7 +120,7 @@ $(document).ready(function(){
 * depending on the state of the button(see the code for more info)*/
 
 $(document).ready(function() {
-    $(".modal-follow-request-button a").click(function (e) {
+    $(".modal-follow-request-button .follow-btn").click(function (e) {
         var class_f = $(this).attr("data-id")+"follow";
         console.log(class_f);
         if ($(this).hasClass(class_f))
@@ -117,7 +129,7 @@ $(document).ready(function() {
             var thisSave = $(this);
 
             var post_id;
-            user_id = $(this).attr("data-id");
+            let user_id = $(this).attr("data-id");
             console.log(user_id);
             $.ajax({
 
@@ -127,7 +139,15 @@ $(document).ready(function() {
                     userid: user_id
                 },
                 success: function (data) {
-                    $(".modal-follow-request-button a").removeClass(class_f).addClass(user_id+"requested").text("Requested");
+                    if(data['profile_privacy']==='private')
+                    {
+                        $("#follow-btn"+user_id).removeClass(user_id+"follow").addClass(user_id+"requested").text("Requested");
+                    }
+                    else if(data['profile_privacy']==='public')
+                    {
+                        $("#follow-btn"+user_id).removeClass(user_id+"follow").addClass(user_id+"unfollow").text("Unfollow");
+                        $(".total-following-count").text(data['following_count'])
+                    }
 
                 },
                 error: function (xhr, status, error) {
@@ -141,7 +161,7 @@ $(document).ready(function() {
         else if ($(this).hasClass($(this).attr("data-id")+"requested")) {
             e.preventDefault();
 
-            user_id = $(this).attr("data-id");
+            let user_id = $(this).attr("data-id");
             console.log(user_id);
             $.ajax({
 
@@ -151,7 +171,7 @@ $(document).ready(function() {
                     userid: user_id
                 },
                 success: function (data) {
-                    $(".modal-follow-request-button a").removeClass(user_id+"requested").addClass(class_f).text("Follow");
+                     $("#follow-btn"+user_id).removeClass(user_id+"requested").addClass(class_f).text("Follow");
 
                 },
                 error: function (xhr, status, error) {
@@ -163,17 +183,17 @@ $(document).ready(function() {
          else if ($(this).hasClass($(this).attr("data-id")+"unfollow")) {
             e.preventDefault();
 
-            user_id = $(this).attr("data-id");
+            let user_id = $(this).attr("data-id");
             console.log(user_id);
             $.ajax({
 
                 type: "GET",
-                url: "/user/follow-request/unfollow/",
+                url: "/user/other-profile/unfollow/",
                 data: {
                     userid: user_id
                 },
                 success: function (data) {
-                    $(".modal-follow-request-button a").removeClass(user_id+"unfollow").addClass(class_f).text("Follow");
+                    $("#follow-btn"+user_id).removeClass(user_id+"unfollow").addClass(user_id+"follow").text("Follow");
                     $(".total-following-count").text(data['following_count']);
 
                 },

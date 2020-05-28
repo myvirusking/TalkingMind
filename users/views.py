@@ -1,7 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponseRedirect
 from django.contrib.auth.models import User
 from .forms import RegisterForm, UserUpdateForm, ProfileUpdateForm, AboutForm
-from django.contrib import messages
 from django.views.generic.list import ListView
 from django.contrib.auth.decorators import login_required
 from django.views.generic import View
@@ -16,6 +15,7 @@ from django.contrib.auth import authenticate, login
 from blog.models import Post
 from django.template.loader import render_to_string
 from django.http import JsonResponse
+from settings.models import AccountPrivacySetting
 
 
 #################  Currently not in use but could be used in future development##################
@@ -165,6 +165,9 @@ def other_user_profile(request, pk):
 
     following_list = profile_current.following.all()
 
+    profile_privacy_setting = AccountPrivacySetting.objects.get(profile=profile_other)
+    profile_privacy = profile_privacy_setting.profile_privacy
+
     following_list_of_other_user = profile_other.following.all()
     follower_list_of_other_user = profile_other.followers.all()
 
@@ -179,13 +182,15 @@ def other_user_profile(request, pk):
         button_class = 'followBtn'
         button_id = 'follow-user'
         button_text = 'Follow'
+        user_follows_profile = False
 
         if len(FollowRequest.objects.filter(from_user=request.user).filter(to_user=user)) == 1:
             button_status = 'requested'
             button_class = 'cancelRequestBtn'
             button_id = 'cancel-request'
             button_text = 'Cancel request'
-
+    else:
+        user_follows_profile = True
     other_user_article_category = [name for id, name in Profile.objects.get(user=user).article_category.values_list()]
     current_user_article_category = [name for id, name in Profile.objects.get(user=request.user).article_category.values_list()]
     common_topics = [name for name in current_user_article_category if name in other_user_article_category]
@@ -211,7 +216,10 @@ def other_user_profile(request, pk):
         'following_list': following_list_of_other_user,
         'follower_list': follower_list_of_other_user,
         'following_list_of_current_user': current_user_following_list,
-        'comment_form': comment_form
+        'comment_form': comment_form,
+        'profile_privacy':profile_privacy,
+        'user_follows_profile':user_follows_profile
+
 
     }
 
@@ -227,10 +235,35 @@ def send_follow_request(request):
     if request.user.is_authenticated:
         userid = request.GET['userid']
         user = get_object_or_404(User, id=userid)
-        frequest, created = FollowRequest.objects.get_or_create(
-            from_user=request.user,
-            to_user=user
-        )
+
+        accout_setting = AccountPrivacySetting.objects.get(profile=user.profile)
+        profile_privacy_of_other_user = accout_setting.profile_privacy
+
+        if profile_privacy_of_other_user == 'public':
+            print("Inside")
+            request.user.profile.following.create(user=user)
+            request.user.profile.following_count += 1
+            request.user.profile.save()
+
+            user.profile.followers.create(user=request.user)
+            user.profile.followers_count += 1
+            user.profile.save()
+
+            following_count = request.user.profile.following_count
+
+            data_dict = {'profile_privacy': 'public',
+                         'following_count': following_count}
+            return JsonResponse(data=data_dict, safe=False)
+
+        elif profile_privacy_of_other_user == 'private':
+            frequest, created = FollowRequest.objects.get_or_create(
+                from_user=request.user,
+                to_user=user
+            )
+            data_dict = {'profile_privacy': 'private'}
+
+            return JsonResponse(data=data_dict, safe=False)
+
 
         return render(request, 'users/userprofile.html')
 

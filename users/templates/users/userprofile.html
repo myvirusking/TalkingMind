@@ -614,12 +614,12 @@
                                             <p>@{{follower.user.username}}</p>
                                             <div class="ml-2 modal-follow-request-button" style="font-size: 12px;cursor:pointer;">
                                                 {% if  user|user_in_follow_request:follower.user %}
-                                                    <a style="color:dodgerblue"   class=" {{follower.user.id}}requested" data-id="{{follower.user.id}}">Requested</a>
+                                                    <a style="color:dodgerblue"   class="follow-btn  {{follower.user.id}}requested" data-id="{{follower.user.id}}" id="follow-btn{{follower.user.id}}">Requested</a>
 
                                                 {% elif follower.user.id not in following_users %}
-                                                    <a style="color:dodgerblue"  class="{{follower.user.id}}follow" data-id="{{follower.user.id}}">Follow</a>
+                                                    <a style="color:dodgerblue"  class="follow-btn {{follower.user.id}}follow" data-id="{{follower.user.id}}" id="follow-btn{{follower.user.id}}">Follow</a>
                                                 {% else %}
-                                                    <a style="color:dodgerblue"  class="{{follower.user.id}}unfollow" data-id="{{follower.user.id}}">Unfollow</a>
+                                                    <a style="color:dodgerblue"  class="follow-btn {{follower.user.id}}unfollow" data-id="{{follower.user.id}}" id="follow-btn{{follower.user.id}}">Unfollow</a>
 
                                                 {% endif %}
                                             </div>

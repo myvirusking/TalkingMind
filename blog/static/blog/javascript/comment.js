@@ -4,7 +4,7 @@ $(document).ready(function(){
         var thisLike = $(this);
 
         var input = $('input.commentInpt', this).val();
-        console.log('input '+input)
+        console.log('input '+input);
 
         var postId = $(".commentBtn", this).attr("data-catid");
         var commentText = $("input.commentInpt", this).val();
