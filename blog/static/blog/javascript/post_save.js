@@ -8,7 +8,7 @@ $(document).ready(function(){
         console.log(catid);
         $.ajax({
             type: "GET",
-            url: "save/",
+            url: "/save/",
             data: {
                 post_id:catid
             },

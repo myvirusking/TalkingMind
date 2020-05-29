@@ -24,7 +24,9 @@ from django.conf import settings
 from django.conf.urls.static import static
 from users import views as user_views
 from blog import views as blog_views
-
+from two_factor.urls import urlpatterns as tf_urls
+from settings.forms import CustomPasswordChangeForm
+from django.contrib import messages
 
 
 urlpatterns = [
@@ -32,6 +34,7 @@ urlpatterns = [
     path('blog/', include('blog.urls')),
     path('user/', include('users.urls')),
     path('profile/',user_views.profile, name='profile'),
+    path(r'', include(tf_urls)),
     path('login/', user_views.CustomLoginView.as_view(),name='login'),
     path('logout/', auth_views.LogoutView.as_view(template_name='users/login.html', next_page='/login/'), name='logout'),
     path('other-profile/<int:pk>/', user_views.other_user_profile, name='other-profile'),
@@ -60,24 +63,31 @@ urlpatterns = [
              template_name='users/password_reset_complete.html'),
              name='password_reset_complete'
          ),
+
+    path('change-password/',
+        auth_views.PasswordChangeView.as_view(
+            template_name='settings/changePassword.html',
+            form_class=CustomPasswordChangeForm,
+        ),
+        name='change_password'
+    ),
+
+    path('password-change-done/',
+         auth_views.PasswordChangeDoneView.as_view(
+             template_name='settings/passwordChangeSuccess.html'
+         ),
+        name='password_change_done'
+    ),
          # Search user
     path('userSearch/',user_views.user_search_view,name="user_search"),
-    path('user/home/like/', blog_views.post_like, name="like-post"),
 
-    path('user/home/save/', blog_views.save_post, name="save-post"),
+    path('like/', blog_views.post_like, name="like-post"),
+
+    path('save/', blog_views.save_post, name="save-post"),
 
     path('user/saved_post/', blog_views.SavedPostView.as_view(), name='saved-post-list'),
 
-    path('user/saved_post/like/', blog_views.post_like, name='saved-post-like'),
-
-    path('user/saved_post/save/', blog_views.save_post, name="save-post2"),
-
-
     path('post/<int:pid>/', blog_views.single_post, name="single-post"),
-
-    path('post/<int:pid>/save/', blog_views.save_post, name="post-detail-save"),
-
-    path('profile/save/', blog_views.save_post, name="profile-save-post"),
 
     path('comment/', blog_views.comment, name="comment"),
 
