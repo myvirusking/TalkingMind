@@ -102,7 +102,7 @@ def profile(request):
         if about_form.is_valid():
             about_form.save()
             return redirect('profile')
-
+       
     else:
         user_form = UserUpdateForm(instance=request.user)
         profile_form = ProfileUpdateForm(instance=request.user.profile)
@@ -359,7 +359,29 @@ def notification(request):
     context = {
         'rec_request': rec_request,
     }
+    # x = get_ip(request)
+    # print("Readched")
+    # print(x)
+    # import socket
+    # try:
+    #     socket.inet_aton(x)
+    #     ip_valid = True
+    # except socket.error:
+    #     ip_valid = False
+    # print(ip_valid)
 
     return render(request, 'users/notification.html', context)
 
+
+# def get_ip(request):
+#     try:
+#         x_forward = request.META.get("HTTP_X_FORWARD_FOR")
+
+#         if x_forward:
+#             ip = x_forward.split(",")[0]
+#         else:
+#             ip = request.META.get("REMOTE_ADDR")
+#     except:
+#         ip = ''
+#     return ip
 
