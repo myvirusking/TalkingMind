@@ -8,9 +8,10 @@ https://docs.djangoproject.com/en/3.0/howto/deployment/wsgi/
 """
 
 import os
-
+import django
 from django.core.wsgi import get_wsgi_application
 
+django.setup()
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Blogging.settings')
 
 application = get_wsgi_application()

@@ -1,4 +1,6 @@
 {% extends 'blog/base.html' %}
+{% load custom_tag %}
+
 {% block css %}
 <style>
     .mainNav {
@@ -12,48 +14,8 @@
 
 {% block content %}
 
-    <!-- <div class = "container col-lg-6 col-md-10 offset-md-1 offset-lg-3 mt-5 shadow-lg p-3 mb-5 bg-white rounded" id = "profile" style="background-color: white;" >
-
-        <div class="row container">
-
-            <img class="rounded-circle account-img col-3 mt-2" height="150px"  src="{{user_id.profile.image.url}}">
-            <div class="col-9 profile-content ">
-                <h4 class="account-heading" style="color:#4b204f;display: inline" >{{user_id.username}}</h4>
-
-
-                {% if button_status == 'not_following' %}
-                    <small><a style="display: inline;float: right; border-radius: 30px;" class='btn btn-primary'  href="{% url 'send_follow_request' user_id.id %}">Follow</a></small>
-                {% elif button_status == 'requested' %}
-                    <small><a style="display: inline;float: right; border-radius: 30px; background-color: darkslategrey" class='btn btn-primary' href="{% url 'cancel_follow_request' user_id.id %}">Cancel request</a></small>
-                {% elif button_status == 'none' %}
-                    <small><a style="display: inline;float: right; border-radius: 30px; background-color: red; color:white;" class='btn btn-primary' href="{% url 'unfollow_user' user_id.id %}">Unfollow</a></small>
-                {% endif %}
-                <p class="content">{{user_id.profile.about}}</p>
-
-                <div style="float: left; margin-left: 50px;">
-                    <strong style="color: rebeccapurple">Followers<br></strong>
-                    <center>{{follower_count}}</center>
-                </div>
-                <div style="float: left;margin-left: 50px">
-                    <strong style="color: rebeccapurple">Following<br></strong>
-                    <center>{{following_count}}</center>
-                </div>
-                <div style="float: left;margin-left: 50px">
-                    <strong style="color: rebeccapurple">Posts<br></strong>
-                    <center>{{posts.count}}</center>
-                </div>
-
-
-            </div>
-        </div>
-    </div> -->
-
 <!-- {% if article_category %}
-    <div class="container col-lg-6 col-md-10 offset-md-1 offset-lg-3 mt-5 shadow-lg p-3 mb-5 bg-white rounded" id="profile" style="background-color: white;">
-        <div class="col-md-12">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="row">
+
                         {% for topic in article_category %}
                             {% if topic in common_topics %}
                                 <div class="card" style="margin: 5px;background: #7436ff;color: white;">
@@ -189,13 +151,7 @@
                                             <h5>Profile</h5>
                                         </div>
                                         <div class="profileEditBtn">
-                                            {% if button_status == 'not_following' %}
-                                                <p><a class='btn btn-primary {{followBtn}}'  href="{% url 'send_follow_request' user_id.id %}">Follow</a></p>
-                                            {% elif button_status == 'requested' %}
-                                                <p><a class='btn btn-primary cancelRequestBtn' href="{% url 'cancel_follow_request' user_id.id %}">Cancel Request</a></p>
-                                            {% elif button_status == 'none' %}
-                                                <p><a style="background-color: red; color:white;" class='btn btn-primary unFollowBtn' href="{% url 'unfollow_user' user_id.id %}">Unfollow</a></p>
-                                            {% endif %}
+                                            <p><a class='btn btn-primary {{button_class}}' id="follow-user" data-id="{{user_id.id}}" >{{button_text}}</a></p>
                                             <!-- <p><a ><i class="fas fa-cog" data-toggle="modal" data-target="#settingModal"></i></a></p> -->
                                         </div>
                                     </div>
@@ -211,16 +167,25 @@
                                         </div>
                                         <div class="col-md-8">
                                             <div class="profileDetailDiv">
-                                                <h5 class="name">{{user.profile.first_name}} {{user.profile.last_name}}</h5>
+                                                <h5 class="name">{{user_id.first_name}} {{user_id.last_name}}</h5>
                                                 <h6 class="username">@{{user_id.username}}</h6>
-                                                <p class="about">{{user_id.bio}}bio hai hi nhi iska kuch dekh </p>
+                                                <p class="about">{{user_id.profile.bio}} </p>
                                                 <div class="btn-group grpBtn" role="group" aria-label="Basic example">
                                                     <button type="button" class="btn btn-secondary active">
                                                         <p class="count">{{posts.count}}</p>
                                                         <p class="text">posts</p>
                                                     </button>
                                                     {% if follower_count > 0 %}
-                                                    <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#followersModal">
+                                                        {% if profile_privacy == 'private' %}
+                                                            {% if user_follows_profile %}
+                                                                <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#followersModal">
+                                                            {% else %}
+                                                                <button type="button" class="btn btn-secondary" data-toggle="modal">
+                                                            {% endif %}
+                                                        {% else %}
+                                                            <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#followersModal">
+                                                        {% endif %}
+
                                                     {% else %}
                                                     <button type="button" class="btn btn-secondary">
                                                     {% endif %}
@@ -229,7 +194,13 @@
                                                         <p class="text">followers</p>
                                                     </button>
                                                     {% if following_count > 0 %}
-                                                    <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#followingsModal">
+                                                        {% if profile_privacy == 'private' %}
+                                                            {% if user_follows_profile %}
+                                                                <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#followingsModal">
+                                                            {% endif %}
+                                                        {% else %}
+                                                            <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#followingsModal">
+                                                        {% endif %}
                                                     {% else %}
                                                     <button type="button" class="btn btn-secondary" >
                                                     {% endif %}
@@ -303,18 +274,9 @@
                                         <div class="tab-content" id="nav-tabContent">
                                             <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
                                                 <div class="mainProfilePostDiv">
-                                                    <!-- {% for post in posts %}
-                                                        <div id="post" class="post shadow p-3 mb-1 bg-white rounded" style="background-color: white;">
-                                                            <div class="article-metadata ">
-                                                                <a class="mr-2" href="#">{{ post.author }}</a>
-                                                                <small class="text-muted">{{ post.date_posted }}</small>
-                                                            </div>
-                                                            <h3><a class="article-title" href="#">{{ post.title }}</a></h3>
-                                                            <p class="article-content">{{ post.content }}</p>
-                                                        </div>
-                                                    {% endfor %} -->
 
-                                                    {% if posts.count > 0 %}
+                                                    {% if profile_privacy == 'public' %}
+                                                        {% if posts.count > 0 %}
                                                         {% for post in posts %}
                                                             <div class="card mainProfiilePostCard">
                                                                 <div class="card-header">
@@ -324,10 +286,10 @@
                                                                             <a href="{% url 'other-profile' post.author.id %}"><h6>{{ post.author }}</h6></a><p>@abhishek </p>
                                                                         </div>
                                                                         <div class="threeDot">
-                                                                            <p><i class="fa fa-ellipsis-v" aria-hidden="true"></i></p>                                                
+                                                                            <p><i class="fa fa-ellipsis-v" aria-hidden="true"></i></p>
                                                                         </div>
                                                                     </div>
-                                                                    
+
                                                                 </div>
                                                                 <div class="card-body">
                                                                 <h5 class="card-title">{{ post.title }}</h5>
@@ -354,20 +316,20 @@
                                                                 {% endif %}
                                                                 <!-- <img class="card-img-bottom" data-src="holder.js/100px180/" alt="100%x180" src="https://unknown-ag.github.io/sheetal_academy/ProjectImages/abhishek.jpeg" data-holder-rendered="true"> -->
                                                                 </div>
-                                                                
+
                                                                 <div class="card-footer">
                                                                     <div class="footerBtn">
                                                                             <div id="like"  class="like" ><i id="heart" class="fa fa-heart" aria-hidden="true" data-catid="{{post.id}}"><span class="total-likes" >{{post.likes_count}}</span></i ></div>
-                                                                        
+
                                                                         <div class="comment"><i class="far fa-comments"></i><span>13</span></div>
                                                                         <div class="share"><i class="fa fa-paper-plane" aria-hidden="true"></i><span>28</span></div>
-                                                                        
+
                                                                             <div class="save"><i class="fa fa-bookmark " aria-hidden="true" data-catid = {{post.id}}></i></div>
-                                                                        
+
                                                                     </div>
                                                                     <!-- {{ post.date_posted }} -->
                                                                  </div>
-                                                                 <div class="card-footer">                                            
+                                                                 <div class="card-footer">
                                                                     <div class="footerCommentDiv">
                                                                         <div class="commentBox">
                                                                             <form class="comment-form">
@@ -393,20 +355,120 @@
                                                                                     </div>
                                                                                 </div>
                                                                             </li>
-                                                                            {% endif %}                                 
+                                                                            {% endif %}
                                                                         </ul>
-                                                                        
-                                                                    </div> 
+
+                                                                    </div>
                                                                  </div>
-                                                            </div> 
+                                                            </div>
                                                          {% endfor %}
                                                     {% else %}
-    
+
                                                     <div class="card mainProfiileNoPostCard">
                                                         <h6>{{user_id.username}} haven't posted anything yet</h6>
                                                     </div>
-    
-                                                    {% endif %} 
+
+                                                    {% endif %}
+                                                    {% elif user_follows_profile %}
+                                                        {% if posts.count > 0 %}
+                                                        {% for post in posts %}
+                                                            <div class="card mainProfiilePostCard">
+                                                                <div class="card-header">
+                                                                    <div class="cardHeadSection">
+                                                                        <div class="profileImg"><a href="{% url 'other-profile' post.author.id %}"><img src="{{post.author.profile.image.url}}"></a></div>
+                                                                        <div class="profileTitle">
+                                                                            <a href="{% url 'other-profile' post.author.id %}"><h6>{{ post.author }}</h6></a><p>@abhishek </p>
+                                                                        </div>
+                                                                        <div class="threeDot">
+                                                                            <p><i class="fa fa-ellipsis-v" aria-hidden="true"></i></p>
+                                                                        </div>
+                                                                    </div>
+
+                                                                </div>
+                                                                <div class="card-body">
+                                                                <h5 class="card-title">{{ post.title }}</h5>
+                                                                <p class="card-text">{{ post.content }}</p>
+
+                                                                {% if post.images.all %}
+                                                                    <div class="image-div">
+                                                                        <div class="card-group image-group h-100 d-flex" style="flex-direction: row;">
+                                                                            {% if post.images.all.count > 2 %}
+                                                                                    <div class="card card-one w-100" style='background: url("{{post.images.all.0.image.url}}");'>
+                                                                                    </div>
+                                                                                    <div class="card card-one w-100">
+                                                                                        <div class="card-header card-in-image h-50" style='background: url("{{post.images.all.1.image.url}}");'></div>
+                                                                                        <div class="card-footer card-in-image h-50" style='background: url("{{post.images.all.2.image.url}}");'></div>
+                                                                                    </div>
+                                                                            {%else%}
+                                                                                {% for postImage in post.images.all %}
+                                                                                    <div class="card w-100" style='background: url("{{postImage.image.url}}");'>
+                                                                                    </div>
+                                                                                {% endfor %}
+                                                                            {% endif %}
+                                                                        </div>
+                                                                    </div>
+                                                                {% endif %}
+                                                                <!-- <img class="card-img-bottom" data-src="holder.js/100px180/" alt="100%x180" src="https://unknown-ag.github.io/sheetal_academy/ProjectImages/abhishek.jpeg" data-holder-rendered="true"> -->
+                                                                </div>
+
+                                                                <div class="card-footer">
+                                                                    <div class="footerBtn">
+                                                                            <div id="like"  class="like" ><i id="heart" class="fa fa-heart" aria-hidden="true" data-catid="{{post.id}}"><span class="total-likes" >{{post.likes_count}}</span></i ></div>
+
+                                                                        <div class="comment"><i class="far fa-comments"></i><span>13</span></div>
+                                                                        <div class="share"><i class="fa fa-paper-plane" aria-hidden="true"></i><span>28</span></div>
+
+                                                                            <div class="save"><i class="fa fa-bookmark " aria-hidden="true" data-catid = {{post.id}}></i></div>
+
+                                                                    </div>
+                                                                    <!-- {{ post.date_posted }} -->
+                                                                 </div>
+                                                                 <div class="card-footer">
+                                                                    <div class="footerCommentDiv">
+                                                                        <div class="commentBox">
+                                                                            <form class="comment-form">
+                                                                                {% csrf_token %}
+                                                                                {{comment_form.commented_text}}
+                                                                                <!-- <input type="text" class="form-control form-control-sm mr-3"  placeholder="Write a comment..."> -->
+                                                                                <button type="submit" class="btn btn-outline-info commentBtn" data-catid="{{post.id}}"><i class="fas fa-paper-plane"></i></button>
+                                                                            </form>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="allCommentDiv" id="allCommentDiv">
+                                                                        <ul class="list-unstyled single-post-cmt-div{{post.id}} mb-0">
+                                                                            {% if post.comments.all %}
+                                                                             <li class="media">
+                                                                                <a href="#"><img class="mr-3 profilePic" src="/media/default.jpeg" alt="img"></a>
+                                                                                <div class="media-body w-50">
+                                                                                    <h6 class="mt-0 mb-1 profileName"><a href="#">{{post.comments.all.0.author.first_name}} {{post.comments.all.0.author.last_name}}</a><span class="ml-3 commentlikeBtn"><i class="far fa-heart"></i></span></h6>
+                                                                                    <p class="commentText">{{post.comments.all.0.commented_text}}</p>
+                                                                                    <div class="commentTextBottomBtn">
+                                                                                        <span class="textBtn">9h</span>
+                                                                                        <span class="textBtn"><span>5</span> likes</span>
+                                                                                        <span class="textBtn">reply</span>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </li>
+                                                                            {% endif %}
+                                                                        </ul>
+
+                                                                    </div>
+                                                                 </div>
+                                                            </div>
+                                                         {% endfor %}
+                                                    {% else %}
+
+                                                    <div class="card mainProfiileNoPostCard">
+                                                        <h6>{{user_id.username}} haven't posted anything yet</h6>
+                                                    </div>
+
+                                                    {% endif %}
+                                                    {% else %}
+                                                        <h5>This account is private</h5>
+                                                        <p>Follow this account to see their posts</p>
+                                                    {% endif %}
+
+
                                                  </div>
                                             </div>
                                             <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
@@ -619,13 +681,22 @@
                                     <div class="cardHeadSection">
                                         <div class="profileImg"><a href="{% url 'other-profile' follower.user.id %}"><img src="{{follower.user.profile.image.url}}"></a></div>
                                         <div class="profileTitle">
-                                            <a href="{% url 'other-profile' follower.user.id %}"><h6>{{follower.user.profile.first_name}} {{follower.user.profile.last_name}}</h6></a><p>@{{follower.user.username}}</p>
+                                            <a href="{% url 'other-profile' follower.user.id %}"><h6>{{follower.user.first_name}} {{follower.user.last_name}}</h6></a><p>@{{follower.user.username}}</p>
                                         </div>
-                                        {% if follower.user.id not in following_users %}
-                                        <div class="recomdAddBtn">
-                                            <p><a href="#"><i class="fa fa-plus" aria-hidden="true"></i></a></p>
+                                        <div class="modal-follow-request-button">
+                                            {% if follower.user.id != user.id %}
+                                                {% if  user|user_in_follow_request:follower.user %}
+                                                    <a style="color:dodgerblue"   class=" follow-btn {{follower.user.id}}requested" data-id="{{follower.user.id}}" id="follow-btn{{follower.user.id}}">Requested</a>
+
+                                                {% elif follower.user.id not in following_list_of_current_user %}
+                                                    <a style="color:dodgerblue"  class=" follow-btn {{follower.user.id}}follow" data-id="{{follower.user.id}}" id="follow-btn{{follower.user.id}}">Follow</a>
+                                                {% elif follower.user.id in following_list_of_current_user %}
+                                                    <a style="color:dodgerblue"  class=" follow-btn {{follower.user.id}}unfollow" data-id="{{follower.user.id}}" id="follow-btn{{follower.user.id}}">Unfollow</a>
+
+                                                {% endif %}
+                                            {% endif %}
                                         </div>
-                                        {% endif %}
+
                                     </div>
                                 </div>
                                 {% endfor %}                            
@@ -655,11 +726,21 @@
                                         <div class="cardHeadSection">
                                             <div class="profileImg"><a href="{% url 'other-profile' following.user.id %}"><img src="{{following.user.profile.image.url}}"></a></div>
                                             <div class="profileTitle">
-                                                <a href="{% url 'other-profile' following.user.id %}"><h6>{{following.user.profile.first_name}} {{following.user.profile.last_name}}</h6></a><p>@{{following.user.username}}</p>
+                                                <a href="{% url 'other-profile' following.user.id %}"><h6>{{following.user.first_name}} {{following.user.last_name}}</h6></a><p>@{{following.user.username}}</p>
                                             </div>
-                                            <div class="recomdAddBtn">
-                                                <p><a href="#"><i class="fas fa-minus"></i></a></p>
-                                            </div>                                   
+                                            <div class="modal-follow-request-button">
+                                                {% if following.user.id != user.id %}
+                                                    {% if  user|user_in_follow_request:following.user %}
+                                                        <a style="color:dodgerblue"   class=" {{follower.user.id}}requested" data-id="{{following.user.id}}">Requested</a>
+
+                                                    {% elif following.user.id not in following_list_of_current_user %}
+                                                        <a style="color:dodgerblue"  class="{{following.user.id}}follow" data-id="{{following.user.id}}">Follow</a>
+                                                    {% elif follower.user.id in following_list_of_current_user %}
+                                                        <a style="color:dodgerblue"  class="{{following.user.id}}unfollow" data-id="{{following.user.id}}">Unfollow</a>
+
+                                                    {% endif %}
+                                                {% endif %}
+                                            </div>
                                         </div>
                                     </div>
                                 {% endfor %}

@@ -138,7 +138,7 @@ class PostCreateView(LoginRequiredMixin,CreateView):
         return super().post(request, *args, **kwargs)
 
 
-"""This view gets called as the user clicks on the like button. It get called through 
+"""This view gets called as the user clicks on the like button. It gets called through 
 ajax (javascript/post_like.js) the url is in the Blogging/urls with the name 'like-post' 
 State of the button is saved each time the user clicks that. Like button appearance changes
  depending on the liked button status"""

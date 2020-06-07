@@ -1,4 +1,5 @@
 {% extends 'blog/base.html' %}
+{% load static %}
 
 {% block css %}
 <style>
@@ -202,7 +203,9 @@
                                                 <strong>{{ error_message }}</strong>
                                             </div>
                                         {% endif %}
-                                            <form id="postCreateForm">
+                                            <form id="postUpdateForm">
+                                                {% csrf_token %}
+                                                <div id="postId" data-pk={{post.id}}></div>
                                                 <div class="d-flex">
                                                     <h5 class="w-50">Update Post</h5>
                                                     <button type="button" class="btn btn-outline-danger w-25 ml-auto btn-sm" data-toggle="modal" data-target="#deleteModal">Delete</button>
@@ -231,19 +234,9 @@
                                                             <script type="text/javascript">
                                                                 imgFile[imgAvailableIndex[0]] = {{postImage.id}};
                                                                 delete imgAvailableIndex[0];
-                                                                imgAvailableIndex.shift();                                
-                                                                if($("#imagePreview").find("img").length==3){
-                                                                    $("#id_image")[0].disabled = true;
-                                                                   // document.getElementsByClassName("fa fa-camera")[0].style.color = "grey";
-                                                                }
+                                                                imgAvailableIndex.shift();
                                                             </script>
                                                         {% endfor %}
-                                                    {% else %}
-                                                    <script type="text/javascript"> 
-                                                            var imgFile = Array(3)
-                                                            var imgAvailableIndex = Array();
-                                                            var imgAvailableIndex = [0,1,2];
-                                                    </script>
                                                     {% endif %}
                                 
                                                     </div>
@@ -467,78 +460,6 @@
 {% endblock content %}
 
 
-
 {% block footer %}
-    <script type="text/javascript">
-
-        function removeImg(imgCurrentIndex){
-            $("#img"+imgCurrentIndex).remove();
-            $("#id_image")[0].disabled = false;
-            $(".addImageBtn").removeClass("disable");
-            //document.getElementsByClassName("fa fa-camera")[0].style.color = "black";
-            imgAvailableIndex.push(imgCurrentIndex);
-            imgAvailableIndex.sort();
-            delete imgFile[imgCurrentIndex];
-        };
-
-        function filePreview(fileInput,imgCurrentIndex){
-            var imgSrc = window.URL.createObjectURL(fileInput.files[0]);
-            $("#imagePreview").append($('<div/>',{"id":"img"+imgCurrentIndex,"style":"padding:5px","class":"col mb-3"}).append([
-                    $('<img/>',{"src":imgSrc,"width":'100%',"height":'100%'}),
-                    $("<i/>",{"onclick":"removeImg({})".replace("{}",imgCurrentIndex),"class":"fa fa-times","style":"color:red;top: 15px;right: 15px;position: absolute;cursor: pointer;color:red;","aria-hidden":"true"})
-                ])
-            )
-
-            if($("#imagePreview").find("img").length==3){
-                $("#id_image")[0].disabled = true;
-                $(".addImageBtn").addClass("disable");
-                //document.getElementsByClassName("fa fa-camera")[0].style.color = "grey";
-            }
-        };
-        
-
-        $("#id_image").change(function(){
-            filePreview(this,imgAvailableIndex[0]);
-            imgFile[imgAvailableIndex[0]] = this.files[0];
-            delete imgAvailableIndex[0];
-            imgAvailableIndex.shift();
-        });
-
-        $("#id_image").click(function(){
-            if($("#imagePreview").find("img").length==3){
-                this.disabled = true;
-                //document.getElementsByClassName("fa fa-camera")[0].style.color = "grey";
-                return false;
-            }
-            return true;
-        });
-
-        $("#postCreateForm")[0].addEventListener('submit', function(e) {
-            e.preventDefault();
-            const url = "{% url 'post-update' pk=post.id %}";
-            const formData = new FormData();
-
-            formData.append("csrfmiddlewaretoken","{{csrf_token}}");
-            formData.append("title",$("input[name='title']").val());
-            formData.append("content",$("textarea[name='content']").val());
-            formData.append("category",$("select[name='category']").val());
-
-            imgFile.forEach(function(item, index){
-                if(typeof(item) == "number"){
-                    formData.append('postImgId', item);
-                }else{
-                    formData.append('images', item);
-                }
-            });
-          
-            fetch(url, {
-              method: 'POST',
-              body: formData,
-            }).then(response => {
-              window.location.href = response.url;
-            })
-
-        });
-
-    </script>
+    <script type="text/javascript" src="{% static 'blog/javascript/update_post.js' %}"></script>
 {% endblock %}

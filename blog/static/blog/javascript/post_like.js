@@ -7,7 +7,7 @@ $(document).ready(function(){
         catid = $(this).attr("data-catid");
         $.ajax({
             type: "GET",
-            url: "like/",
+            url: "/like/",
             data: {
                 post_id:catid
             },

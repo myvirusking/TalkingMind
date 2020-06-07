@@ -89,7 +89,7 @@
                         <a href="{% url 'post-create' %}" class="card" >
                             <div class="postBtnBody">
                                 <div class="profileImg"><img src="{{user.profile.image.url}}"></div>
-                                <div class="postInputDiv"><input class="form-control form-control-sm" type="text"  placeholder="What's in your mind.." ></div>
+                                <div class="postInputDiv"><input class="form-control form-control-sm" type="text"  placeholder="What's on your mind.." ></div>
                                 <p class="postBtn"><button class="btn btn-primary">Post</button></p>                                          
                             </div>
                         </a>
@@ -104,7 +104,7 @@
                                             <div class="cardHeadSection">
                                                 <div class="profileImg"><a href="{% url 'other-profile' post.author.id %}"><img src="{{post.author.profile.image.url}}"></a></div>
                                                 <div class="profileTitle">
-                                                    <a href="{% url 'other-profile' post.author.id %}"><h6>{{ post.author.first_name }} {{post.author.last_name}}</h6></a><p>{{post.date_posted|timesince}} ago </p>
+                                                    <a href="{% url 'other-profile' post.author.id %}"><h6>{{ post.author.first_name }} {{post.author.last_name}}</h6></a><p>{{post.date_posted}} </p>
                                                 </div>
                                                 <div class="threeDot">
                                                     <p><i class="fa fa-ellipsis-v" aria-hidden="true"></i></p>                                                
@@ -190,10 +190,10 @@
                                                             </div>
                                                         </div>
                                                     </li>
-                                                    {% endif %}                                 
+                                                    {% endif %}
                                                 </ul>
-                                                
-                                            </div> 
+
+                                            </div>
                                          </div>
                                         
 
@@ -293,9 +293,9 @@
       </div>
 
       <!-- Modal -->
-      
+
     <!-- <div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" >
-        
+
         <div style="    height: 100vh;
         display: flex;
         flex-direction: row;
@@ -310,12 +310,12 @@
                         a<br>
                         a<br>
                         a<br>
-                        a<br>                        
+                        a<br>
                     </div>
                 </div>
             </div>
         </div>|
-        
+
     </div> -->
     <div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
@@ -335,7 +335,7 @@
                           <li data-target="#demo" data-slide-to="1"></li>
                           <li data-target="#demo" data-slide-to="2"></li>
                         </ul> -->
-                        
+
                         <!-- The slideshow -->
                         <div class="carousel-inner">
                           <div class="carousel-item">
@@ -348,7 +348,7 @@
                             <div class="carousel-image-div" style="background: url(https://killerattitudestatus.in/wp-content/uploads/2019/12/gud-night-images.jpg);"></div>
                           </div>
                         </div>
-                        
+
                         <!-- Left and right controls -->
                         <a class="carousel-control-prev" href="#demo" data-slide="prev">
                           <span class="carousel-control-prev-icon"></span>
@@ -409,7 +409,7 @@
     </div>
 
 
-    
+
 
 
     {% block scripts %}
@@ -426,7 +426,7 @@
         }
     </script>
     <script>
-        
+
     </script>
 
     

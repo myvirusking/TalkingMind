@@ -31,7 +31,11 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+<<<<<<< HEAD
     'django.contrib.sites',
+=======
+    'settings.apps.SettingsConfig',
+>>>>>>> 4373b5b8011665b7f49394c0eaa3d3cb06a8e462
     'blog.apps.BlogConfig',
     'users.apps.UsersConfig',
     'crispy_forms',
@@ -43,6 +47,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'blog.templatetags.custom_tag',
 
+<<<<<<< HEAD
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -56,6 +61,8 @@ AUTHENTICATION_BACKENDS = [
 
     # `allauth` specific authentication methods, such as login by e-mail
     'allauth.account.auth_backends.AuthenticationBackend',
+=======
+>>>>>>> 4373b5b8011665b7f49394c0eaa3d3cb06a8e462
 
 ]
 

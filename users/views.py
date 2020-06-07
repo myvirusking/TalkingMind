@@ -1,7 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponseRedirect
 from django.contrib.auth.models import User
 from .forms import RegisterForm, UserUpdateForm, ProfileUpdateForm, AboutForm
-from django.contrib import messages
 from django.views.generic.list import ListView
 from django.contrib.auth.decorators import login_required
 from django.views.generic import View
@@ -16,6 +15,7 @@ from django.contrib.auth import authenticate, login
 from blog.models import Post
 from django.template.loader import render_to_string
 from django.http import JsonResponse
+from settings.models import AccountPrivacySetting
 
 
 #################  Currently not in use but could be used in future development##################
@@ -153,7 +153,8 @@ class HomeView(ListView):
 
 @login_required
 def other_user_profile(request, pk):
-    if (request.user.id == pk):
+
+    if request.user.id == pk:
         return HttpResponseRedirect('/profile')
 
     post = Post.objects.filter(author_id=pk)
@@ -164,22 +165,37 @@ def other_user_profile(request, pk):
 
     following_list = profile_current.following.all()
 
+    profile_privacy_setting = AccountPrivacySetting.objects.get(profile=profile_other)
+    profile_privacy = profile_privacy_setting.profile_privacy
+
     following_list_of_other_user = profile_other.following.all()
-    follower_list_of_other_user = profile_other.following.all()
+    follower_list_of_other_user = profile_other.followers.all()
 
     button_status = 'none'
+    button_class = 'unfollowBtn'
+    button_id = 'unfollow-user'
+    button_text = 'Unfollow'
 
     if user.id not in [user for id, user in profile_current.following.values_list()]:
 
         button_status = 'not_following'
+        button_class = 'followBtn'
+        button_id = 'follow-user'
+        button_text = 'Follow'
+        user_follows_profile = False
 
-        if len(FollowRequest.objects.filter(from_user=request.user).
-                       filter(to_user=user)) == 1:
+        if len(FollowRequest.objects.filter(from_user=request.user).filter(to_user=user)) == 1:
             button_status = 'requested'
-
+            button_class = 'cancelRequestBtn'
+            button_id = 'cancel-request'
+            button_text = 'Cancel request'
+    else:
+        user_follows_profile = True
     other_user_article_category = [name for id, name in Profile.objects.get(user=user).article_category.values_list()]
     current_user_article_category = [name for id, name in Profile.objects.get(user=request.user).article_category.values_list()]
     common_topics = [name for name in current_user_article_category if name in other_user_article_category]
+
+    current_user_following_list = [user for id, user in request.user.profile.following.values_list()]
 
     following_count = profile_other.following_count
     follower_count = profile_other.followers_count
@@ -191,32 +207,65 @@ def other_user_profile(request, pk):
         'user_id': user,
         'article_category': other_user_article_category,
         'button_status': button_status,
+        'button_class':button_class,
+        'button_id' : button_id,
+        'button_text':button_text,
         'following_count': following_count,
         'follower_count': follower_count,
         'common_topics':common_topics,
         'following_list': following_list_of_other_user,
         'follower_list': follower_list_of_other_user,
-        'comment_form': comment_form
+        'following_list_of_current_user': current_user_following_list,
+        'comment_form': comment_form,
+        'profile_privacy':profile_privacy,
+        'user_follows_profile':user_follows_profile
+
+
     }
 
     return render(request, 'users/otherUserProfile.html', context)
 
 
 """  This function gets called when the user follows some other user. Url path in Blogging/urls and the
- name of the url is "send_follow_request"   """
+ name of the url is "send_follow_request.js"   """
 
 
 @login_required
-def send_follow_request(request, pk):
+def send_follow_request(request):
     if request.user.is_authenticated:
-        user = get_object_or_404(User, id=pk)
-        frequest, created = FollowRequest.objects.get_or_create(
-            from_user=request.user,
-            to_user=user
-        )
+        userid = request.GET['userid']
+        user = get_object_or_404(User, id=userid)
 
-        return HttpResponseRedirect('/other-profile/{}/'.format(pk))
+        accout_setting = AccountPrivacySetting.objects.get(profile=user.profile)
+        profile_privacy_of_other_user = accout_setting.profile_privacy
 
+        if profile_privacy_of_other_user == 'public':
+            print("Inside")
+            request.user.profile.following.create(user=user)
+            request.user.profile.following_count += 1
+            request.user.profile.save()
+
+            user.profile.followers.create(user=request.user)
+            user.profile.followers_count += 1
+            user.profile.save()
+
+            following_count = request.user.profile.following_count
+
+            data_dict = {'profile_privacy': 'public',
+                         'following_count': following_count}
+            return JsonResponse(data=data_dict, safe=False)
+
+        elif profile_privacy_of_other_user == 'private':
+            frequest, created = FollowRequest.objects.get_or_create(
+                from_user=request.user,
+                to_user=user
+            )
+            data_dict = {'profile_privacy': 'private'}
+
+            return JsonResponse(data=data_dict, safe=False)
+
+
+        return render(request, 'users/userprofile.html')
 
 """  This function gets called when the user cancels the follow request sent to  some other user. 
 This wil  only be accessible after sending the follow request and before the acceptance of the request.
@@ -224,15 +273,17 @@ Url path in Blogging/urls and the name of the url is "cancel_follow_request"   "
 
 
 @login_required
-def cancel_follow_request(request, pk):
+def cancel_follow_request(request):
     if request.user.is_authenticated:
-        user = get_object_or_404(User, id=pk)
+        userid = request.GET['userid']
+        user = get_object_or_404(User, id=userid)
         frequest = FollowRequest.objects.filter(
             from_user=request.user,
             to_user=user
         ).first()
         frequest.delete()
-        return HttpResponseRedirect('/other-profile/{}/'.format(pk))
+        button_status = 'not_following'
+        return render(request, 'users/userprofile.html')
 
 
 """This view is called when the user who received the follow request deletes the request and this view 
@@ -241,7 +292,7 @@ url is "delete_follow_request" """
 
 
 @login_required
-def delete_follow_request(request, pk):
+def delete_follow_request(request):
     from_user = get_object_or_404(User, id=pk)
     frequest = FollowRequest.objects.filter(
         from_user=from_user,
@@ -259,23 +310,32 @@ only if the user follows that particular user. If this view is called then the u
 
 
 @login_required
-def unfollow_user(request, pk):
-    user = get_object_or_404(User, id=pk)
+def unfollow_user(request):
+    if request.user.is_authenticated:
+        userid = request.GET['userid']
+        user = get_object_or_404(User, id=int(userid))
 
-    unfollowed_user = Profile.objects.get(id=pk)
-    follower_list = [user for id, user in unfollowed_user.followers.values_list()]
-    follower_user_index = follower_list.index(request.user.id)
-    unfollowed_user.followers.all()[follower_user_index].delete()
-    unfollowed_user.followers_count -= 1
-    unfollowed_user.save()
+        unfollowed_user = Profile.objects.get(id=int(userid))
+        follower_list = [user for id, user in unfollowed_user.followers.values_list()]
+        follower_user_index = follower_list.index(request.user.id)
+        unfollowed_user.followers.all()[follower_user_index].delete()
+        unfollowed_user.followers_count -= 1
+        unfollowed_user.save()
 
-    follower = Profile.objects.get(user=request.user)
-    following_list = [user for id, user in follower.following.values_list()]
-    following_user_index = following_list.index(pk)
-    follower.following.all()[following_user_index].delete()
-    follower.following_count -= 1
-    follower.save()
-    return HttpResponseRedirect('/other-profile/{}/'.format(pk))
+        follower = Profile.objects.get(user=request.user)
+        following_list = [user for id, user in follower.following.values_list()]
+        following_user_index = following_list.index(int(userid))
+        follower.following.all()[following_user_index].delete()
+        follower.following_count -= 1
+        follower.save()
+
+        following_count = follower.following_count
+
+        data_dict = {'following_count':following_count}
+
+        return JsonResponse(data=data_dict, safe=False)
+
+    return render(request, 'users/userprofile.html')
 
 
 """This view gets called if the user who received the follow request accepts it. This is accessible 
@@ -286,25 +346,53 @@ who accepted the request will be added to the following list of the user who sen
 
 @login_required
 def accept_follow_request(request, pk):
-    from_user = get_object_or_404(User, id=pk)
+    if request.user.is_authenticated:
+        from_user = get_object_or_404(User, id=pk)
 
-    frequest = FollowRequest.objects.filter(
-        from_user=from_user, to_user=request.user).first()
+        frequest = FollowRequest.objects.filter(
+            from_user=from_user, to_user=request.user).first()
 
-    request_sender = from_user
-    requested_user = frequest.to_user
+        request_sender = from_user
+        requested_user = request.user
 
-    request_sender.profile.following.create(user=requested_user)
-    request_sender.profile.following_count += 1
-    request_sender.profile.save()
+        request_sender.profile.following.create(user=requested_user)
+        request_sender.profile.following_count += 1
+        request_sender.profile.save()
 
-    requested_user.profile.followers.create(user=request_sender)
-    requested_user.profile.followers_count += 1
-    requested_user.profile.save()
+        requested_user.profile.followers.create(user=request_sender)
+        requested_user.profile.followers_count += 1
+        requested_user.profile.save()
 
-    frequest.delete()
+        frequest.delete()
 
     return HttpResponseRedirect('/profile')
+
+
+@login_required
+def remove_from_followers_list(request):
+    if request.user.is_authenticated:
+        userid = request.GET['userid']
+        user_to_be_removed = get_object_or_404(User, id=int(userid))
+
+        follower_list = [user for id, user in request.user.profile.followers.values_list()]
+        user_to_be_removed_index = follower_list.index(user_to_be_removed.id)
+        request.user.profile.followers.all()[user_to_be_removed_index].delete()
+        request.user.profile.followers_count -= 1
+        request.user.profile.save()
+
+        following_list_of_user_to_be_removed = [user for id, user in user_to_be_removed.profile.following.values_list()]
+        removing_user_index = following_list_of_user_to_be_removed.index(request.user.id)
+        user_to_be_removed.profile.following.all()[removing_user_index].delete()
+        user_to_be_removed.profile.following_count -=1
+        user_to_be_removed.profile.save()
+
+        removing_user_followers_count = request.user.profile.followers_count
+        data_dict = {'followers_count':removing_user_followers_count}
+
+        return JsonResponse(data=data_dict, safe=False)
+
+    return render(request, 'users/userprofile.html')
+
 
 
 class SelectFavouriteArticleCategoryView(LoginRequiredMixin, View):

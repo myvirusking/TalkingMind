@@ -1047,6 +1047,20 @@ input {
 .recomdAddBtn p {
     margin-bottom: 0px;
 }
+.recomdAddBtn p i.fa-minus {
+    border: 2px solid red;
+    border-radius: 50%;
+    padding: 5px 6px;
+    color: red;
+    font-size: 11px;
+}
+.recomdAddBtn p i.fa-minus:hover {
+    border: 2px solid red;
+    background: red;
+    color: white;
+    transition: .5s ease;
+}
+
 .recomdAddBtn p i{
     border: 2px solid #0dc9ef;
     border-radius: 50%;

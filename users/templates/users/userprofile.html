@@ -131,7 +131,7 @@
                                                 <button type="button" class="btn btn-secondary">
                                                 {% endif %}
                                                 <!-- <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#followersModal"> -->
-                                                    <p class="count">{{followers_count}}</p>
+                                                    <p class="count total-followers-count">{{followers_count}}</p>
                                                     <p class="text">followers</p>
                                                 </button>
                                                 {% if following_count > 0 %}
@@ -140,7 +140,7 @@
                                                 <button type="button" class="btn btn-secondary" >
                                                 {% endif %}
                                                 <!-- <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#followingsModal"> -->
-                                                    <p class="count">{{following_count}}</p>
+                                                    <p class="count total-following-count">{{following_count}}</p>
                                                     <p class="text">followings</p>
                                                 </button>
                                             </div>
@@ -270,7 +270,7 @@
                                                                 </div>
                                                                 <!-- {{ post.date_posted }} -->
                                                              </div>
-                                                             <div class="card-footer">                                            
+                                                             <div class="card-footer">
                                                                 <div class="footerCommentDiv">
                                                                     <div class="commentBox">
                                                                         <form class="comment-form">
@@ -282,7 +282,7 @@
                                                                     </div>
                                                                 </div>
                                                                 <div class="allCommentDiv" id="allCommentDiv">
-                                                        
+
                                                                     <ul class="list-unstyled single-post-cmt-div{{post.id}} mb-0">
                                                                         {% if post.comments.all %}
                                                                          <li class="media">
@@ -297,10 +297,10 @@
                                                                                 </div>
                                                                             </div>
                                                                         </li>
-                                                                        {% endif %}                                 
+                                                                        {% endif %}
                                                                     </ul>
-                                                                    
-                                                                </div> 
+
+                                                                </div>
                                                              </div>
                                                         </div> 
                                                      {% endfor %}
@@ -519,7 +519,7 @@
                 <form enctype="multipart/form-data" method="post">
                     {% csrf_token %}
                     <div class="updateFormFLname">
-                        {{user_form.first_name}} 
+                        {{user_form.first_name}}
                         {{user_form.last_name}}
                     </div>                      
                     {{user_form.username}} 
@@ -605,23 +605,37 @@
                 <div class="followerListDiv">
                     <div class="list-group">
                         {% for follower in followers_list %}
-                        <div class="list-group-item">
-                            <div class="cardHeadSection">
-                                <div class="profileImg"><a href="{% url 'other-profile' follower.user.id %}"><img src="{{follower.user.profile.image.url}}"></a></div>
-                                <div class="profileTitle">
-                                    <a href="{% url 'other-profile' follower.user.id %}"><h6>{{follower.user.profile.first_name}} {{follower.user.profile.last_name}}</h6></a><p>@{{follower.user.username}}</p>
+                        <div class="list-group-item {{follower.user.id}}">
+                            <div class="cardHeadSection ">
+                                <div class="profileImg followers-list-modal"><a href="{% url 'other-profile' follower.user.id %}"><img src="{{follower.user.profile.image.url}}"></a></div>
+                                    <div class="profileTitle">
+                                        <a href="{% url 'other-profile' follower.user.id %}"><h6>{{follower.user.first_name}} {{follower.user.last_name}}</h6></a>
+                                        <div class="d-flex">
+                                            <p>@{{follower.user.username}}</p>
+                                            <div class="ml-2 modal-follow-request-button" style="font-size: 12px;cursor:pointer;">
+                                                {% if  user|user_in_follow_request:follower.user %}
+                                                    <a style="color:dodgerblue"   class="follow-btn  {{follower.user.id}}requested" data-id="{{follower.user.id}}" id="follow-btn{{follower.user.id}}">Requested</a>
+
+                                                {% elif follower.user.id not in following_users %}
+                                                    <a style="color:dodgerblue"  class="follow-btn {{follower.user.id}}follow" data-id="{{follower.user.id}}" id="follow-btn{{follower.user.id}}">Follow</a>
+                                                {% else %}
+                                                    <a style="color:dodgerblue"  class="follow-btn {{follower.user.id}}unfollow" data-id="{{follower.user.id}}" id="follow-btn{{follower.user.id}}">Unfollow</a>
+
+                                                {% endif %}
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                <div class="recomdAddBtn remove-button-of-followers">
+                                    <p ><a data-id="{{follower.user.id}}"><i class="fa fa-minus" aria-hidden="true"></i></a></p>
                                 </div>
-                                {% if follower.user.id not in following_users %}
-                                <div class="recomdAddBtn">
-                                    <p><a href="#"><i class="fa fa-plus" aria-hidden="true"></i></a></p>
-                                </div>
-                                {% endif %}
                             </div>
                         </div>
                         {% endfor %}                            
                         
                     </div>
-                    </div>
+                </div>
             </div>
         </div>
             <!-- <div class="modal-footer">
@@ -645,14 +659,14 @@
                 <div class="followingListDiv">
                     <div class="list-group">
                         {% for following in following_list %}
-                            <div class="list-group-item">
+                            <div class="list-group-item {{following.user.id}}followed-user">
                                 <div class="cardHeadSection">
                                     <div class="profileImg"><a href="{% url 'other-profile' following.user.id %}"><img src="{{following.user.profile.image.url}}"></a></div>
                                     <div class="profileTitle">
-                                        <a href="{% url 'other-profile' following.user.id %}"><h6>{{following.user.profile.first_name}} {{following.user.profile.last_name}}</h6></a><p>@{{following.user.username}}</p>
+                                        <a href="{% url 'other-profile' following.user.id %}"><h6>{{following.user.first_name}} {{following.user.last_name}} </h6></a><p>@{{following.user.username}}</p>
                                     </div>
-                                    <div class="recomdAddBtn">
-                                        <p><a href="#"><i class="fas fa-minus"></i></a></p>
+                                    <div class="recomdAddBtn unfollow-button-of-followings">
+                                        <p><a  data-id="{{following.user.id}}"><i class="fas fa-minus"></i></a></p>
                                     </div>                                   
                                 </div>
                             </div>
