@@ -1,4 +1,4 @@
-var imgFile = Array(3);
+    var imgFile = Array(3);
 var imgAvailableIndex = Array();
 imgAvailableIndex = [0,1,2];
 
@@ -19,7 +19,7 @@ function filePreview(fileInput,imgCurrentIndex){
         ])
     );
 
-    if($("#imagePreview")[0].childElementCount==3){
+    if($("#imagePreview")[0].childElementCount===3){
         $("#id_image").prop("disabled",true);
         $(".addImageBtn").addClass("disable");
     }
@@ -31,7 +31,7 @@ $("#id_image").change(function(){
     delete imgAvailableIndex[0];
     imgAvailableIndex.shift();
 }).click(function(){
-    if(imgAvailableIndex.length==0){
+    if(imgAvailableIndex.length===0){
         this.disabled = true;
         $(".addImageBtn").addClass("disable");
     }

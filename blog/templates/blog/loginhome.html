@@ -96,10 +96,10 @@
                         <div class="filterDiv">
                             <h2><span>Filter by: <i class="fa fa-filter" aria-hidden="true" data-toggle="modal" data-target="#filterModal"></i></span></h2>
                         </div>
-                        <div class="mainCenterDiv">
-                            {% if posts.count > 0 %}
-                                {% for post in posts %}
-                                    <div class="card">
+                        <div class="mainCenterDiv infinite-container">
+                            {% if posts_count > 0 %}
+                                {% for post in paginated_posts %}
+                                    <div class="card infinite-item">
                                         <div class="card-header">
                                             <div class="cardHeadSection">
                                                 <div class="profileImg"><a href="{% url 'other-profile' post.author.id %}"><img src="{{post.author.profile.image.url}}"></a></div>
@@ -147,16 +147,16 @@
                                             <div class="footerBtn">
                                                 {% csrf_token %}
                                                 {% if user.id in post|liked_list  %}
-                                                    <div id="like"  class="like" ><i id="heart" class="fa fa-heart press" aria-hidden="true" data-catid="{{post.id}}"><span class="total-likes" >{{post.likes_count}}</span></i ></div>
+                                                    <div id="like"  class="like" ><i onclick="post_like(this,{{post.id}})" id="heart" class="fa fa-heart press" aria-hidden="true"><span class="total-likes" >{{post.likes_count}}</span></i ></div>
                                                 {% else %}
-                                                    <div id="like"  class="like" ><i id="heart" class="fa fa-heart" aria-hidden="true" data-catid="{{post.id}}"><span class="total-likes" >{{post.likes_count}}</span></i ></div>
+                                                    <div id="like"  class="like" ><i onclick="post_like(this,{{post.id}})" id="heart" class="fa fa-heart" aria-hidden="true"><span class="total-likes" >{{post.likes_count}}</span></i ></div>
                                                 {% endif %}
                                                 <div class="comment"><a href="{% url 'single-post' post.id %}"><i class="far fa-comments"></i></a><span>13</span></div>
                                                 <div class="share"><i class="fa fa-paper-plane" aria-hidden="true"></i><span>28</span></div>
                                                 {% if post.id in user.profile|saved_post %}
-                                                    <div class="save"><i class="fa fa-bookmark saved" aria-hidden="true" data-catid = {{post.id}}></i></div>
+                                                    <div class="save"><i onclick="post_save(this,{{post.id}})" class="fa fa-bookmark saved" aria-hidden="true"></i></div>
                                                 {% else %}
-                                                    <div class="save"><i class="fa fa-bookmark " aria-hidden="true" data-catid = {{post.id}}></i></div>
+                                                    <div class="save"><i onclick="post_save(this,{{post.id}})" class="fa fa-bookmark" aria-hidden="true"></i></div>
                                                 {% endif %}
 
 
@@ -203,6 +203,16 @@
                                 <h5>Any post regarding this topics not published</h5>
                             {% endif %} 
                          </div>
+                         
+                         {% if paginated_posts.has_next %}
+                            <a class="infinite-more-link" href="?page={{ paginated_posts.next_page_number }}"></a>
+                         {% endif %}
+                         <div class="d-flex justify-content-center" style="display:none;">
+                            <div class="spinner-border" role="status" style="display:none;">
+                                <span class="sr-only">Loading...</span>
+                            </div>
+                        </div>
+                        
                     </div>
                     <div class="col-lg-4 col-md-4">
                         <div class="mainLeftDiv">
@@ -412,32 +422,30 @@
 
 
 
-    {% block scripts %}
-    
-    <script>
-       
-        
-        function openNav() {
-          document.getElementById("mySidenav").style.width = "250px";
-        }
-        
-        function closeNav() {
-          document.getElementById("mySidenav").style.width = "0";
-        }
-    </script>
-    <script>
+{% block scripts %}
 
-    </script>
+<script>
+    var infinite = new Waypoint.Infinite({
+        element: $('.infinite-container'),
+        onBeforePageLoad: function () {
+            $('.spinner-border').show();
+        },
+        onAfterPageLoad: function () {
+            $('.spinner-border').hide();
+        }
+    });
 
+    function openNav() {
+        document.getElementById("mySidenav").style.width = "250px";
+    }
+    function closeNav() {
+        document.getElementById("mySidenav").style.width = "0";
+    }
+</script>
     
-    
-    {% endblock %}
+{% endblock scripts %}
 
    
 
-
-
-
-     
 
 {% endblock content %}
