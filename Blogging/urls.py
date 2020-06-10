@@ -24,13 +24,9 @@ from django.conf import settings
 from django.conf.urls.static import static
 from users import views as user_views
 from blog import views as blog_views
-<<<<<<< HEAD
 from users.views import notification
-=======
-from two_factor.urls import urlpatterns as tf_urls
 from settings.forms import CustomPasswordChangeForm
 from django.contrib import messages
->>>>>>> 4373b5b8011665b7f49394c0eaa3d3cb06a8e462
 
 
 urlpatterns = [
@@ -38,7 +34,7 @@ urlpatterns = [
     path('blog/', include('blog.urls')),
     path('user/', include('users.urls')),
     path('profile/',user_views.profile, name='profile'),
-    path(r'', include(tf_urls)),
+
     path('login/', user_views.CustomLoginView.as_view(),name='login'),
     path('logout/', auth_views.LogoutView.as_view(template_name='users/login.html', next_page='/login/'), name='logout'),
     path('other-profile/<int:pk>/', user_views.other_user_profile, name='other-profile'),
@@ -84,6 +80,8 @@ urlpatterns = [
     ),
          # Search user
     path('userSearch/',user_views.user_search_view,name="user_search"),
+    #path('userSearchname/',user_views.user_search_name,name="user_search_name"),
+    path('userList/',user_views.user_search_list,name="userList"),
 
     path('like/', blog_views.post_like, name="like-post"),
 
@@ -95,15 +93,12 @@ urlpatterns = [
 
     path('comment/', blog_views.comment, name="comment"),
 
-<<<<<<< HEAD
     # Social auth
     #path('oauth/', include('social_django.urls', namespace='social')),
 
     path('notification/',user_views.notification,name="notification"),
     path('accounts/', include('allauth.urls')),
-=======
     path('remove-from-followers/', user_views.remove_from_followers_list, name='remove-from-follower-list')
->>>>>>> 4373b5b8011665b7f49394c0eaa3d3cb06a8e462
 
 
 ]

@@ -26,7 +26,3 @@ def create_account_privacy_settings(sender, instance, created, **kwargs):
 def save_account_privacy_settings(sender, instance, **kwargs):
     instance.accountprivacysetting.save()
 
-
-
-
-

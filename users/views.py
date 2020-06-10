@@ -16,7 +16,7 @@ from blog.models import Post
 from django.template.loader import render_to_string
 from django.http import JsonResponse
 from settings.models import AccountPrivacySetting
-
+from django.db.models import Q
 
 #################  Currently not in use but could be used in future development##################
 def logout_required(function=None, logout_url=settings.LOGOUT_URL):
@@ -416,7 +416,7 @@ class SelectFavouriteArticleCategoryView(LoginRequiredMixin, View):
         profile_obj.save()
         return redirect("login-home")
 
-# user search view
+#user search view
 @login_required
 def user_search_view(request):
     ctx = {}
@@ -424,7 +424,11 @@ def user_search_view(request):
 
     users= []
     if url_parameter:
-        users = User.objects.filter(username__icontains=url_parameter)
+        users = User.objects.filter(
+            Q(username__icontains=url_parameter) |
+            Q(first_name__icontains=url_parameter) |
+            Q(last_name__icontains=url_parameter)
+            ).distinct()
     
 
     ctx["users"] = users
@@ -438,6 +442,59 @@ def user_search_view(request):
         return JsonResponse(data=data_dict, safe=False)
 
     return render(request, "blog/base.html", context=ctx)
+
+#search by username
+# @login_required
+# def user_search_name(request):
+#     ctx = {}
+#     url_parameter = request.GET.get("q")
+
+#     name= []
+#     if url_parameter:
+#         name = User.objects.filter(first_name__icontains=url_parameter)
+    
+
+#     ctx["name"] = name
+#     if request.is_ajax():
+#         print("Ajax name request")
+
+#         html = render_to_string(
+#             template_name="blog/user-search-results.html", context={"name": name}
+#         )
+#         data_dict = {"html_from_view": html}
+#         return JsonResponse(data=data_dict, safe=False)
+
+#     return render(request, "blog/base.html", context=ctx)
+
+""" This view function is used for directing user to the search results page i.e user_list.html when the user search for some other users 
+in the search-form field and if the results are found it will show the users profile fetch from the database and if the user is not found
+it will simply show that no results with the search query is available
+"""
+
+@login_required
+def user_search_list(request):
+    ctx = {}
+    # obj = User.objects.get(id=2)
+
+    # ctx = {
+    #     'name': obj.first_name,
+    #     'username' :obj.username
+    # }
+    url_parameter = request.GET['name']
+    
+    if url_parameter:
+        name = User.objects.filter(
+            Q(first_name__startswith=url_parameter) |
+            Q(last_name__startswith=url_parameter) |
+            Q(username__startswith=url_parameter) 
+            ).all()
+        ctx = {
+            'name': name,
+            'search':url_parameter
+        }
+
+    return render(request, "blog/user_list.html", context=ctx)
+
 
 
 

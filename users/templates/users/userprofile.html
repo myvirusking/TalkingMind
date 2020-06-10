@@ -65,10 +65,10 @@
     <nav class="navbar navbar-expand-md navbar-inverse regNav">
         <div class="container-fluid">
             <div class="navbar-brand">                    
-                <form class="form-inline searchForm">
+                <form class="form-inline searchForm"  method="GET" action="/userList/">
                     {% csrf_token %}
-                    <input class="form-control form-control-sm" type="text" autocomplete="off" placeholder="Search" id="user-input">
-                    <button class="btn btn-primary btn-sm searchBtn"><i class="fa fa-search" aria-hidden="true"></i></button>
+                    <input class="form-control form-control-sm" type="text" autocomplete="off" placeholder="Search" id="user-input" name="name">
+                    <button type="submit"class="btn btn-primary btn-sm searchBtn"><i class="fa fa-search" aria-hidden="true"></i></button>
                     <div id="replaceable-content" class="col-6">
                         {% include 'blog/user-search-results.html' %}
                        

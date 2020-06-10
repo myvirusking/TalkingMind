@@ -13,4 +13,3 @@ in the respective fields --> Select Sites 127.0.0.1:8000 --> Add it --> save
 --> Go to login and click on login with google
  --> Same for Facebook
 
- ealderson54321@gmail.com

@@ -31,11 +31,8 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-<<<<<<< HEAD
     'django.contrib.sites',
-=======
     'settings.apps.SettingsConfig',
->>>>>>> 4373b5b8011665b7f49394c0eaa3d3cb06a8e462
     'blog.apps.BlogConfig',
     'users.apps.UsersConfig',
     'crispy_forms',
@@ -47,7 +44,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'blog.templatetags.custom_tag',
 
-<<<<<<< HEAD
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -61,8 +57,6 @@ AUTHENTICATION_BACKENDS = [
 
     # `allauth` specific authentication methods, such as login by e-mail
     'allauth.account.auth_backends.AuthenticationBackend',
-=======
->>>>>>> 4373b5b8011665b7f49394c0eaa3d3cb06a8e462
 
 ]
 
@@ -192,7 +186,7 @@ LOGIN_REDIRECT_URL = 'profile'
 
 # LOGIN_URL = '/auth/login/google-oauth2/'
 
-SITE_ID = 1
+SITE_ID = 2
 
 # Will change to https in production, but also note that to change to https in google developers API console
 ACCOUNT_DEFAULT_HTTP_PROTOCOL='http'
