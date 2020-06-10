@@ -34,7 +34,6 @@ INSTALLED_APPS = [
     'settings.apps.SettingsConfig',
     'blog.apps.BlogConfig',
     'users.apps.UsersConfig',
-    'crispy_forms',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -43,8 +42,15 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'blog.templatetags.custom_tag',
 
+    #Third party apps
+    'phonenumber_field',
+    'crispy_forms',
+
 
 ]
+
+SHELL_PLUS = "plain"
+SHELL_PLUS_PRINT_SQL = True
 
 
 MIDDLEWARE = [
@@ -118,6 +124,7 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
 
 
 # Internationalization

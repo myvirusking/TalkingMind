@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
+from phonenumber_field.modelfields import PhoneNumberField
 from PIL import Image
 
 
@@ -30,6 +31,15 @@ class Following(models.Model):
         return self.user.username
 
 
+class Notification(models.Model):
+    from_user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    notification_title = models.CharField(max_length=100)
+    notification_type = models.CharField(max_length=100, null=True)
+    notification_content = models.CharField(max_length=100, null=True)
+    post_involved = models.ForeignKey("blog.Post",on_delete=models.CASCADE, null=True)
+    status = models.CharField(max_length = 100, default="new")
+
+
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     image = models.ImageField(default='default.jpeg', upload_to='profile_pics')
@@ -42,6 +52,9 @@ class Profile(models.Model):
     followers_count = models.PositiveIntegerField(default=0)
     saved_posts = models.ManyToManyField(SavedPost)
     saved_posts_count = models.PositiveIntegerField(default=0)
+    notification = models.ManyToManyField(Notification)
+    notification_count = models.PositiveIntegerField(default=0)
+    mobile_no = PhoneNumberField(blank=True, null=True)
 
     def __str__(self):
         return f'{self.user.username} Profile'

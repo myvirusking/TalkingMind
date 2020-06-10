@@ -13,6 +13,7 @@ $(document).ready(function(){
             },
             success:function(data)
             {
+                console.log(data['likes']);
 
                 var exists =$( ".footerBtn .like i" ).hasClass( "press" );
                 if(exists) {

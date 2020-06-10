@@ -165,7 +165,7 @@ def other_user_profile(request, pk):
 
     following_list = profile_current.following.all()
 
-    profile_privacy_setting = AccountPrivacySetting.objects.get(profile=profile_other)
+    profile_privacy_setting = AccountPrivacySetting.objects.get(user=user)
     profile_privacy = profile_privacy_setting.profile_privacy
 
     following_list_of_other_user = profile_other.following.all()
@@ -236,7 +236,7 @@ def send_follow_request(request):
         userid = request.GET['userid']
         user = get_object_or_404(User, id=userid)
 
-        accout_setting = AccountPrivacySetting.objects.get(profile=user.profile)
+        accout_setting = AccountPrivacySetting.objects.get(user=user)
         profile_privacy_of_other_user = accout_setting.profile_privacy
 
         if profile_privacy_of_other_user == 'public':
@@ -247,6 +247,12 @@ def send_follow_request(request):
 
             user.profile.followers.create(user=request.user)
             user.profile.followers_count += 1
+            user.profile.notification.create(from_user=request.user,
+                                             notification_title= "started following you",
+                                             notification_content="",
+                                             notification_type="followed_by")
+            user.profile.notification_count += 1
+
             user.profile.save()
 
             following_count = request.user.profile.following_count
@@ -260,6 +266,13 @@ def send_follow_request(request):
                 from_user=request.user,
                 to_user=user
             )
+            user.profile.notification.create(from_user=request.user,
+                                             notification_title="Follow request from ",
+                                             notification_content="",
+                                             notification_type="follow_request")
+            user.profile.notification_count += 1
+            user.profile.save()
+
             data_dict = {'profile_privacy': 'private'}
 
             return JsonResponse(data=data_dict, safe=False)
@@ -282,7 +295,13 @@ def cancel_follow_request(request):
             to_user=user
         ).first()
         frequest.delete()
-        button_status = 'not_following'
+
+        try:
+            user.profile.notification.get(from_user=request.user,notification_type="follow_request").delete()
+            user.profile.notification_count -=1
+        except:
+            pass
+
         return render(request, 'users/userprofile.html')
 
 
@@ -293,13 +312,15 @@ url is "delete_follow_request" """
 
 @login_required
 def delete_follow_request(request):
-    from_user = get_object_or_404(User, id=pk)
-    frequest = FollowRequest.objects.filter(
-        from_user=from_user,
-        to_user=request.user
-    ).first()
-    frequest.delete()
-    return HttpResponseRedirect('/other-profile/{}/'.format(pk))
+    if request.user.is_authenticated:
+        userid = request.GET['userid']
+        from_user = get_object_or_404(User, id=int(userid))
+        frequest = FollowRequest.objects.filter(
+            from_user=from_user,
+            to_user=request.user
+        ).first()
+        frequest.delete()
+        return render(request, 'users/notifications.html')
 
 
 """This view is called when the user who follows some other user, unfollows that user. This is accessible
@@ -320,6 +341,13 @@ def unfollow_user(request):
         follower_user_index = follower_list.index(request.user.id)
         unfollowed_user.followers.all()[follower_user_index].delete()
         unfollowed_user.followers_count -= 1
+
+        try:
+            user.profile.notification.get(from_user=request.user, notification_type="followed_by").delete()
+            user.profile.notification_count -=1
+        except:
+            pass
+
         unfollowed_user.save()
 
         follower = Profile.objects.get(user=request.user)
@@ -345,27 +373,46 @@ who accepted the request will be added to the following list of the user who sen
 
 
 @login_required
-def accept_follow_request(request, pk):
+def accept_follow_request(request):
     if request.user.is_authenticated:
-        from_user = get_object_or_404(User, id=pk)
+        userid = request.GET['userid']
+        from_usr = get_object_or_404(User, id=int(userid))
 
         frequest = FollowRequest.objects.filter(
-            from_user=from_user, to_user=request.user).first()
+            from_user=from_usr, to_user=request.user).first()
 
-        request_sender = from_user
+        request_sender = from_usr
         requested_user = request.user
 
         request_sender.profile.following.create(user=requested_user)
         request_sender.profile.following_count += 1
-        request_sender.profile.save()
+        request_sender.profile.save(update_fields=["following_count"])
 
         requested_user.profile.followers.create(user=request_sender)
         requested_user.profile.followers_count += 1
-        requested_user.profile.save()
+        requested_user.profile.save(update_fields=["followers_count"])
+
+        request_sender.profile.notification.create(from_user=request.user,
+                                             notification_title=" Approved your request",
+                                             notification_content="",
+                                             notification_type="follow_request_approved")
+        request_sender.profile.notification_count += 1
+        request_sender.profile.save(update_fields=["notification_count"])
+
+        print(request_sender)
+
+        try:
+            requested_user.profile.notification.get(from_user=request_sender, notification_type="follow_request").delete()
+            request.user.profile.notification_count -=1
+            request.user.profile.save(update_fields=["notification_count"])
+            print("In try")
+        except Exception as e:
+            print(e)
+
 
         frequest.delete()
 
-    return HttpResponseRedirect('/profile')
+    return render(request, 'users/notifications.html')
 
 
 @login_required
@@ -385,6 +432,14 @@ def remove_from_followers_list(request):
         user_to_be_removed.profile.following.all()[removing_user_index].delete()
         user_to_be_removed.profile.following_count -=1
         user_to_be_removed.profile.save()
+
+        try:
+            user_to_be_removed.profile.notification.get(from_user=request.user,
+                                                    notification_type="follow_request_approved").delete()
+            request.user.profile.notification_count -= 1
+            print("In try")
+        except Exception as e:
+            print(e)
 
         removing_user_followers_count = request.user.profile.followers_count
         data_dict = {'followers_count':removing_user_followers_count}
@@ -438,6 +493,22 @@ def user_search_view(request):
         return JsonResponse(data=data_dict, safe=False)
 
     return render(request, "blog/base.html", context=ctx)
+
+
+@login_required
+def notification_view(request):
+    if request.user.is_authenticated:
+        notification_list = request.user.profile.notification.all().order_by('-id')
+
+        ctx = {'notification_list':notification_list}
+
+        return render(request,"users/notifications.html", context=ctx)
+
+
+
+
+
+
 
 
 
