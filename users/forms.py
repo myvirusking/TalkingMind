@@ -65,19 +65,24 @@ class CustomPasswordResetEmailForm(PasswordResetForm):
 
 
 class UserUpdateForm(forms.ModelForm):
-    first_name = forms.CharField(widget=forms.TextInput(attrs={'class':'form-control mr-1 mb-0','rows':'3', 'placeholder':'First name'}))
-    last_name = forms.CharField(widget=forms.TextInput(attrs={'class':'form-control ml-1 mb-0','rows':'3', 'placeholder':'Last name'}))
-    email = forms.EmailField(widget=TextInput(attrs={'class':'form-control'}))
-    username = forms.CharField(widget=TextInput(attrs={'class':'form-control'}))
+    first_name = forms.CharField(widget=forms.TextInput(attrs={'class':'pl-2', 'placeholder':'e.g. Elliot'}))
+    last_name = forms.CharField(widget=forms.TextInput(attrs={'class':'pl-2', 'placeholder':'e.g. Alderson'}))
+    email = forms.EmailField(widget=TextInput(attrs={'class':'pl-2', 'placeholder':'e.g. elliot@gmail.com',
+                                                     'aria-describedby':'emailHelp'}))
+    username = forms.CharField(widget=TextInput(attrs={'class':'pl-2', 'placeholder':'e.g. elliot_alderson'}))
+    mobile_no = forms.CharField(widget=TextInput(attrs={'class':'pl-2', 'aria-describedby':'phoneHelp',
+                                                        }), required=False)
+
 
     class Meta:
         model = User
-        fields = ['first_name','last_name','username', 'email']
+        fields = ['first_name','last_name','username', 'email', 'mobile_no']
 
 
 class ProfileUpdateForm(forms.ModelForm):
     
-    bio = forms.CharField(widget=forms.Textarea(attrs={'class':'form-control','rows':'3'}))
+    bio = forms.CharField(widget=forms.Textarea(attrs={'class':' pl-2','rows':'3',
+                                                       'placeholder':'e.g. Blogger | Traveller | Optimist | Programmer'}))
 
     class Meta:
         model = Profile
@@ -85,7 +90,8 @@ class ProfileUpdateForm(forms.ModelForm):
 
 
 class AboutForm(forms.ModelForm):
-    about = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control', 'rows': '10'}))
+    about = forms.CharField(widget=forms.Textarea(attrs={'class': 'pl-2', 'rows': '5',
+                                                         'placeholder':'e.g. I am a blogger and I love to explore the beautiful places and enjoy each and every moment at fullest...'}))
 
     class Meta:
         model = Profile

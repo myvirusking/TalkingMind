@@ -122,15 +122,17 @@ $(document).ready(function(){
 $(document).ready(function() {
     $(".modal-follow-request-button .follow-btn").click(function (e) {
         var class_f = $(this).attr("data-id")+"follow";
-        console.log(class_f);
-        if ($(this).hasClass(class_f))
+        console.log(class_f)
+        if ($(".modal-follow-request-button .follow-btn").hasClass(class_f))
         {
+            console.log("inside class")
             e.preventDefault();
             var thisSave = $(this);
+            console.log(thisSave)
 
             var post_id;
             let user_id = $(this).attr("data-id");
-            console.log(user_id);
+            console.log("user-id "+user_id);
             $.ajax({
 
                 type: "GET",
@@ -139,15 +141,7 @@ $(document).ready(function() {
                     userid: user_id
                 },
                 success: function (data) {
-                    if(data['profile_privacy']==='private')
-                    {
-                        $("#follow-btn"+user_id).removeClass(user_id+"follow").addClass(user_id+"requested").text("Requested");
-                    }
-                    else if(data['profile_privacy']==='public')
-                    {
-                        $("#follow-btn"+user_id).removeClass(user_id+"follow").addClass(user_id+"unfollow").text("Unfollow");
-                        $(".total-following-count").text(data['following_count'])
-                    }
+                    $("#follow-btn"+user_id).removeClass(class_f).addClass(user_id+"requested").text("Requested");
 
                 },
                 error: function (xhr, status, error) {
@@ -159,6 +153,7 @@ $(document).ready(function() {
 
         }
         else if ($(this).hasClass($(this).attr("data-id")+"requested")) {
+            // console.log("requested "+$(this).attr("data-id")+"requested")
             e.preventDefault();
 
             let user_id = $(this).attr("data-id");
@@ -171,7 +166,8 @@ $(document).ready(function() {
                     userid: user_id
                 },
                 success: function (data) {
-                     $("#follow-btn"+user_id).removeClass(user_id+"requested").addClass(class_f).text("Follow");
+
+                    $("#follow-btn"+user_id).removeClass(user_id+"requested").addClass(class_f).text("Follow");
 
                 },
                 error: function (xhr, status, error) {
@@ -205,6 +201,7 @@ $(document).ready(function() {
         }
     });
 });
+
 
 
 
@@ -278,6 +275,58 @@ $(document).ready(function() {
 
     });
 });
+
+
+
+
+function accept_request(event) {
+        if($(".follow-request .accpet-delete-btn a").hasClass("accept")){
+            console.log("accept");
+
+            var user_id = $(".follow-request .accpet-delete-btn a").attr("data-id");
+            console.log(user_id);
+            $.ajax({
+
+                type: "GET",
+                url: "/user/follow-request/accept/",
+                data: {
+                    userid: user_id
+                },
+                success: function (data) {
+                    console.log("success");
+                    $("."+user_id+"follow-request").remove();
+                },
+                error: function (xhr, status, error) {
+                    console.log(error);
+                    console.log(xhr);
+                }
+            });
+        }
+        else if(this.hasClass('delete')){
+            e.preventDefault();
+
+            var user_id = $(this).attr("data-id");
+            console.log(user_id);
+            $.ajax({
+
+                type: "GET",
+                url: "/user/follow-request/delete/",
+                data: {
+                    userid: user_id
+                },
+                success: function (data) {
+                    $("."+user_id+"follow-request").remove();
+                },
+                error: function (xhr, status, error) {
+                    console.log(error);
+                    console.log(xhr);
+                }
+            });
+        }
+}
+
+
+
 
 
 

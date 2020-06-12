@@ -144,28 +144,53 @@
 
         {% block content %}
         {% endblock content %}
+
         {% block footer %}
             <script type="text/javascript" src="{% static 'blog/javascript/main.js' %}"></script>
 
             <script type="text/javascript" src="{% static 'blog/javascript/post_like.js' %}"></script>
 
             <script type="text/javascript" src="{% static 'blog/javascript/post_save.js' %}"></script>
-            
+
             <script type="text/javascript" src="{% static 'blog/javascript/comment.js' %}"></script>
+            <script type="text/javascript" src="{% static 'blog/javascript/comment_like.js' %}"></script>
 
             <script type="text/javascript" src="{% static 'blog/javascript/send_follow_request.js' %}"></script>
 
+            <script type="text/javascript" src="{% static 'blog/javascript/update_notification.js' %}"></script>
+
+
             <script>
-   
-    
+
+
                 function openNav() {
                   document.getElementById("mySidenav").style.width = "250px";
                 }
-                
+
                 function closeNav() {
                   document.getElementById("mySidenav").style.width = "0";
                 }
             </script>
+
+
+
+    <script>
+
+        function openNav() {
+          document.getElementById("mySidenav").style.width = "250px";
+        }
+
+        function closeNav() {
+          document.getElementById("mySidenav").style.width = "0";
+        }
+    </script>
+    <script>
+        $('.deleteModal').click(function(e){
+            var postId = $(this).attr('id');
+            var url =  "/blog/post/"+postId+"/delete/";
+            $('#deleteForm').attr('action', url);
+        })
+    </script>
          
        {% endblock %}
 

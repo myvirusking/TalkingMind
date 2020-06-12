@@ -12,6 +12,7 @@ function post_like(e,post_id){
                 e.className = "fa fa-heart press";
             }else{
                 e.className = "fa fa-heart";
+        
             }
             
             e.innerHTML = "<span class='total-likes'>"+data.likes+"</span>";

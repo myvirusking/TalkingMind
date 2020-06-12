@@ -1,108 +1,14 @@
-{% extends "blog/base.html" %}
-{% load static  %}
+{% extends "blog/basic.html" %}
 {% load custom_tag %}
 
-{% block css %}
-<style>
-    .mainNav {
-        display: none;
-    }
-</style>
-{% endblock css %}
+{% block section %}
 
-{% block content %}
-
-
-
-
-<div class="sidenav" id="mySidenav">
-    <h6 class="brandName" href="#">TalkingMind</h6>
-    <div class="menuProfileMainDiv">
-        <a href="#" class="menuProfile">
-            <div class="profileImg"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></div>
-            <div class="profileTitle">
-                <h6>Abhishek Gupta</h6>
-                <p>@abhishek </p>
-            </div>
-        </a>
-    </div>
-    <div class="sideMenu">
-        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-
-        <a href="{% url 'login-home' %}"><i class="fa fa-home" aria-hidden="true"></i>
-            <p>Home</p>
-        </a>
-        <a href="#"><i class="fa fa-bell" aria-hidden="true"></i>
-            <p>Notifications</p>
-        </a>
-        <a href="#"><i class="fa fa-th-large" aria-hidden="true"></i>
-            <p>Posts</p>
-        </a>
-        <a href="#"><i class="fa fa-users" aria-hidden="true"></i>
-            <p>Users</p>
-        </a>
-        <a href="{% url 'saved-post-list' %}"><i class="fa fa-bookmark" aria-hidden="true"></i>
-            <p>Saved</p>
-        </a>
-        <a href="#"><i class="fa fa-cog" aria-hidden="true"></i>
-            <p>Settings</p>
-        </a>
-        <a href="#"><i class="fas fa-sign-out-alt"></i>
-            <p>Logout</p>
-        </a>
-    </div>
-    <div class="sideNavBottom">
-        <div>
-            <ul>
-                <li><a href="#">About</a></li>
-                <li><a href="#">Terms</a></li>
-                <li><a href="#">Privacy policy</a></li>
-            </ul>
-            <a href="#" class="copyright">&copy; 2020 TalkingMind</a>
-
-        </div>
-    </div>
-</div>
-
-<div class="main">
-    <nav class="navbar navbar-expand-md navbar-inverse regNav">
-        <div class="container-fluid">
-            <div class="navbar-brand">
-                <form class="form-inline searchForm">
-                    {% csrf_token %}
-                    <input class="form-control form-control-sm" type="text" autocomplete="off" placeholder="Search"
-                        id="user-input">
-                    <button class="btn btn-primary btn-sm searchBtn"><i class="fa fa-search"
-                            aria-hidden="true"></i></button>
-                    <div id="replaceable-content" class="col-6">
-                        {% include 'blog/user-search-results.html' %}
-
-                    </div>
-                </form>
-            </div>
-
-
-            <ul class="nav navbar-nav navbar-right">
-                <div class="icons">
-                    <a class="filterIcon" data-toggle="modal" data-target="#filterModal"><i class="fa fa-filter"
-                            aria-hidden="true"></i></a>
-                    <a class="menuBtn" onclick="openNav()"><i class="fa fa-bars" aria-hidden="true"></i></a>
-                </div>
-                <!-- <div class="profileImg"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></div> -->
-                <li class="profile profileImg"><a href="{% url 'profile' %}"><img src="{{user.profile.image.url}}"></a>
-                </li>
-                <!-- <li><a class="menuBtn" href="#" onclick="openNav()"><i class="fa fa-bars" aria-hidden="true"></i></a></li> -->
-                <!-- <li><a class="menuBtn" href="#" onclick="openNav()"><i class="fa fa-bars" aria-hidden="true"></i></a></li> -->
-            </ul>
-        </div>
-
-    </nav>
     <section>
         <div class="container-fluid">
             <div class="row">
 
                 <div class="col-lg-8 col-md-8">
-                    
+
                     <div class="mainCenterDiv">
                         <div class="card">
                             <div class="card-header">
@@ -112,10 +18,10 @@
                                         <a href="#"><h6>{{ singlePost.author }}</h6></a><p>@prashant </p>
                                     </div>
                                     <div class="threeDot">
-                                        <p><i class="fa fa-ellipsis-v" aria-hidden="true"></i></p>                                                
+                                        <p><i class="fa fa-ellipsis-v" aria-hidden="true"></i></p>
                                     </div>
                                 </div>
-                                
+
                             </div>
                             <div class="card-body">
                                 <h5 class="card-title">{{ singlePost.title }}</h5>
@@ -140,9 +46,9 @@
                                         </div>
                                     </div>
                                 {% endif %}
-                                
-                            
-                            
+
+
+
                             </div>
                             <div class="card-footer">
                                 <div class="footerBtn">
@@ -161,49 +67,68 @@
                                     {% endif %}
                                 </div>
                                 <!-- {{ post.date_posted }} -->
-                             </div>
-                             <div class="card-footer card-footer-comment" id="comment">
+                            </div>
+                            <div class="card-footer card-footer-comment" id="comment">
                                 <div class="footerCommentDiv">
                                     <div class="commentBox">
                                         <form class="comment-form">
                                             {% csrf_token %}
+                                            <input type="hidden" value="0" id="hiddenInput">
                                             {{comment_form.commented_text}}
-                                            <!-- <input type="text" class="form-control form-control-sm mr-3"  placeholder="Write a comment..."> -->
-                                            <button id="commentBtn" type="submit" class="btn btn-outline-info commentBtn" data-catid="{{singlePost.id}}"><i class="fas fa-paper-plane"></i></button>
+                                            <button id="replyCommentBtn" type="submit" class="btn btn-outline-info commentBtn" data-catid="{{singlePost.id}}"><i class="fas fa-paper-plane"></i></button>
                                         </form>
                                     </div>
                                 </div>
 
-                                <div class="allCommentDiv">                                    
+                                <div class="allCommentDiv">
                                     <ul class="list-unstyled single-post-cmt-div{{singlePost.id}} mb-0">
                                         {% if allComments %}
                                         {% for comment in allComments %}
                                             <li class="media">
                                                 <a href="#"><img class="mr-3 profilePic" src="/media/default.jpeg" alt="img"></a>
                                                 <div class="media-body w-50">
-                                                    <h6 class="mt-0 mb-1 profileName"><a href="#">{{comment.author.first_name}} {{comment.author.last_name}}</a><span class="ml-3 commentlikeBtn"><i class="far fa-heart"></i></span></h6>
+                                                    <h6 class="mt-0 mb-1 profileName">
+                                                        <a href="#">{{comment.author.first_name}} {{comment.author.last_name}}</a>
+                                                        {% csrf_token %}
+                                                        <span class="ml-3 commentlikeBtn"><i class="fa fa-heart" data-catid="{{comment.id}}"></i></span>
+                                                    </h6>
                                                     <p class="commentText">{{comment.commented_text}}</p>
-                                                    <div class="commentTextBottomBtn">
-                                                        <span class="textBtn">9h</span>
-                                                        <span class="textBtn"><span>5</span> likes</span>
-                                                        <span class="textBtn">reply</span>
+                                                    <div class="commentTextBottomBtn mb-1" id="commentTextBottomBtn{{comment.id}}">
+                                                        <span class="textBtn">{{comment.comment_date|timesince}}</span>
+                                                        <span class="textBtn"><span class="likes_count{{comment.id}}" >{{comment.cmt_likes_count}}</span> likes</span>
+                                                        <span id="repltBtn{{comment.id}}" class="textBtn replyBtn" data-catid="{{comment.id}}" data-root="{{comment.id}}" onclick="reply(this);">reply</span>
+
+                                                    </div>
+
+                                                    <div class="commentRplyDiv" id="commentRplyDiv{{comment.id}}">
+                                                        <ul class="list-unstyled">
+                                                            {{comment.id | get_nested_comment:comment.id}}
+                                                        </ul>
+                                                    </div>
+
+                                                    <div class="collapse-div" id="replyInput{{comment.id}}" style="display: none;">
+                                                       <form class="reply-comment-form d-flex">
+                                                            {% csrf_token %}
+                                                            {{comment_form.commented_text}}
+                                                            <button id="commentBtn" type="submit" class="btn btn-outline-info commentBtn" data-catid="{{singlePost.id}}"><i class="fas fa-paper-plane"></i></button>
+                                                        </form>
                                                     </div>
                                                 </div>
                                             </li>
-                                        {% endfor %} 
-                                        {% endif %}                                           
+                                        {% endfor %}
+                                        {% endif %}
                                     </ul>
-                                    
-                                </div>  
-                                
-                                
-                                
-                                <!-- {{ post.date_posted }} -->
-                             </div>
-                            
 
-                        </div> 
-                        
+                                </div>
+
+
+
+                                <!-- {{ post.date_posted }} -->
+                            </div>
+
+
+                        </div>
+
                     </div>
                 </div>
                 <div class="col-lg-4 col-md-4">
@@ -299,102 +224,9 @@
             </div>
         </div>
     </section>
-</div>
+<!-- </div> -->
 
-<!-- Modal -->
-<div class="modal fade" id="postModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">New Post</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form method="post">
-                    {% csrf_token %}
-                    {{new_post_form.title}}
-                    {{new_post_form.content}}
-                    {{new_post_form.category}}
-                    <button type="submit" class="btn btn-block mt-2"
-                        style="background-color:#4b204f;color:white;">Post</button>
-                </form>
-            </div>
-            <!-- <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
-                </div> -->
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="filterModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Choose article topics to filter.</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form method="POST">{%csrf_token%}
-                    <!-- <div class="row">
-                            <div class="col-md-12 text-center mb-4">
-                                <h3>Choose your favourite article topics.</h3>
-                            </div>
-                        </div> -->
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="btn-group btn-group-toggle selectBtnDiv" data-toggle="buttons">
-                                {% for id,name in category_list %}
-                                {% if id in topicId %}
-                                <label class="btn btn-outline-primary selectBtn">
-                                    <input type="checkbox" value="{{id}} " name="topicId"
-                                        id="defaultUnchecked{{forloop.counter}}" checked autocomplete="off" checked>
-                                    {{name}}
-                                </label>
-                                {% else %}
-                                <label class="btn btn-outline-primary selectBtn">
-                                    <input type="checkbox" value="{{id}} " name="topicId"
-                                        id="defaultUnchecked{{forloop.counter}} autocomplete=" off"> {{name}}
-                                </label>
-                                {% endif %}
-                                {%endfor%}
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-12 text-center">
-                        <button type="submit" class="btn btn-outline-success">Apply Filter</button>
-                    </div>
-                </form>
-            </div>
-            <!-- <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
-                </div> -->
-        </div>
-    </div>
-</div>
-
-
-{% block scripts %}
-
-<script>
-
-
-    function openNav() {
-        document.getElementById("mySidenav").style.width = "250px";
-    }
-
-    function closeNav() {
-        document.getElementById("mySidenav").style.width = "0";
-    }
-</script>
-{% endblock %}
+{% endblock section %}
 
 
 
@@ -402,5 +234,3 @@
 
 
 
-
-{% endblock content %}

@@ -1,0 +1,70 @@
+{% extends 'settings/base.html' %}
+
+{% block content %}
+
+    <div class="container">
+
+			<h2 class="font-weight-bold">Profile</h2>
+
+
+			<div class="change-profile-pic mt-4">
+				<div class="profile_pic">
+              		<img src="{{ user.profile.image.url }}" alt="profile_img">
+            	</div>
+				<div class="ml-3 mt-2">
+					<h5 style="margin-bottom: 0;font-weight: 600;
+    color: #636363;
+}">Prashant Jha</h5>
+					<a href="#" class="mt-0 font-weight-bold" style="font-size: 13px;color: #57CCED; ">Change Profile Photo</a>
+				</div>
+
+			</div>
+
+            <form enctype="multipart/form-data" method="post">
+                {% csrf_token %}
+		        <div class="mt-4">
+				<div class="form-div first-name form-group">
+					<label class="ml-2"><b>First name</b></label><br>
+					{{ user_form.first_name }}
+				</div>
+
+				<div class="form-div last-name form-group">
+					<label class="ml-2"><b>Last name</b></label><br>
+					{{ user_form.last_name }}
+				</div>
+
+
+				<div class=" form-div username form-group mt-3">
+					<label class="ml-2"><b>Username</b></label><br>
+					{{ user_form.username }}
+				</div>
+
+				<div class=" form-div email form-group mt-3">
+					<label class="ml-2"><b>Email</b></label><br>
+					{{ user_form.email }}
+					<small id="emailHelp" class="form-text text-muted ml-2">*Your email won't be the part of your public profile</small>
+				</div>
+
+				<div class=" form-div phone form-group mt-3">
+					<label class="ml-2"><b>Mobile no.</b></label><br>
+                    {{ user_form.mobile_no }}
+					<small id="phoneHelp" class="form-text text-muted ml-2">*Your mobile number won't be the part of your public profile</small>
+				</div>
+
+				<div class=" form-div bio form-group mt-3">
+					<label class="ml-2"><b>Bio</b></label><br>
+                    {{ profile_form.bio }}
+				</div>
+
+				<div class=" form-div about form-group mt-3">
+					<label class="ml-2"><b>About</b></label><br>
+                    {{ about_form.about }}
+				</div>
+
+                    <button type="submit" class="btn form-div" style="background-color: #57CCED; color:white; ">Update</button>
+
+			</div>
+            </form>
+    </div>
+
+{% endblock %}

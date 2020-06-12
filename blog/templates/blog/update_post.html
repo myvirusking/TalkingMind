@@ -1,465 +1,374 @@
-{% extends 'blog/base.html' %}
-{% load static %}
-
-{% block css %}
-<style>
-    .mainNav {
-        display: none;
-    }
-    
-</style>
-{% endblock css %}
-
-{% load static %}
+{% extends "blog/basic.html" %}
+{% load custom_tag %}
 {% load crispy_forms_tags %}
 
 {% block scripts %}
-    <script type="text/javascript"> 
+    <script type="text/javascript">
         var imgFile = Array(3)
         var imgAvailableIndex = Array();
         var imgAvailableIndex = [0,1,2];
     </script>
 {% endblock %}
 
+{% block section %}
 
-{% block content %}
-    <!-- <div class="container post-update-form col-4 offset-4 shadow-lg p-3 mb-5 bg-white rounded shadow-sm p-3 mb-5 bg-white rounded shadow p-3 mb-5 bg-white rounded">
-        <div class="mt-2">
-            {% if form.errors %}
-                {% for field in form %}
-                    {% for error in field.errors %}
-                        <div class="alert alert-danger">
-                            <strong>{{ error|escape }}</strong>
-                        </div>
-                    {% endfor %}
-                {% endfor %}
-                {% for error in form.non_field_errors %}
-                    <div class="alert alert-danger">
-                        <strong>{{ error|escape }}</strong>
-                    </div>
-                {% endfor %}
-            {% endif %}
-            {% if error_message %}
-                <div class="alert alert-danger">
-                    <strong>{{ error_message }}</strong>
-                </div>
-            {% endif %}
-            <form id="postCreateForm" method="post" enctype="multipart/form-data">
-                {% csrf_token %}
-                <h4 style="text-align: center;  display:inline;color: #4b204f; "><strong >Update post</strong></h4>
-                <a style="float: right; display:inline;" class="btn btn-primary btn-sm active"  onclick="showDeleteInfo()"  aria-pressed="true">Delete</a>
-
-                <div class="form-group" style="margin-top:15px;">
-                    <strong>Title:</strong>
-                    {{form.title}}
-                </div>
-                <div class="form-group">
-                    <strong>Content:</strong>
-                    {{form.content}}
-
-                </div>
-                <div class="form-group">
-                    <strong>Topics:</strong>
-                    {{form.category}}
-                </div>
-                 <div class="form-group" style="margin-bottom: 5px;">
-                    <strong>Image:</strong>
-                    <input type="file" name="image" class="form-control" style="margin-top:2px;display:none;" accept="image/*" id="id_image">
-                    <label style="cursor:pointer;" for="id_image">
-                        <i class="fa fa-camera" aria-hidden="true"></i>
-                    </label>
-                </div>
-                <div class="container">
-                    <div id="imagePreview" class="row">
-                        
-                    {% if object.images.all %}
-                        {% for postImage in post.images.all %}
-                            <div id="img{{forloop.counter|add:-1}}" style="padding:5px" class="col mb-3">
-                                <img src="{{postImage.image.url}}" style="width: 100%; height: 100%;">
-                                <i onclick="removeImg({{forloop.counter|add:-1}})" class="fa fa-times" style="color:red;top: 15px;right: 15px;position: absolute;cursor: pointer;color:red;" aria-hidden="true"></i>
-                            </div>
-                            
-                            <script type="text/javascript">
-                                imgFile[imgAvailableIndex[0]] = {{postImage.id}};
-                                delete imgAvailableIndex[0];
-                                imgAvailableIndex.shift();                                
-                                if($("#imagePreview").find("img").length==3){
-                                    $("#id_image")[0].disabled = true;
-                                    document.getElementsByClassName("fa fa-camera")[0].style.color = "grey";
-                                }
-                            </script>
-                        {% endfor %}
-                    {% else %}
-                    <script type="text/javascript"> 
-                            var imgFile = Array(3)
-                            var imgAvailableIndex = Array();
-                            var imgAvailableIndex = [0,1,2];
-                    </script>
-                    {% endif %}
-
-                    </div>
-                </div>
-                <button type="submit" class="btn btn-block" style="background-color:#4b204f;color:white;">Update</button>
-            </form>
-        </div>
-    </div> -->
-
-    <!-- <div class="delete-post-modal  ">
-    <div class="modal-contents col-4 offset-4 mt-5 ">
-
-        <div class="close " onclick="closeDeleteInfo()">+</div>
-            <form method="post" action="{% url 'post-delete' object.id%}">
-                {% csrf_token %}
-                <h4>Are you sure, you wanna delete the post?</h4>
-                <button type="submit" class="btn mt-2 btn-danger" style="background-color:#4b204f;color:white; display: inline; float: left;">Yes</button>
-                <a class="btn btn-outline-secondary" type="button" onclick="closeDeleteInfo()" style="display: inline;float: right;">Cancel</a>
-            </form>
-    </div>
-    </div> -->
-
-    <div class="sidenav" id="mySidenav">
-        <h6 class="brandName" href="#" >TalkingMind</h6>
-        <div class="menuProfileMainDiv">
-            <a href="{% url 'profile' %}" class="menuProfile">
-                <div class="profileImg"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></div>
-                <div class="profileTitle">
-                    <h6>Abhishek Gupta</h6><p>@abhishek </p>
-                </div>
-            </a>            
-        </div>
-        <div class="sideMenu">
-            <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-            
-            <a href="{% url 'login-home' %}"><i class="fa fa-home" aria-hidden="true"></i><p>Home</p></a>
-            <a href="#"><i class="fa fa-bell" aria-hidden="true"></i><p>Notifications</p></a>
-            <a href="{% url 'post-create' %}"><i class="fa fa-th-large" aria-hidden="true"></i><p>Posts</p></a>
-            <a href="#"><i class="fa fa-users" aria-hidden="true"></i><p>Users</p></a>
-            <a href="{% url 'saved-post-list' %}"><i class="fa fa-bookmark" aria-hidden="true"></i><p>Saved</p></a>
-            <a href="#"><i class="fa fa-cog" aria-hidden="true"></i><p>Settings</p></a>
-            <a href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i><p>Logout</p></a>
-        </div>        
-        <div class="sideNavBottom">
-            <div>
-                <ul>
-                    <li><a href="#">About</a></li>
-                    <li><a href="#">Terms</a></li>
-                    <li><a href="#">Privacy policy</a></li>
-                </ul>
-                <a href="#" class="copyright">&copy; 2020 TalkingMind</a>
-                
-            </div>
-        </div>
-    </div>
-      
-      <div class="main">          
-        <nav class="navbar navbar-expand-md navbar-inverse regNav">
-            <div class="container-fluid">
-                <div class="navbar-brand">                    
-                    <form class="form-inline searchForm">
-                        {% csrf_token %}
-                        <input class="form-control form-control-sm" type="text" autocomplete="off" placeholder="Search" id="user-input">
-                        <button class="btn btn-primary btn-sm searchBtn"><i class="fa fa-search" aria-hidden="true"></i></button>
-                        <div id="replaceable-content" class="col-6">
-                            {% include 'blog/user-search-results.html' %}
-                           
-                        </div>
-                    </form>
-                </div>
-            
-        
-                <ul class="nav navbar-nav navbar-right">
-                    <div class="icons">
-                        <a class="filterIcon" data-toggle="modal" data-target="#filterModal"><i class="fa fa-filter" aria-hidden="true"></i></a>
-                        <a class="menuBtn" onclick="openNav()"><i class="fa fa-bars" aria-hidden="true"></i></a>
-                    </div>
-                    <li class="profile profileImg"><a href="{% url 'profile' %}"><img src="{{user.profile.image.url}}"></a></li></ul>
-            </div>
-        
-        </nav>
-        <section>
-            <div class="container-fluid">
+<section>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-8">
                 <div class="row">
-                    <div class="col-md-8">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="card createPostCard">
-                                    <div class="">
-                                        {% if form.errors %}
-                                            {% for field in form %}
-                                                {% for error in field.errors %}
-                                                    <div class="alert alert-danger">
-                                                        <strong>{{ error|escape }}</strong>
-                                                    </div>
-                                                {% endfor %}
-                                            {% endfor %}
-                                            {% for error in form.non_field_errors %}
-                                                <div class="alert alert-danger">
-                                                    <strong>{{ error|escape }}</strong>
-                                                </div>
-                                            {% endfor %}
-                                        {% endif %}
-                                        {% if error_message %}
+                    <div class="col-md-12">
+                        <div class="card createPostCard">
+                            <div class="">
+                                {% if form.errors %}
+                                    {% for field in form %}
+                                        {% for error in field.errors %}
                                             <div class="alert alert-danger">
-                                                <strong>{{ error_message }}</strong>
+                                                <strong>{{ error|escape }}</strong>
                                             </div>
-                                        {% endif %}
-                                            <form id="postUpdateForm">
-                                                {% csrf_token %}
-                                                <div id="postId" data-pk={{post.id}}></div>
-                                                <div class="d-flex">
-                                                    <h5 class="w-50">Update Post</h5>
-                                                    <button type="button" class="btn btn-outline-danger w-25 ml-auto btn-sm" data-toggle="modal" data-target="#deleteModal">Delete</button>
-                                                    <!-- <a type="button" class="btn btn-outline-danger"  onclick="showDeleteInfo()">Delete</a> -->
-                                                </div>
-                                                                                
-                                                <div class="form-group mt-3">
-                                                    {{form.title}}
-                                                </div>
-                                                <div class="form-group">
-                                                    {{form.category}}
-                                                </div>
-                                                <div class="form-group">
-                                                    {{form.content}}
-                                                </div>                                                
-                                                <div class="container">
-                                                    <div id="imagePreview" class="row">
-                                                        
-                                                    {% if object.images.all %}
-                                                        {% for postImage in post.images.all %}
-                                                            <div id="img{{forloop.counter|add:-1}}" style="padding:5px" class="col mb-3">
-                                                                <img src="{{postImage.image.url}}" style="width: 100%; height: 100%;">
-                                                                <i onclick="removeImg({{forloop.counter|add:-1}})" class="fa fa-times" style="color:red;top: 15px;right: 15px;position: absolute;cursor: pointer;color:red;" aria-hidden="true"></i>
-                                                            </div>
-                                                            
-                                                            <script type="text/javascript">
-                                                                imgFile[imgAvailableIndex[0]] = {{postImage.id}};
-                                                                delete imgAvailableIndex[0];
-                                                                imgAvailableIndex.shift();
-                                                            </script>
-                                                        {% endfor %}
-                                                    {% endif %}
-                                
-                                                    </div>
-                                                </div>
-
-                                                <div class="d-flex">
-                                                    <div class="form-group w-25 mr-1 mb-0" >
-                                                        <input type="file" name="image" class="form-control" style="margin-top:2px;display:none;" accept="image/*" id="id_image">
-                                                        <label class="addImageBtn" for="id_image">
-                                                            <i class="fa fa-camera" aria-hidden="true"></i>
-                                                        </label>
-                                                    </div>
-                                                    <button type="submit" class="btn btn-sm btn-outline-success w-75 ml-1">Update</button>
-                                                </div>
-                                                
-                                            </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- <div class="row">
-                            <div class="col-md-12">
-                                <div class="card">
-                                </div>                    
-                            </div>
-                        </div> -->
-                    </div>
-                    <div class="col-md-4">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="card trendingCard">
-                                    <div class="card-header">
-                                      <h6>Trending Topics</h6>
-                                    </div>
-                                    <div class="card-body">
-                                        <ul class="list-group list-group-flush">
-                                            <li class="list-group-item">
-                                                <h6>#corona</h6>
-                                            </li>
-                                            <li class="list-group-item">
-                                                <h6>#Language</h6>
-                                                
-                                            </li>
-                                            <li class="list-group-item">
-                                                <h6>#movies</h6>
-                                                
-                                            </li>
-                                            <li class="list-group-item">
-                                                <h6>#Songs</h6>
-                                                
-                                            </li>
-                                            <li class="list-group-item">
-                                                <h6>#education</h6>
-                                                
-                                            </li>
-                                            <li class="list-group-item">
-                                                <h6>#movies</h6>
-                                                
-                                            </li>
-                                            <li class="list-group-item">
-                                                <h6>#programming</h6>
-                                                
-                                            </li>
-                                          </ul>
-                                  </div>
-                                </div>
-                                <div class="card peopleKnow">
-                                    <div class="card-header">
-                                        <p class="cardHeaderName">People you may know</p>
-                                        <!-- <p class="cardHeaderIcon"><i class="fa fa-ellipsis-v" aria-hidden="true"></i></p>                                           -->
-                                    </div>
-                                    <div class="card-body recomdBody">
-                                        <div class="list-group">
-                                            <div class="list-group-item">
-                                                <div class="cardHeadSection">
-                                                    <div class="profileImg"><a href="#"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></a></div>
-                                                    <div class="profileTitle">
-                                                        <a href="#"><h6>Abhishek Gupta</h6></a><p>@abhishek </p>
-                                                    </div>
-                                                    <div class="recomdAddBtn">
-                                                        <p><a href="#"><i class="fa fa-plus" aria-hidden="true"></i></a></p>                                                
-                                                    </div>                                   
-                                                </div>
-                                            </div>
-                                            <div class="list-group-item">
-                                                <div class="cardHeadSection">
-                                                    <div class="profileImg"><a href="#"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></a></div>
-                                                    <div class="profileTitle">
-                                                        <a href="#"><h6>Abhishek Gupta</h6></a><p>@abhishek </p>
-                                                    </div>
-                                                    <div class="recomdAddBtn">
-                                                        <p><a href="#"><i class="fa fa-plus" aria-hidden="true"></i></a></p>                                                
-                                                    </div>                                   
-                                                </div>
-                                            </div>
-                                            <div class="list-group-item">
-                                                <div class="cardHeadSection">
-                                                    <div class="profileImg"><a href="#"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></a></div>
-                                                    <div class="profileTitle">
-                                                        <a href="#"><h6>Abhishek Gupta</h6></a><p>@abhishek </p>
-                                                    </div>
-                                                    <div class="recomdAddBtn">
-                                                        <p><a href="#"><i class="fa fa-plus" aria-hidden="true"></i></a></p>                                                
-                                                    </div>                                   
-                                                </div>
-                                            </div>
-                                            <div class="list-group-item">
-                                                <div class="cardHeadSection">
-                                                    <div class="profileImg"><a href="#"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></a></div>
-                                                    <div class="profileTitle">
-                                                        <a href="#"><h6>Abhishek Gupta</h6></a><p>@abhishek </p>
-                                                    </div>
-                                                    <div class="recomdAddBtn">
-                                                        <p><a href="#"><i class="fa fa-plus" aria-hidden="true"></i></a></p>                                                
-                                                    </div>                                   
-                                                </div>
-                                            </div>
-                                            <div class="list-group-item">
-                                                <div class="cardHeadSection">
-                                                    <div class="profileImg"><a href="#"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></a></div>
-                                                    <div class="profileTitle">
-                                                        <a href="#"><h6>Abhishek Gupta</h6></a><p>@abhishek </p>
-                                                    </div>
-                                                    <div class="recomdAddBtn">
-                                                        <p><a href="#"><i class="fa fa-plus" aria-hidden="true"></i></a></p>                                                
-                                                    </div>                                   
-                                                </div>
-                                            </div>
-                                            <div class="list-group-item">
-                                                <div class="cardHeadSection">
-                                                    <div class="profileImg"><a href="#"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></a></div>
-                                                    <div class="profileTitle">
-                                                        <a href="#"><h6>Abhishek Gupta</h6></a><p>@abhishek </p>
-                                                    </div>
-                                                    <div class="recomdAddBtn">
-                                                        <p><a href="#"><i class="fa fa-plus" aria-hidden="true"></i></a></p>                                                
-                                                    </div>                                   
-                                                </div>
-                                            </div>
-                                            <div class="list-group-item">
-                                                <div class="cardHeadSection">
-                                                    <div class="profileImg"><a href="#"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></a></div>
-                                                    <div class="profileTitle">
-                                                        <a href="#"><h6>Abhishek Gupta</h6></a><p>@abhishek </p>
-                                                    </div>
-                                                    <div class="recomdAddBtn">
-                                                        <p><a href="#"><i class="fa fa-plus" aria-hidden="true"></i></a></p>                                                
-                                                    </div>                                   
-                                                </div>
-                                            </div>
-                                            <div class="list-group-item">
-                                                <div class="cardHeadSection">
-                                                    <div class="profileImg"><a href="#"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></a></div>
-                                                    <div class="profileTitle">
-                                                        <a href="#"><h6>Abhishek Gupta</h6></a><p>@abhishek </p>
-                                                    </div>
-                                                    <div class="recomdAddBtn">
-                                                        <p><a href="#"><i class="fa fa-plus" aria-hidden="true"></i></a></p>                                                
-                                                    </div>                                   
-                                                </div>
-                                            </div>
-                                            <div class="list-group-item">
-                                                <div class="cardHeadSection">
-                                                    <div class="profileImg"><a href="#"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></a></div>
-                                                    <div class="profileTitle">
-                                                        <a href="#"><h6>Abhishek Gupta</h6></a><p>@abhishek </p>
-                                                    </div>
-                                                    <div class="recomdAddBtn">
-                                                        <p><a href="#"><i class="fa fa-plus" aria-hidden="true"></i></a></p>                                                
-                                                    </div>                                   
-                                                </div>
-                                            </div>
-                                            
+                                        {% endfor %}
+                                    {% endfor %}
+                                    {% for error in form.non_field_errors %}
+                                        <div class="alert alert-danger">
+                                            <strong>{{ error|escape }}</strong>
                                         </div>
-                                    </div>                                       
-                                    
-                                    <div class="card-footer recomdFooter text-center">
-                                        <a href="">See More</a>
+                                    {% endfor %}
+                                {% endif %}
+                                {% if error_message %}
+                                    <div class="alert alert-danger">
+                                        <strong>{{ error_message }}</strong>
                                     </div>
-                                  </div>
+                                {% endif %}
+                                    <form id="postCreateForm">
+                                        <div class="d-flex">
+                                            <h5 class="w-50">Update Post</h5>
+                                            <button type="button" class="btn btn-outline-danger w-25 ml-auto btn-sm" data-toggle="modal" data-target="#deleteModal">Delete</button>
+                                            <!-- <a type="button" class="btn btn-outline-danger"  onclick="showDeleteInfo()">Delete</a> -->
+                                        </div>
+
+                                        <div class="form-group mt-3">
+                                            {{form.title}}
+                                        </div>
+                                        <div class="form-group">
+                                            {{form.category}}
+                                        </div>
+                                        <div class="form-group">
+                                            {{form.content}}
+                                        </div>
+                                        <div class="container">
+                                            <div id="imagePreview" class="row">
+
+                                            {% if object.images.all %}
+                                                {% for postImage in post.images.all %}
+                                                    <div id="img{{forloop.counter|add:-1}}" style="padding:5px" class="col mb-3">
+                                                        <img src="{{postImage.image.url}}" style="width: 100%; height: 100%;">
+                                                        <i onclick="removeImg({{forloop.counter|add:-1}})" class="fa fa-times" style="color:red;top: 15px;right: 15px;position: absolute;cursor: pointer;color:red;" aria-hidden="true"></i>
+                                                    </div>
+
+                                                    <script type="text/javascript">
+                                                        imgFile[imgAvailableIndex[0]] = {{postImage.id}};
+                                                        delete imgAvailableIndex[0];
+                                                        imgAvailableIndex.shift();
+                                                        if($("#imagePreview").find("img").length==3){
+                                                            $("#id_image")[0].disabled = true;
+                                                            // document.getElementsByClassName("fa fa-camera")[0].style.color = "grey";
+                                                        }
+                                                    </script>
+                                                {% endfor %}
+                                            {% else %}
+                                            <script type="text/javascript">
+                                                    var imgFile = Array(3)
+                                                    var imgAvailableIndex = Array();
+                                                    var imgAvailableIndex = [0,1,2];
+                                            </script>
+                                            {% endif %}
+
+                                            </div>
+                                        </div>
+
+                                        <div class="d-flex">
+                                            <div class="form-group w-25 mr-1 mb-0" >
+                                                <input type="file" name="image" class="form-control" style="margin-top:2px;display:none;" accept="image/*" id="id_image">
+                                                <label class="addImageBtn" for="id_image">
+                                                    <i class="fa fa-camera" aria-hidden="true"></i>
+                                                </label>
+                                            </div>
+                                            <button type="submit" class="btn btn-sm btn-outline-success w-75 ml-1">Update</button>
+                                        </div>
+
+                                    </form>
                             </div>
                         </div>
                     </div>
                 </div>
-                
-                
-                
-            </div>
-            </section>
-      </div>
-
-
-      <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Delete Post</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body followingsModalBody">
-                    <form method="post" action="{% url 'post-delete' object.id%}">
-                        {% csrf_token %}
-                        <h5>Are you sure, you want to delete the post ?</h5>
-                        <div class="d-flex flex-row-reverse mt-3 w-100">
-                            <button type="submit" class="btn btn-outline-danger ml-1 " >Confirm</button>
-                            <button type="button" class="btn btn-outline-success mr-1 " data-dismiss="modal" aria-label="Close">Cancel</button>
+                <!-- <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
                         </div>
-                        <!-- <a class="btn btn-outline-secondary" type="button" onclick="closeDeleteInfo()">Cancel</a> -->
-                    </form>
+                    </div>
+                </div> -->
+            </div>
+            <div class="col-md-4">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card trendingCard">
+                            <div class="card-header">
+                                <h6>Trending Topics</h6>
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item">
+                                        <h6>#corona</h6>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <h6>#Language</h6>
+
+                                    </li>
+                                    <li class="list-group-item">
+                                        <h6>#movies</h6>
+
+                                    </li>
+                                    <li class="list-group-item">
+                                        <h6>#Songs</h6>
+
+                                    </li>
+                                    <li class="list-group-item">
+                                        <h6>#education</h6>
+
+                                    </li>
+                                    <li class="list-group-item">
+                                        <h6>#movies</h6>
+
+                                    </li>
+                                    <li class="list-group-item">
+                                        <h6>#programming</h6>
+
+                                    </li>
+                                    </ul>
+                            </div>
+                        </div>
+                        <div class="card peopleKnow">
+                            <div class="card-header">
+                                <p class="cardHeaderName">People you may know</p>
+                                <!-- <p class="cardHeaderIcon"><i class="fa fa-ellipsis-v" aria-hidden="true"></i></p>                                           -->
+                            </div>
+                            <div class="card-body recomdBody">
+                                <div class="list-group">
+                                    <div class="list-group-item">
+                                        <div class="cardHeadSection">
+                                            <div class="profileImg"><a href="#"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></a></div>
+                                            <div class="profileTitle">
+                                                <a href="#"><h6>Abhishek Gupta</h6></a><p>@abhishek </p>
+                                            </div>
+                                            <div class="recomdAddBtn">
+                                                <p><a href="#"><i class="fa fa-plus" aria-hidden="true"></i></a></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="list-group-item">
+                                        <div class="cardHeadSection">
+                                            <div class="profileImg"><a href="#"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></a></div>
+                                            <div class="profileTitle">
+                                                <a href="#"><h6>Abhishek Gupta</h6></a><p>@abhishek </p>
+                                            </div>
+                                            <div class="recomdAddBtn">
+                                                <p><a href="#"><i class="fa fa-plus" aria-hidden="true"></i></a></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="list-group-item">
+                                        <div class="cardHeadSection">
+                                            <div class="profileImg"><a href="#"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></a></div>
+                                            <div class="profileTitle">
+                                                <a href="#"><h6>Abhishek Gupta</h6></a><p>@abhishek </p>
+                                            </div>
+                                            <div class="recomdAddBtn">
+                                                <p><a href="#"><i class="fa fa-plus" aria-hidden="true"></i></a></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="list-group-item">
+                                        <div class="cardHeadSection">
+                                            <div class="profileImg"><a href="#"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></a></div>
+                                            <div class="profileTitle">
+                                                <a href="#"><h6>Abhishek Gupta</h6></a><p>@abhishek </p>
+                                            </div>
+                                            <div class="recomdAddBtn">
+                                                <p><a href="#"><i class="fa fa-plus" aria-hidden="true"></i></a></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="list-group-item">
+                                        <div class="cardHeadSection">
+                                            <div class="profileImg"><a href="#"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></a></div>
+                                            <div class="profileTitle">
+                                                <a href="#"><h6>Abhishek Gupta</h6></a><p>@abhishek </p>
+                                            </div>
+                                            <div class="recomdAddBtn">
+                                                <p><a href="#"><i class="fa fa-plus" aria-hidden="true"></i></a></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="list-group-item">
+                                        <div class="cardHeadSection">
+                                            <div class="profileImg"><a href="#"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></a></div>
+                                            <div class="profileTitle">
+                                                <a href="#"><h6>Abhishek Gupta</h6></a><p>@abhishek </p>
+                                            </div>
+                                            <div class="recomdAddBtn">
+                                                <p><a href="#"><i class="fa fa-plus" aria-hidden="true"></i></a></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="list-group-item">
+                                        <div class="cardHeadSection">
+                                            <div class="profileImg"><a href="#"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></a></div>
+                                            <div class="profileTitle">
+                                                <a href="#"><h6>Abhishek Gupta</h6></a><p>@abhishek </p>
+                                            </div>
+                                            <div class="recomdAddBtn">
+                                                <p><a href="#"><i class="fa fa-plus" aria-hidden="true"></i></a></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="list-group-item">
+                                        <div class="cardHeadSection">
+                                            <div class="profileImg"><a href="#"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></a></div>
+                                            <div class="profileTitle">
+                                                <a href="#"><h6>Abhishek Gupta</h6></a><p>@abhishek </p>
+                                            </div>
+                                            <div class="recomdAddBtn">
+                                                <p><a href="#"><i class="fa fa-plus" aria-hidden="true"></i></a></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="list-group-item">
+                                        <div class="cardHeadSection">
+                                            <div class="profileImg"><a href="#"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></a></div>
+                                            <div class="profileTitle">
+                                                <a href="#"><h6>Abhishek Gupta</h6></a><p>@abhishek </p>
+                                            </div>
+                                            <div class="recomdAddBtn">
+                                                <p><a href="#"><i class="fa fa-plus" aria-hidden="true"></i></a></p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="card-footer recomdFooter text-center">
+                                <a href="">See More</a>
+                            </div>
+                            </div>
+                    </div>
                 </div>
             </div>
-                <!-- <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
-                </div> -->
+        </div>
+
+
+
+    </div>
+</section>
+
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Delete Post</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body followingsModalBody">
+                <form method="post" action="{% url 'post-delete' object.id%}">
+                    {% csrf_token %}
+                    <h5>Are you sure, you want to delete the post ?</h5>
+                    <div class="d-flex flex-row-reverse mt-3 w-100">
+                        <button type="submit" class="btn btn-outline-danger ml-1 " >Confirm</button>
+                        <button type="button" class="btn btn-outline-success mr-1 " data-dismiss="modal" aria-label="Close">Cancel</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
+</div>
 
-{% endblock content %}
+{% endblock section %}
+
 
 
 {% block footer %}
-    <script type="text/javascript" src="{% static 'blog/javascript/update_post.js' %}"></script>
+    <script type="text/javascript">
+
+        function removeImg(imgCurrentIndex){
+            $("#img"+imgCurrentIndex).remove();
+            $("#id_image")[0].disabled = false;
+            $(".addImageBtn").removeClass("disable");
+            //document.getElementsByClassName("fa fa-camera")[0].style.color = "black";
+            imgAvailableIndex.push(imgCurrentIndex);
+            imgAvailableIndex.sort();
+            delete imgFile[imgCurrentIndex];
+        };
+
+        function filePreview(fileInput,imgCurrentIndex){
+            var imgSrc = window.URL.createObjectURL(fileInput.files[0]);
+            $("#imagePreview").append($('<div/>',{"id":"img"+imgCurrentIndex,"style":"padding:5px","class":"col mb-3"}).append([
+                    $('<img/>',{"src":imgSrc,"width":'100%',"height":'100%'}),
+                    $("<i/>",{"onclick":"removeImg({})".replace("{}",imgCurrentIndex),"class":"fa fa-times","style":"color:red;top: 15px;right: 15px;position: absolute;cursor: pointer;color:red;","aria-hidden":"true"})
+                ])
+            )
+
+            if($("#imagePreview").find("img").length==3){
+                $("#id_image")[0].disabled = true;
+                $(".addImageBtn").addClass("disable");
+                //document.getElementsByClassName("fa fa-camera")[0].style.color = "grey";
+            }
+        };
+
+
+        $("#id_image").change(function(){
+            filePreview(this,imgAvailableIndex[0]);
+            imgFile[imgAvailableIndex[0]] = this.files[0];
+            delete imgAvailableIndex[0];
+            imgAvailableIndex.shift();
+        });
+
+        $("#id_image").click(function(){
+            if($("#imagePreview").find("img").length==3){
+                this.disabled = true;
+                //document.getElementsByClassName("fa fa-camera")[0].style.color = "grey";
+                return false;
+            }
+            return true;
+        });
+
+        $("#postCreateForm")[0].addEventListener('submit', function(e) {
+            e.preventDefault();
+            const url = "{% url 'post-update' pk=post.id %}";
+            const formData = new FormData();
+
+            formData.append("csrfmiddlewaretoken","{{csrf_token}}");
+            formData.append("title",$("input[name='title']").val());
+            formData.append("content",$("textarea[name='content']").val());
+            formData.append("category",$("select[name='category']").val());
+
+            imgFile.forEach(function(item, index){
+                if(typeof(item) == "number"){
+                    formData.append('postImgId', item);
+                }else{
+                    formData.append('images', item);
+                }
+            });
+
+            fetch(url, {
+              method: 'POST',
+              body: formData,
+            }).then(response => {
+              window.location.href = response.url;
+            })
+
+        });
+
+    </script>
 {% endblock %}

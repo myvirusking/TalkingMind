@@ -1,99 +1,14 @@
-{% extends "blog/base.html" %}
-{% load static  %}
+{% extends "blog/basic.html" %}
 {% load custom_tag %}
 
-{% block css %}
-
-<style>
-    .mainNav {
-        display: none;
-    }
-    
-</style>
+{% block section %}
 
 
-{% endblock css %}
-
-{% block content %}
-
-
-    
-    
-    <div class="sidenav" id="mySidenav">
-        <h6 class="brandName" href="#" >TalkingMind</h6>
-        <div class="menuProfileMainDiv">
-            <a href="#" class="menuProfile">
-                <div class="profileImg"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></div>
-                <div class="profileTitle">
-                    <h6>Abhishek Gupta</h6><p>@abhishek </p>
-                </div>
-            </a>            
-        </div>
-        <div class="sideMenu">
-            <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-            
-            <a href="{% url 'login-home' %}"><i class="fa fa-home" aria-hidden="true"></i><p>Home</p></a>
-            <a href="#"><i class="fa fa-bell" aria-hidden="true"></i><p>Notifications</p></a>
-            <a href="#"><i class="fa fa-th-large" aria-hidden="true"></i><p>Posts</p></a>
-            <a href="#"><i class="fa fa-users" aria-hidden="true"></i><p>Users</p></a>
-            <a href="#"><i class="fa fa-bookmark" aria-hidden="true"></i><p>Saved</p></a>
-            <a href="#"><i class="fa fa-cog" aria-hidden="true"></i><p>Settings</p></a>
-            <a href="#"><i class="fas fa-sign-out-alt"></i><p>Logout</p></a>
-        </div>        
-        <div class="sideNavBottom">
-            <div>
-                <ul>
-                    <li><a href="#">About</a></li>
-                    <li><a href="#">Terms</a></li>
-                    <li><a href="#">Privacy policy</a></li>
-                </ul>
-                <a href="#" class="copyright">&copy; 2020 TalkingMind</a>
-                
-            </div>
-        </div>
-    </div>
-      
-      <div class="main">          
-        <nav class="navbar navbar-expand-md navbar-inverse regNav">
-            <div class="container-fluid">
-                <div class="navbar-brand">                    
-                    <form class="form-inline searchForm">
-                        {% csrf_token %}
-                        <input class="form-control form-control-sm" type="text" autocomplete="off" placeholder="Search" id="user-input">
-                        <button class="btn btn-primary btn-sm searchBtn"><i class="fa fa-search" aria-hidden="true"></i></button>
-                        <div id="replaceable-content" class="col-6">
-                            {% include 'blog/user-search-results.html' %}
-                           
-                        </div>
-                    </form>
-                </div>
-            
-        
-                <ul class="nav navbar-nav navbar-right">
-                    <div class="icons">
-                        <a class="filterIcon" data-toggle="modal" data-target="#filterModal"><i class="fa fa-filter" aria-hidden="true"></i></a>
-                        <a class="menuBtn" onclick="openNav()"><i class="fa fa-bars" aria-hidden="true"></i></a>
-                    </div>
-                    <!-- <div class="profileImg"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></div> -->
-                    <li class="profile profileImg"><a href="{% url 'profile' %}"><img src="{{user.profile.image.url}}"></a></li>
-                    <!-- <li><a class="menuBtn" href="#" onclick="openNav()"><i class="fa fa-bars" aria-hidden="true"></i></a></li> -->
-                    <!-- <li><a class="menuBtn" href="#" onclick="openNav()"><i class="fa fa-bars" aria-hidden="true"></i></a></li> -->
-                </ul>
-            </div>
-        
-        </nav>
         <section>
             <div class="container-fluid">
                 <div class="row">
-                    
+
                     <div class="col-lg-8 col-md-8 mt-2">
-<!--                        <a href="{% url 'post-create' %}" class="card" >-->
-<!--                            <div class="postBtnBody">-->
-<!--                                <div class="profileImg"><img src="{{user.profile.image.url}}"></div>-->
-<!--                                <div class="postInputDiv"><input class="form-control form-control-sm" type="text"  placeholder="What's in your mind.." ></div>-->
-<!--                                <p class="postBtn"><button class="btn btn-primary">Post</button></p>                                          -->
-<!--                            </div>-->
-<!--                        </a>-->
                         <div class="filterDiv">
                             <h2><span>Filter by: <i class="fa fa-filter" aria-hidden="true" data-toggle="modal" data-target="#filterModal"></i></span></h2>
                         </div>
@@ -108,15 +23,15 @@
                                                     <a href="{% url 'other-profile' saved.post.author.id %}"><h6>{{ saved.post.author }}</h6></a><p>@prashant </p>
                                                 </div>
                                                 <div class="threeDot">
-                                                    <p><i class="fa fa-ellipsis-v" aria-hidden="true"></i></p>                                                
+                                                    <p><i class="fa fa-ellipsis-v" aria-hidden="true"></i></p>
                                                 </div>
                                             </div>
-                                            
+
                                         </div>
                                         <div class="card-body">
                                         <h5 class="card-title">{{ saved.post.title }}</h5>
                                         <p class="card-text">{{ saved.post.content }}</p>
-                                        
+
                                         {% if saved.post.images.all %}
                                         <div class="row">
                                             {% for postImage in saved.post.images.all %}
@@ -132,7 +47,7 @@
                                         </div>
 
 
-                                        <form>
+
                                         <div class="card-footer">
                                             <div class="footerBtn">
                                                 {% csrf_token %}
@@ -148,19 +63,45 @@
                                                 {% else %}
                                                     <div class="save"><i onclick="post_save(this,{{saved.post.id}})" class="fa fa-bookmark " aria-hidden="true" data-catid = {{saved.post.id}}></i></div>
                                                 {% endif %}
-
-
+                                            </div>
+                                        </div>
+                                        <div class="card-footer">
+                                            <div class="footerCommentDiv">
+                                                <div class="commentBox">
+                                                    <form class="comment-form">
+                                                        {% csrf_token %}
+                                                        {{comment_form.commented_text}}
+                                                        <button type="submit" class="btn btn-outline-info commentBtn" data-catid="{{post.id}}"><i class="fas fa-paper-plane"></i></button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                            <div class="allCommentDiv" id="allCommentDiv">
+                                                <ul class="list-unstyled single-post-cmt-div{{post.id}} mb-0">
+                                                    {% if post.comments.all %}
+                                                        <li class="media">
+                                                        <a href="#"><img class="mr-3 profilePic" src="/media/default.jpeg" alt="img"></a>
+                                                        <div class="media-body w-50">
+                                                            <h6 class="mt-0 mb-1 profileName"><a href="#">{{post|latest_author_fname}} {{post|latest_author_lname}}</a><span class="ml-3 commentlikeBtn"><i class="far fa-heart"></i></span></h6>
+                                                            <p class="commentText">{{post|latest_comment}}</p>
+                                                            <div class="commentTextBottomBtn">
+                                                                <span class="textBtn">9h</span>
+                                                                <span class="textBtn"><span>5</span> likes</span>
+                                                                <span class="textBtn">reply</span>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                    {% endif %}
+                                                </ul>
 
                                             </div>
-                                            <!-- {{ post.date_posted }} -->
-                                         </div>
-                                        </form>
+                                        </div>
 
-                                    </div> 
+
+                                    </div>
                                  {% endfor %}
                             {% else %}
                                 <h5>You haven't saved any posts yet</h5>
-                            {% endif %} 
+                            {% endif %}
                          </div>
 
                         {% if paginated_saved_posts.has_next %}
@@ -197,7 +138,7 @@
                                                         <h6>Prashant jha</h6><p>@user </p>
                                                     </div>
                                                     <div class="recomdAddBtn">
-                                                        <p><i class="fa fa-plus" aria-hidden="true"></i></p>                                                
+                                                        <p><i class="fa fa-plus" aria-hidden="true"></i></p>
                                                     </div>
                                                 </div>
                                             </a>
@@ -208,7 +149,7 @@
                                                         <h6>Prashant jha</h6><p>@user </p>
                                                     </div>
                                                     <div class="recomdAddBtn">
-                                                        <p><i class="fa fa-plus" aria-hidden="true"></i></p>                                                
+                                                        <p><i class="fa fa-plus" aria-hidden="true"></i></p>
                                                     </div>
                                                 </div>
                                             </a>
@@ -219,7 +160,7 @@
                                                         <h6>Prashant jha</h6><p>@user </p>
                                                     </div>
                                                     <div class="recomdAddBtn">
-                                                        <p><i class="fa fa-plus" aria-hidden="true"></i></p>                                                
+                                                        <p><i class="fa fa-plus" aria-hidden="true"></i></p>
                                                     </div>
                                                 </div>
                                             </a>
@@ -230,7 +171,7 @@
                                                         <h6>Prashant jha</h6><p>@user </p>
                                                     </div>
                                                     <div class="recomdAddBtn">
-                                                        <p><i class="fa fa-plus" aria-hidden="true"></i></p>                                                
+                                                        <p><i class="fa fa-plus" aria-hidden="true"></i></p>
                                                     </div>
                                                 </div>
                                             </a>
@@ -241,14 +182,14 @@
                                                         <h6>Prashant jha</h6><p>@user </p>
                                                     </div>
                                                     <div class="recomdAddBtn">
-                                                        <p><i class="fa fa-plus" aria-hidden="true"></i></p>                                                
+                                                        <p><i class="fa fa-plus" aria-hidden="true"></i></p>
                                                     </div>
                                                 </div>
                                             </a>
-                                            
+
                                           </div>
-                                    </div>                                       
-                                    
+                                    </div>
+
                                     <div class="card-footer recomdFooter text-center">
                                         <a href="">Explore More</a>
                                     </div>
@@ -258,35 +199,10 @@
                     </div>
                 </div>
             </div>
-            </section>
-      </div>
+        </section>
+      <!-- </div> -->
 
       <!-- Modal -->
-    <div class="modal fade" id="postModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">New Post</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form method="post">
-                        {% csrf_token %}
-                        {{new_post_form.title}}
-                        {{new_post_form.content}}
-                        {{new_post_form.category}}
-                        <button type="submit" class="btn btn-block mt-2" style="background-color:#4b204f;color:white;">Post</button>
-                    </form>
-                </div>
-                <!-- <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
-                </div> -->
-            </div>
-        </div>
-    </div>
 
     <div class="modal fade" id="filterModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
@@ -319,7 +235,7 @@
                                         {% endif %}
                                     {%endfor%}
                                     </div>
-                            </div>  
+                            </div>
                         </div>
                         <div class="col-md-12 text-center">
                             <button type="submit" class="btn btn-outline-success">Apply Filter</button>
@@ -334,6 +250,7 @@
         </div>
     </div>
 
+{% endblock section %}
 
     {% block scripts %}
     
@@ -359,11 +276,5 @@
     </script>
     {% endblock %}
 
-   
-
-
-
-
-     
-
 {% endblock content %}
+

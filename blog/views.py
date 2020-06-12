@@ -16,11 +16,14 @@ from django.views.decorators.csrf import csrf_exempt
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.conf import settings
 from django.views.generic import TemplateView
+from settings.models import AccountPrivacySetting
+from django.db.models import Q
 
 #global variable for making efficient infinite scrolling
 global_posts = None
 global_home_paginator = None
 global_saved_post_paginator = None
+
 
 class HomeView(ListView):
     model = Post
@@ -36,7 +39,6 @@ def home(request):
     if request.method == 'POST':
         topicId = request.POST.getlist("topicId")
 
-
         if len(topicId):
             posts = Post.objects.filter(category__id__in = topicId).order_by('-date_posted')
             new_post_form = NewPostForm()
@@ -48,13 +50,18 @@ def home(request):
             }
             return render(request, 'blog/loginhome.html', context)
 
+    list_of_following_users = [user for user in request.user.profile.following.values_list('user', flat=True)]
+    list_of_public_account = AccountPrivacySetting.objects.filter(profile_privacy='public').values_list('user', flat=True)
+
+
     context = {}
     comment_form = CommentForm(auto_id=False)
     #infinite scrolling with the help of pagination
     page = request.GET.get('page', 1)
     if int(page) == 1:
         global global_posts,global_home_paginator
-        global_posts = Post.objects.all().order_by('-date_posted')
+        global_posts = Post.objects.filter(Q(author_id__in=list_of_following_users)|
+                                Q(author_id__in=list_of_public_account)).order_by('-date_posted')
         global_home_paginator = Paginator(global_posts, settings.POST_PAGINATION_PER_PAGE)
     try:
         paginated_posts = global_home_paginator.page(page)
@@ -65,6 +72,7 @@ def home(request):
     
     context['paginated_posts'] = paginated_posts
     context['posts_count'] = global_posts.count()
+
     context['comment_form'] = comment_form
     context['home_page'] = 'active'
     context["category_list"] = [(category.id, category.name) for category in ArticleCategory.objects.all()]
@@ -169,28 +177,34 @@ State of the button is saved each time the user clicks that. Like button appeara
 def post_like(request):
     if request.method == 'GET':
         post_id = request.GET['post_id']
-        liked_post = Post.objects.filter(id=post_id).first()
+        liked_post = Post.objects.get(id=int(post_id))
         users_who_liked_post = [user for id, user in liked_post.likes.values_list()]
         if request.user.id in users_who_liked_post:
 
             liked_post.likes.all()[users_who_liked_post.index(request.user.id)].delete()
 
             liked_post.likes_count -= 1
-            liked_post.save()
 
-            likes_count = liked_post.likes_count
-            data_dict = {'likes': likes_count}
-            return JsonResponse(data=data_dict, safe=False)
+            liked_post.author.profile.notification.get(from_user=request.user,
+                                                     notification_type="post_like",
+                                                     post_involved=liked_post).delete()
+            liked_post.author.profile.notification_count -= 1
 
         else:
             liked_post.likes.create(user=request.user)
-            liked_post.likes_count += 1
-            liked_post.save()
-            likes_count = liked_post.likes_count
-            data_dict = {'likes': likes_count}
-            return JsonResponse(data=data_dict, safe=False)
+            liked_post.likes_count +=1
+            liked_post.author.profile.notification.create(from_user=request.user,
+                                             notification_title="Liked your post",
+                                             notification_content=liked_post.title,
+                                             notification_type="post_like",
+                                             post_involved=liked_post)
+            liked_post.author.profile.notification_count += 1
 
-    return render(request, 'blog/loginhome.html')
+        liked_post.save(update_fields=["likes_count"])
+        likes_count = liked_post.likes_count
+        data_dict = {'likes': likes_count}
+        return JsonResponse(data=data_dict, safe=False)
+
 
 
 """This view gets called when the user clicks on save post button. It gets called through 
@@ -205,59 +219,97 @@ list the counter will be decremented"""
 def save_post(request):
     if request.method == 'GET':
         post_id = request.GET['post_id']
-        profile = Profile.objects.filter(user=request.user).first()
-        saved_post = Post.objects.filter(id=post_id).first()
+        profile = Profile.objects.get_obj_or_404(user=request.user)
+        saved_post = Post.objects.get_obj_or_404(id=post_id)
         saved_posts_list = [id for post, id, date in profile.saved_posts.values_list()]
 
         if saved_post.id in saved_posts_list:
             profile.saved_posts.all()[saved_posts_list.index(saved_post.id)].delete()
             profile.saved_posts_count -= 1
-            print("This is ")
-            profile.save()
-
-            save_count = profile.saved_posts_count
-            data_dict = {'saves': save_count}
-            return JsonResponse(data=data_dict, safe=False)
 
         else:
             profile.saved_posts.create(post=saved_post)
             profile.saved_posts_count += 1
-            profile.save()
 
-            save_count = profile.saved_posts_count
-            data_dict = {'saves': save_count}
+        profile.save()
+
+        save_count = profile.saved_posts_count
+        data_dict = {'saves': save_count}
+        return JsonResponse(data=data_dict, safe=False)
+
+
+@login_required
+def comment_like(request, pid):
+    print('comment like')
+    if request.method == 'GET':
+        cmt_id = request.GET['cmt_id']
+        liked_comment = Comment.objects.filter(id=int(cmt_id)).first()
+        user_who_liked_cmt = [user for id, user in liked_comment.cmt_likes.values_list()]
+
+        if request.user.id in user_who_liked_cmt:
+            print("user in user_who_liked_cmt")
+            print(liked_comment.cmt_likes.all()[user_who_liked_cmt.index(request.user.id)].delete())
+            liked_comment.cmt_likes_count -= 1
+            liked_comment.save()
+
+            cmt_likes_count = liked_comment.cmt_likes_count
+            data_dict = {'likes_count': cmt_likes_count}
             return JsonResponse(data=data_dict, safe=False)
 
-    return render(request, 'blog/loginhome.html')
+        else:
+            print("user not in user_who_liked_cmt")
+            liked_comment.cmt_likes.create(user=request.user)
+            liked_comment.cmt_likes_count += 1
+            liked_comment.save()
+
+            cmt_likes_count = liked_comment.cmt_likes_count
+            data_dict = {'likes_count': cmt_likes_count}
+            return JsonResponse(data=data_dict, safe=False)
+    return render(request, 'blog/singlePost.html')
 
 
 def single_post(request, pid):
-    singlePost = Post.objects.filter(id = pid).first()
+    singlePost = Post.objects.filter(id=pid).first()
     comment_form = CommentForm()
-    allComments = singlePost.comments.all().order_by('comment_date').reverse()
-        
-    return render(request, 'blog/singlePost.html', {
-            'singlePost': singlePost,
-            'comment_form': comment_form,
-            'allComments': allComments,
-        })
+    allComments = singlePost.comments.filter(parent_comment_id=0).order_by('-id')
+
+    context = {
+        'singlePost': singlePost,
+        'comment_form': comment_form,
+        'allComments': allComments,
+    }
+
+    return render(request, 'blog/singlePost.html', context)
+
 
 @csrf_exempt
 def comment(request):
     if request.method == 'POST':
         text = request.POST['commentText']
-        postId = request.POST['postId']        
-        post = Post.objects.filter(id = postId).first() 
-        full_name = request.user.first_name +' ' +request.user.last_name
-        
-        post.comments.create(commented_post=post, author=request.user,commented_text=text)
-        
-        data_obj = {
-            'text': text,
-            'author': full_name
-        }
+        postId = request.POST['postId']
+        commentId = int(request.POST['commentId'])
+        post = Post.objects.filter(id=postId).first()
+        full_name = request.user.first_name + ' ' + request.user.last_name
 
-    return JsonResponse(data_obj, safe=False)
+        print(commentId)
+
+        latest_comment = post.comments.create(commented_post=post, author=request.user, commented_text=text,
+                                              parent_comment_id=commentId)
+
+        print(latest_comment.commented_text)
+        print(latest_comment.parent_comment_id)
+        # print(Comment.objects.latest('id'))
+
+        data_obj = {
+            'commented_text': latest_comment.commented_text,
+            'author_fname': latest_comment.author.first_name,
+            'author_lname': latest_comment.author.last_name,
+            'commentId': latest_comment.id,
+            'parent_comment_id': latest_comment.parent_comment_id,
+        }
+        print("returednd")
+
+        return JsonResponse(data_obj, safe=False)
 
 
 """This view gets called when the user clicks on the saved button in the navbar. This view will 
@@ -291,6 +343,16 @@ class SavedPostView(TemplateView, LoginRequiredMixin):
         context['saved_posts_count'] = global_posts.count()
         return self.render_to_response(context)
 
+
+@csrf_exempt
+@login_required
+def check_for_new_notification(request):
+    if request.user.is_authenticated:
+        new_notification = request.user.profile.notification.filter(status='new')
+        total_notification = len(new_notification)
+        if len(new_notification)>0:
+            return JsonResponse(data={'newNotification':total_notification}, safe=False)
+        return JsonResponse(data={'newNotification':total_notification}, safe=False)
 
 
 
