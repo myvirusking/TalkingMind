@@ -137,11 +137,13 @@
                     </div>
                 {% endfor %}
               {% endif %}
-
           </div>
 
         {% block content %}
         {% endblock content %}
+
+        {% block pagescript %}
+        {% endblock pagescript %}
 
         {% block footer %}
             <script type="text/javascript" src="{% static 'blog/javascript/main.js' %}"></script>
@@ -156,30 +158,38 @@
             <script type="text/javascript" src="{% static 'blog/javascript/send_follow_request.js' %}"></script>
 
             <script type="text/javascript" src="{% static 'blog/javascript/update_notification.js' %}"></script>
+            
 
-
-            <script>
+            <!-- <script>
 
 
                 function openNav() {
                   document.getElementById("mySidenav").style.width = "250px";
+                  $(".wrapper").addClass("active");
                 }
 
                 function closeNav() {
                   document.getElementById("mySidenav").style.width = "0";
+                  $(".wrapper").addClass("active");
                 }
-            </script>
+            </script> -->
 
 
-
+    
     <script>
-
+        $(".bg-shadow").click(function(){
+            console.log("bg");
+            closeNav();
+        });
+                
         function openNav() {
-          document.getElementById("mySidenav").style.width = "250px";
+          document.getElementById("mySidenav").style.left = "0px";
+          $(".wrapper").addClass("active");
         }
-
+        
         function closeNav() {
-          document.getElementById("mySidenav").style.width = "0";
+          document.getElementById("mySidenav").style.left = "-250px";
+          $(".wrapper").removeClass("active");
         }
     </script>
     <script>
@@ -189,8 +199,9 @@
             $('#deleteForm').attr('action', url);
         })
     </script>
+    
          
-       {% endblock %}
+       {% endblock footer %}
 
 </body>
 

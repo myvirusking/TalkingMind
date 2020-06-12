@@ -18,7 +18,7 @@ $(document).ready(function(){
             },
             error:function (xhr,status, error) {
                 console.log(error);
-                cconsole.log(xhr);
+                console.log(xhr);
             }
         });
 

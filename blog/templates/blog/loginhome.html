@@ -6,7 +6,6 @@
         <div class="container-fluid">
 
             <div class="row">
-
                 <div class="col-lg-8 col-md-8">
                     <a href="{% url 'post-create' %}" class="card" >
                         <div class="postBtnBody">
@@ -90,6 +89,7 @@
                                             <div class="commentBox">
                                                 <form class="comment-form">
                                                     {% csrf_token %}
+                                                    <input type="hidden" value="0" id="hiddenInput">
                                                     {{comment_form.commented_text}}
                                                     <button type="submit" class="btn btn-outline-info commentBtn" data-catid="{{post.id}}"><i class="fas fa-paper-plane"></i></button>
                                                 </form>
