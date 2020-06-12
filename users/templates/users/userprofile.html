@@ -199,10 +199,10 @@
                                     </nav>
                                     <div class="tab-content" id="nav-tabContent">
                                         <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
-                                            <div class="mainProfilePostDiv">
-                                                {% if posts.count > 0 %}
-                                                    {% for post in posts %}
-                                                        <div class="card mainProfiilePostCard">
+                                            <div class="mainProfilePostDiv infinite-container">
+                                                {% if posts_count > 0 %}
+                                                    {% for post in paginated_posts %}
+                                                        <div class="card mainProfiilePostCard infinite-item">
                                                             <div class="card-header">
                                                                 <div class="cardHeadSection">
                                                                     <div class="profileImg"><a href="{% url 'other-profile' post.author.id %}"><img src="{{post.author.profile.image.url}}"></a></div>
@@ -256,16 +256,16 @@
                                                                 <div class="footerBtn">
                                                                   {% csrf_token %}
                                                                     {% if user.id in post|liked_list  %}
-                                                                        <div id="like"  class="like" ><i id="heart" class="fa fa-heart press" aria-hidden="true" data-catid="{{post.id}}"><span class="total-likes" >{{post.likes_count}}</span></i ></div>
+                                                                        <div id="like"  class="like" ><i onclick="post_like(this,{{post.id}})" id="heart" class="fa fa-heart press" aria-hidden="true"><span class="total-likes" >{{post.likes_count}}</span></i ></div>
                                                                     {% else %}
-                                                                        <div id="like"  class="like" ><i id="heart" class="fa fa-heart" aria-hidden="true" data-catid="{{post.id}}"><span class="total-likes" >{{post.likes_count}}</span></i ></div>
+                                                                        <div id="like"  class="like" ><i onclick="post_like(this,{{post.id}})" id="heart" class="fa fa-heart" aria-hidden="true"><span class="total-likes" >{{post.likes_count}}</span></i ></div>
                                                                     {% endif %}
                                                                     <div class="comment"><i class="far fa-comments"></i><span>13</span></div>
                                                                     <div class="share"><i class="fa fa-paper-plane" aria-hidden="true"></i><span>28</span></div>
                                                                     {% if post.id in user.profile|saved_post %}
-                                                                        <div class="save"><i class="fa fa-bookmark saved" aria-hidden="true" data-catid = {{post.id}}></i></div>
+                                                                        <div class="save"><i onclick="post_save(this,{{post.id}})" class="fa fa-bookmark saved" aria-hidden="true" data-catid = {{post.id}}></i></div>
                                                                     {% else %}
-                                                                        <div class="save"><i class="fa fa-bookmark " aria-hidden="true" data-catid = {{post.id}}></i></div>
+                                                                        <div class="save"><i onclick="post_save(this,{{post.id}})" class="fa fa-bookmark" aria-hidden="true" data-catid = {{post.id}}></i></div>
                                                                     {% endif %}
                                                                 </div>
                                                                 <!-- {{ post.date_posted }} -->
@@ -309,9 +309,18 @@
                                                 <div class="card mainProfiileNoPostCard">
                                                     <h6>You haven't posted anything yet</h6>
                                                 </div>
-
                                                 {% endif %} 
                                              </div>
+
+                                          {% if paginated_posts.has_next %}
+                                             <a class="infinite-more-link" href="?page={{ paginated_posts.next_page_number }}"></a>
+                                          {% endif %}
+                                          <div class="d-flex justify-content-center" style="display:none;">
+                                             <div class="spinner-border" role="status" style="display:none;">
+                                                 <span class="sr-only">Loading...</span>
+                                             </div>
+                                         </div>
+
                                         </div>
                                         <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
                                             <div class="mainProfileAboutDiv">
@@ -601,7 +610,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body followerModalBody">
+            <div class="modal-body followerModalBody" style="overflow: hidden;">
                 <div class="followerListDiv">
                     <div class="list-group">
                         {% for follower in followers_list %}
@@ -632,9 +641,10 @@
                                 </div>
                             </div>
                         </div>
-                        {% endfor %}                            
+                        {% endfor %} 
                         
                     </div>
+
                 </div>
             </div>
         </div>
@@ -655,7 +665,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body followingsModalBody">
+            <div class="modal-body followingsModalBody" style="overflow: hidden;">
                 <div class="followingListDiv">
                     <div class="list-group">
                         {% for following in following_list %}
@@ -713,7 +723,15 @@
 {% block scripts %}
 
 <script>
-   
+    var infinite = new Waypoint.Infinite({
+        element: $('.infinite-container'),
+        onBeforePageLoad: function () {
+            $('.spinner-border').show();
+        },
+        onAfterPageLoad: function () {
+            $('.spinner-border').hide();
+        }
+    });
     
     function openNav() {
       document.getElementById("mySidenav").style.width = "250px";

@@ -13,8 +13,17 @@ from users.models import Profile, SavedPost
 from django.http import JsonResponse
 from .models import *
 from django.views.decorators.csrf import csrf_exempt
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.conf import settings
+from django.views.generic import TemplateView
 from settings.models import AccountPrivacySetting
 from django.db.models import Q
+
+#global variable for making efficient infinite scrolling
+global_posts = None
+global_home_paginator = None
+global_saved_post_paginator = None
+
 
 class HomeView(ListView):
     model = Post
@@ -47,9 +56,23 @@ def home(request):
 
     context = {}
     comment_form = CommentForm(auto_id=False)
-    posts = Post.objects.filter(Q(author_id__in=list_of_following_users)|
+    #infinite scrolling with the help of pagination
+    page = request.GET.get('page', 1)
+    if int(page) == 1:
+        global global_posts,global_home_paginator
+        global_posts = Post.objects.filter(Q(author_id__in=list_of_following_users)|
                                 Q(author_id__in=list_of_public_account)).order_by('-date_posted')
-    context['posts'] = posts
+        global_home_paginator = Paginator(global_posts, settings.POST_PAGINATION_PER_PAGE)
+    try:
+        paginated_posts = global_home_paginator.page(page)
+    except PageNotAnInteger:
+        paginated_posts = global_home_paginator.page(1)
+    except EmptyPage:
+        paginated_posts = global_home_paginator.page(global_home_paginator.num_pages)
+    
+    context['paginated_posts'] = paginated_posts
+    context['posts_count'] = global_posts.count()
+
     context['comment_form'] = comment_form
     context['home_page'] = 'active'
     context["category_list"] = [(category.id, category.name) for category in ArticleCategory.objects.all()]
@@ -296,16 +319,29 @@ is unsaved the ajax in turn calls the 'save_post' view whose url is in the 'Blog
 'save-post2' """
 
 
-class SavedPostView(ListView, LoginRequiredMixin):
-    model = Profile
+class SavedPostView(TemplateView, LoginRequiredMixin):
     template_name = 'blog/saved_posts.html'
-    context_object_name = 'saved_posts'
 
-    def get_queryset(self):
-        user = User.objects.filter(id=self.request.user.id).first()
-        profile = Profile.objects.filter(user = user).first()
+    def get(self, request, *args, **kwargs):
+        context = self.get_context_data(**kwargs)
 
-        return profile.saved_posts.all().order_by('-date')
+         #infinite scrolling with the help of pagination
+        page = request.GET.get('page', 1)
+        if int(page) == 1:
+            global global_posts,global_saved_post_paginator
+            profile = Profile.objects.get(user = request.user)      
+            global_posts = profile.saved_posts.all().order_by('-date')
+            global_saved_post_paginator = Paginator(global_posts, settings.POST_PAGINATION_PER_PAGE)
+        try:
+            paginated_posts = global_saved_post_paginator.page(page)
+        except PageNotAnInteger:
+            paginated_posts = global_saved_post_paginator.page(1)
+        except EmptyPage:
+            paginated_posts = global_saved_post_paginator.page(global_saved_post_paginator.num_pages)
+
+        context['paginated_saved_posts'] = paginated_posts
+        context['saved_posts_count'] = global_posts.count()
+        return self.render_to_response(context)
 
 
 @csrf_exempt

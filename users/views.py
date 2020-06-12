@@ -16,6 +16,12 @@ from blog.models import Post
 from django.template.loader import render_to_string
 from django.http import JsonResponse
 from settings.models import AccountPrivacySetting
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
+#global variable for making efficient infinite scrolling
+global_posts = None
+global_profile_post_paginator = None
+global_otherprofile_post_paginator = None
 
 
 #################  Currently not in use but could be used in future development##################
@@ -108,7 +114,6 @@ def profile(request):
         profile_form = ProfileUpdateForm(instance=request.user.profile)
         about_form = AboutForm(instance=request.user.profile)
 
-    post = Post.objects.filter(author_id=request.user).order_by('-date_posted')
     article_category = [name for id, name in Profile.objects.get(user=request.user).article_category.values_list()]
     current_user_profile = Profile.objects.filter(user=request.user).first()
 
@@ -116,18 +121,31 @@ def profile(request):
     followers_count = current_user_profile.followers_count
 
     following_users = [user for id, user in request.user.profile.following.values_list()]
-
-    following_list = current_user_profile.following.all()
-    followers_list = current_user_profile.followers.all()
+    following_list = current_user_profile.following.all().order_by("user")
+    followers_list = current_user_profile.followers.all().order_by("user")
 
     comment_form = CommentForm(auto_id=False)
+
+    #infinite scrolling with the help of pagination
+    page = request.GET.get('page', 1)
+    if int(page) == 1:
+        global global_posts,global_profile_post_paginator
+        global_posts = Post.objects.filter(author_id=request.user).order_by('-date_posted')
+        global_profile_post_paginator = Paginator(global_posts, settings.POST_PAGINATION_PER_PAGE)
+    try:
+        paginated_posts = global_profile_post_paginator.page(page)
+    except PageNotAnInteger:
+        paginated_posts = global_profile_post_paginator.page(1)
+    except EmptyPage:
+        paginated_posts = global_profile_post_paginator.page(global_profile_post_paginator.num_pages)
 
     context = {
         'user_form': user_form,
         'profile_form': profile_form,
         'about_form':about_form,
         'article_category': article_category,
-        'posts': post,
+        'paginated_posts': paginated_posts,
+        'posts_count' : global_posts.count(),
         'rec_request': rec_request,
         'following_count': following_count,
         'followers_count': followers_count,
@@ -157,7 +175,19 @@ def other_user_profile(request, pk):
     if request.user.id == pk:
         return HttpResponseRedirect('/profile')
 
-    post = Post.objects.filter(author_id=pk)
+    #infinite scrolling with the help of pagination
+    page = request.GET.get('page', 1)
+    if int(page) == 1:
+        global global_posts,global_otherprofile_post_paginator
+        global_posts = Post.objects.filter(author_id=pk).order_by('-date_posted')
+        global_otherprofile_post_paginator = Paginator(global_posts, settings.POST_PAGINATION_PER_PAGE)
+    try:
+        paginated_posts = global_otherprofile_post_paginator.page(page)
+    except PageNotAnInteger:
+        paginated_posts = global_otherprofile_post_paginator.page(1)
+    except EmptyPage:
+        paginated_posts = global_otherprofile_post_paginator.page(global_otherprofile_post_paginator.num_pages)
+
     user = User.objects.get(id=pk)
 
     profile_other = Profile.objects.filter(id=pk).first()
@@ -194,7 +224,6 @@ def other_user_profile(request, pk):
     other_user_article_category = [name for id, name in Profile.objects.get(user=user).article_category.values_list()]
     current_user_article_category = [name for id, name in Profile.objects.get(user=request.user).article_category.values_list()]
     common_topics = [name for name in current_user_article_category if name in other_user_article_category]
-
     current_user_following_list = [user for id, user in request.user.profile.following.values_list()]
 
     following_count = profile_other.following_count
@@ -203,7 +232,8 @@ def other_user_profile(request, pk):
     comment_form = CommentForm(auto_id=False)
 
     context = {
-        'posts': post,
+        'paginated_posts': paginated_posts,
+        'posts_count' : global_posts.count(),
         'user_id': user,
         'article_category': other_user_article_category,
         'button_status': button_status,
