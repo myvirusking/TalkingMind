@@ -2,7 +2,7 @@ const user_input = $("#user-input");
 const search_icon = $('#search-icon');
 const artists_div = $('#replaceable-content');
 const endpoint = '/userSearch/';
-const delay_by_in_ms = 700;
+const delay_by_in_ms = 100;
 let scheduled_function = false;
 
 let ajax_call = function (endpoint, request_parameters) {

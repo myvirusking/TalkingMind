@@ -64,21 +64,17 @@
     </div>
 </div>
 
-<div class="main">
+<div class="main">          
     <nav class="navbar navbar-expand-md navbar-inverse regNav">
         <div class="container-fluid">
-            <div class="navbar-brand">
-                <form class="form-inline searchForm">
+            <div class="navbar-brand">                    
+                <form class="form-inline searchForm" method="GET" action="/userList/">
                     {% csrf_token %}
-                    <input class="form-control form-control-sm" type="text" autocomplete="off" placeholder="Search"
-                        id="user-input">
-                    <button class="btn btn-primary btn-sm searchBtn"><i class="fa fa-search"
-                            aria-hidden="true"></i></button>
-                    <div id="replaceable-content" class="col-6">
-                        {% include 'blog/user-search-results.html' %}
-
-                    </div>
+                    <input class="form-control form-control-sm" type="text" autocomplete="off" placeholder="Search" id="user-input" name="name" required>
+                    <button type="submit" class="btn btn-primary btn-sm searchBtn"><i class="fa fa-search" aria-hidden="true"></i></button>
+                 
                 </form>
+                  
             </div>
 
 
@@ -100,7 +96,10 @@
     <section>
         <div class="container-fluid">
             <div class="row">
-
+                <div class="row">
+                    <div id="replaceable-content" class="search-box col-6">
+                        {% include 'blog/user-search-results.html' %}
+                    </div> 
                 <div class="col-lg-8 col-md-8">
                     
                     <div class="mainCenterDiv">
@@ -399,7 +398,23 @@
 
 
 
+<script>
 
+    $(document).ready(function(){
+        $(".form-control").focusout(function(){
+            $(".search-box").css("display","none")
+        });
+    });
+
+    
+    $(document).ready(function(){
+        $(".form-control").focus(function(){
+            $(".search-box").css("display","inline")
+        });
+    });
+
+
+</script>
 
 
 

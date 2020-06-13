@@ -480,6 +480,7 @@ def user_search_list(request):
     #     'name': obj.first_name,
     #     'username' :obj.username
     # }
+
     url_parameter = request.GET['name']
     
     if url_parameter:

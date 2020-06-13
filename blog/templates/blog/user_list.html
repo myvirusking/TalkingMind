@@ -1,95 +1,19 @@
 {% extends 'blog/base.html' %}
-{% load static %}
 
 
 {% block css %}
 
 <style>
 
-    *{
+    /* *{
         box-sizing: border-box;
-    }
-    h1 {
-        font-size: 2rem;
-        font-weight: bold;
-        font-family: Arial, Helvetica, sans-serif;
-        /* padding-left: 3rem; */
-        margin-top: 1rem;
-        text-align: center;
-    }
-    section{
-        display: block;
-        align-content: center;
-        margin-left: 50px;
-        margin-right: 50px;
-    }
-
-
-    /* img {
-        width: 100%;
-        border-radius: 50%;
     } */
 
-    ul {
-        list-style: none;
-    }
-    li {
-        text-align: left;
-    }
-    .list-tem {
-        overflow: hidden;
-    }
-    a:visited{
-        color: #665ed0;
-    }
-
-    .base-search-card {
-        padding: 12px 0;
-    }
-    .base-search-card {
-        display: flex;
-        position: relative;
-        width: 100%;
-        border-bottom: 1px solid #e6e9ec;
-    }
-    .search-entity-media {
-        position: relative;
-    }
-
-    .artdeco-entity-image--circle-4 {
-        width: 60px;
-        height: 60px;
-        box-sizing: border-box;
-        border: 2px solid rgba(0, 0, 0, 0);
-        border-radius: 50%;
-    }
-    .artdeco-entity-image {
-        display: inline-block;
-    }
-
-    .base-search-card__info{
-        margin-left: 30px;
-    }
-
-    .base-search-card__title {
-        font-size: 1.8rem;
-        line-height: 1.4;
-        font-weight: 600;
-        color: rgba(0,0, 0, 0.9);
-        word-break: break-word;
-    }
-    .base-search-card__subtitle {
-        font-size: 1.6rem;
-        line-height: 1.75;
-        font-weight: 400;
-        color: rgba(0, 0, 0, 0.9);
-    }
-    hr {
-        background-color: #0dc9ef;
-    }
 </style>
 
 {% endblock css %}
+
+
 
     <!-- {{ name } -->
 {% block content %}
@@ -119,18 +43,24 @@
         {% endif %}
     </div> -->
 
+
+
     {% if name %}
-    <h1>{{name.count}}+ results for "{{search}}"</h1>
+    <h1 class="user_list_heading">{{name.count}}+ results for "{{search}}"</h1>
         {% for data in name %}
         
         <section class="con">
-            <hr>
-            <ul>
+            <hr style="background-color: #0dc9ef;">
+            <ul class="list_content">
                 <li class="list-item">
                     <a href="{% url 'other-profile' data.id %}" class="base-search-card">
                         <div class="search-entity-media">
                             <img src="{{data.profile.image.url}}" alt="User profile picture" class="artdeco-entity-image artdeco-entity-image--profile artdeco-entity-image--circle-4">
                         </div>
+                        <!-- <div class="profileEditBtn">
+                            <p><a class='btn btn-primary {{button_class}}' id="follow-user" data-id="{{user_id.id}}" >{{button_text}}</a></p> -->
+                            <!-- <p><a ><i class="fas fa-cog" data-toggle="modal" data-target="#settingModal"></i></a></p> -->
+                        <!-- </div> -->
                         <div class="base-search-card__info">
                             <h3 class="base-search-card__title">{{data.first_name}} {{data.last_name}}</h3>
                             <h4 class="base-search-card__subtitle">@{{data.username}}</h4>
@@ -143,7 +73,7 @@
 
         {% endfor %}
     {% else %}
-    <h1>We couldn't find a match for  <bold>"{{search}}"</bold></h1>
+    <h1 style="text-align: center;">We couldn't find a match for  <bold>"{{search}}"</bold></h1>
     <h4 style="text-align: center; color: gray;font-family: Arial, Helvetica, sans-serif;">Try double-checking your spelling.</h2>
     {% endif %}
 {% endblock content %}
