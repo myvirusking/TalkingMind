@@ -3,15 +3,31 @@
     <!-- <div style="border-left:1px solid gray;border-right:1px solid gray;border-bottom:1px solid gray" class="ml-3"> -->
         
         {% for user in users %}
-        <div style="border-bottom:1px solid gray;">
+        {% if forloop.counter|divisibleby:2 %}
+        <div style="border-bottom:2px solid gray;">
             <a href="{% url 'other-profile' user.id %}"><img src="{{ user.profile.image.url }}" alt="User profile Image" class="live_img"></a> 
-            <a href="{% url 'other-profile' user.id %}" style="padding: 10px;">@{{ user.username }}</br> 
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{ user.first_name }} {{user.last_name}}</a><br>
-            </div>
+            <a href="{% url 'other-profile' user.id %}" style="padding: 10px; font-weight: bold;margin-top: 5px; line-height:5px;">&ensp; @{{ user.username }}</br> 
+                &emsp;&emsp;&emsp;&emsp;&ensp; {{ user.first_name }} {{user.last_name}}</a><br>
+        </div>
+        {% endif %}
+
+        <!-- <div style="border-bottom:2px solid gray;">
+            <a href="{% url 'other-profile' user.id %}"><img src="{{ user.profile.image.url }}" alt="User profile Image" class="live_img"></a> 
+            <a href="{% url 'other-profile' user.id %}" style="padding: 10px; font-weight: bold;margin-top: 5px; line-height:5px;">&ensp; @{{ user.username }}</br> 
+                &emsp;&emsp;&emsp;&emsp;&ensp; {{ user.first_name }} {{user.last_name}}</a><br>
+        </div> -->
+            
+
         {% endfor %}
+        <form method="GET" action="/userList/">
+            {% csrf_token %}
+             <!-- <input type="submit" value="{{searchVal}}" class="btn btn-primary" name="name"/> -->
+             <button type="submit" name="name" value="{{searchVal}}" class="btn btn-primary" style="margin: 5px 0 5px 0;">See All results</button>
+        </form>
+        
     </div>
 {% else %}
-    <p style="text-transform: capitalize; font-family: Arial, Helvetica, sans-serif; color: gray;">No result found</p>
+    <p style="font-family: Arial, Helvetica, sans-serif; color: gray;">No Result Found</p>
 {% endif %}
 
 <style>
@@ -19,7 +35,7 @@
         width: 40px;
         height: 40px;
         margin-left: 0.6rem;
-        margin-top: 0.3rem;
+        margin-top: 1rem;
         border: 1px solid #000;
         border-radius: 50%;
     }

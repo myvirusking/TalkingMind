@@ -36,3 +36,4 @@ user_input.on('keyup', function () {
 
 	scheduled_function = setTimeout(ajax_call, delay_by_in_ms, endpoint, request_parameters)
 });
+

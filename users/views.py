@@ -436,7 +436,7 @@ def user_search_view(request):
         print("Ajax request")
 
         html = render_to_string(
-            template_name="blog/user-search-results.html", context={"users": users}
+            template_name="blog/user-search-results.html", context={"users": users,"searchVal":url_parameter}
         )
         data_dict = {"html_from_view": html}
         return JsonResponse(data=data_dict, safe=False)
