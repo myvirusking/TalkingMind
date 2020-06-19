@@ -6,41 +6,58 @@
     <div class="container security-container" style="padding-left: 0; padding-right: 0; margin-left: 0">
 
 			<div class="pl-5" style="margin-bottom:20px; padding-bottom: 20px; width: 100%; border-bottom: 1px solid darkgray; display: flex;">
-
 				<a href="{% url 'security-setting' %}">
 				<img  style="width: 40px;"src="{% static 'settings/icons/back_button_bold.svg' %}" alt="back_button">
 				</a>
-
 				<h3 class=" ml-4 font-weight-bold" style=" width: 100%;">Two Factor Authentication</h3>
-
 			</div>
 
 			<p class="font-weight-bold pl-5" style="margin-bottom:20px; padding-bottom: 20px;width: 100%;color: #585858; font-size: larger; border-bottom: 1px solid darkgray;">Two Factor Authentication</p>
 
-			<div class="pl-5" style="margin-bottom:20px; padding-bottom: 17px; width: 100%; border-bottom: 1px solid darkgray;">
-				<div style="display: flex;">
-					<p style="width: 100%; font-size: 20px; ">Text message</p>
-
-					<input style=" height: 25px; width: 25px; margin-right: 40px; border-radius:8px; border:3px solid darkgray;" type="checkbox"/>
+			<form method="POST">
+			{% csrf_token %}
+			<input type="hidden" name="method">
+				<div class="pl-5" style="margin-bottom:20px; padding-bottom: 17px; width: 100%; border-bottom: 1px solid darkgray;">
+					<div style="display: flex;">
+						<p style="width: 100%; font-size: 20px; ">Text message</p>
+						{% if device_sms %}
+							<input value="disable_sms" style="height: 25px; width: 25px; margin-right: 40px; border-radius:8px; border:3px solid darkgray;" type="checkbox" checked/>
+						{% else %}
+							<input value="enable_sms" style="height: 25px; width: 25px; margin-right: 40px; border-radius:8px; border:3px solid darkgray;" type="checkbox"/>
+						{% endif %}
+					</div>
+					<p class="muted " style="color: #585858; font-size: 15px; padding-right: 60px;"><small>Use your mobile phone to receive a text message with an authentication code to enter when you login to TalkingMind </small></p>
 				</div>
-
-				<p class="muted " style="color: #585858; font-size: 15px; padding-right: 60px;"><small>Use your mobile phone to receive a text message with an authentication code to enter when you login to TalkingMind </small></p>
-
-			</div>
-
-
-			<div class="pl-5" style="margin-bottom:20px; padding-bottom: 17px; width: 100%; border-bottom: 1px solid darkgray;">
-				<div style="display: flex;">
-					<p style="width: 100%; font-size: 20px; ">Authentication app </p>
-
-					<input style=" height: 25px; width: 25px; margin-right: 40px; border-radius:8px; border:3px solid darkgray;" type="checkbox"/>
+				<div class="pl-5" style="margin-bottom:20px; padding-bottom: 17px; width: 100%; border-bottom: 1px solid darkgray;">
+					<div style="display: flex;">
+						<p style="width: 100%; font-size: 20px; ">Authentication app </p>
+						{% if device_generator %}
+							<input value="disable_generator" style="height: 25px; width: 25px; margin-right: 40px; border-radius:8px; border:3px solid darkgray;" type="checkbox" checked/>
+						{% else %}
+							<input value="enable_generator" style="height: 25px; width: 25px; margin-right: 40px; border-radius:8px; border:3px solid darkgray;" type="checkbox"/>
+						{% endif %}
+					</div>
+					<p class="muted " style="color: #585858; font-size: 15px; padding-right: 60px;"><small>Use a mobile authenticator app to get a verification code to enter every time you log in to TalkingMind</small></p>
 				</div>
+			</form>
 
-				<p class="muted " style="color: #585858; font-size: 15px; padding-right: 60px;"><small>Use a mobile authenticator app to get a verification code to enter every time you log in to TalkingMind</small></p>
-
-			</div>
+			{% if device_generator or device_sms %}
+				<a href="{% url '2fa_backup_tokens' %}" class="two-fact-link" style="color:#212529;display: flex;margin-bottom: 15px; cursor: pointer; text-decoration: none;">
+					<div class="pl-5" style="margin-bottom:20px; padding-bottom: 17px; width: 100%; border-bottom: 1px solid darkgray;">
+						<div style="display: flex;">
+							<p style="width: 100%; font-size: 20px; ">Backup Tokens</p>
+							<img style="margin-right:30px; height: 27px;" src="/static/settings/icons/arrow_forward.svg" alt="forward_arrow">
+						</div>
+						<p class="muted " style="color: #585858; font-size: 15px; padding-right: 60px;"><small>Use a mobile authenticator app to get a verification code to enter every time you log in to TalkingMind</small></p>
+					</div>
+				</a>
+			{% endif %}
 
 
       	</div>
 
 {% endblock %}
+
+{% block scripts %}
+	<script type="text/javascript" src="{% static 'settings/javascript/2fa.js' %}"></script>
+{% endblock scripts %}

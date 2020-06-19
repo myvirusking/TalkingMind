@@ -20,8 +20,8 @@
                     </div>
 
                     <div class="mainCenterDiv infinite-container">
-                        {% if posts.count > 0 %}
-                            {% for post in posts %}
+                        {% if posts_count > 0 %}
+                            {% for post in paginated_posts %}
                                 <div class="card infinite-item">
                                     <div class="card-header">
                                         <div class="cardHeadSection">
@@ -301,8 +301,3 @@
 </script>
     
 {% endblock scripts %}
-
-   
-
-
-{% endblock content %}

@@ -1,0 +1,160 @@
+{% extends 'settings/base.html' %}
+{% load static %}
+{% load two_factor %}
+
+{% block css %}
+<style>
+	#cant_scan_qr_code:hover {
+		color: #0dc9ef;
+	}
+
+	.loginBtn{
+		color: #fff;
+		border-radius: 20px;
+		width: 100%;
+		font-weight: bold;
+		letter-spacing: 1px;
+		font-size: 15px;
+		background-color: #0dc9ef;
+		border-color: #0dc9ef;
+		box-shadow: 1px 3px 5px 0px rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+	}
+	.loginBtn:hover{
+		color: white;
+	}
+</style>
+{% endblock css %}
+
+
+{% block content %}
+
+    <div class="container security-container" style="padding-left: 0; padding-right: 0; margin-left: 0">
+
+			<div class="pl-5" style="margin-bottom:20px; padding-bottom: 20px; width: 100%; border-bottom: 1px solid darkgray; display: flex;">
+				<a href="{% url 'two-fact-auth-setting' %}">
+				<img  style="width: 40px;"src="{% static 'settings/icons/back_button_bold.svg' %}" alt="back_button">
+				</a>
+				<h3 class=" ml-4 font-weight-bold" style=" width: 100%;">Two Factor Authentication</h3>
+			</div>
+
+       <form method="post">
+        {{ wizard.management_form }}
+		{% csrf_token %}
+		
+		{% if wizard.steps.current == 'sms' %}
+			<br><br>
+		    <div class="d-flex justify-content-center">
+                <div class="spinner-border" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
+        	</div>
+			{% if skippedSMS %}
+				<script>$("form").submit();</script>
+			{% endif %}
+		
+		{% elif wizard.steps.current == 'validation' %}
+			<p class="font-weight-bold pl-5" style="margin-bottom:20px; padding-bottom: 20px;width: 100%;color: #585858; font-size: larger; border-bottom: 1px solid darkgray;">Text Message</p>
+			<div class="pl-5" style="margin-bottom:20px; padding-bottom: 17px; width: 100%; border-bottom: 1px solid darkgray;">
+			<div class="col-md-6 offset-md-3">
+				{% if wizard.form.errors %}
+					{% for field in wizard.form %}
+						{% for error in field.errors %}
+							<div class="alert alert-danger">
+								<strong>{{ error|escape }}</strong>
+							</div>
+						{% endfor %}
+					{% endfor %}
+					{% for error in wizard.form.non_field_errors %}
+						<div class="alert alert-danger">
+							<strong>{{ error|escape }}</strong>
+						</div>
+					{% endfor %}
+				{% endif %}
+
+				{% if device.method == 'sms' %}
+					<p>We sent you a text message to {{device.number|mask_phone_number}}, please enter the tokens we sent</p>
+				{% endif %}
+				<div class="form-group">
+					{{wizard.form.token}}
+				</div>
+				<button id="btnNextToken" type="submit" class="btn loginBtn" style="width: 100px;margin-left: auto;margin-right: auto;display: block;">Verify</button>
+			</div>
+
+		{% elif wizard.steps.current == 'generator' %}
+
+			{% if not wizard.form.errors %}
+			<p class="font-weight-bold pl-5" style="margin-bottom:20px; padding-bottom: 20px;width: 100%;color: #585858; font-size: larger; border-bottom: 1px solid darkgray;">Set Up Authenticator</p>
+			<div id="set_up_authentication" class="pl-5" style="margin-bottom:20px; padding-bottom: 17px; width: 100%; border-bottom: 1px solid darkgray;">
+			{% else %}
+			<p class="font-weight-bold pl-5" style="margin-bottom:20px; padding-bottom: 20px;width: 100%;color: #585858; font-size: larger; border-bottom: 1px solid darkgray;">Verification Process</p>
+			<div id="set_up_authentication" class="pl-5" style="display:none;margin-bottom:20px; padding-bottom: 17px; width: 100%; border-bottom: 1px solid darkgray;">
+			{% endif %}
+		
+			<p style="width: 100%; font-size: 20px; ">
+				<ul>
+					<li style="list-style: disc outside none;display: list-item;margin-left: 1em;">To link authentication app to your <b>TalkingMind</b> Account,</li>
+					<li style="list-style: disc outside none;display: list-item;margin-left: 1em;">Install any Authenticator App from the Play Store like <b>Google Authenticator or Microsoft Authenticator</b></li>
+					<li style="list-style: disc outside none;display: list-item;margin-left: 1em;">Open app and select <b>Add account</b></li>
+					<li style="list-style: disc outside none;display: list-item;margin-left: 1em;">Choose <b>Scan a barcode</b></li>
+					<li style="list-style: disc outside none;display: list-item;margin-left: 1em;">Now scan the QR code below</li>
+				</ul>
+				<div style="text-align: center;">
+					<img src="{{ QR_URL }}" alt="QR Code" />
+					<br><br>
+					<a id="cant_scan_qr_code" style="cursor: pointer;">Can't Scan QR Code?</a>
+					<div id="secret_key_div" style="display: none;">
+						<p style="word-wrap:break-word;">
+							If you can’t scan the QR code with your authentication app, 
+							open app and select Enter Provided Key, 
+							now enter the following code into the authentication app.
+						</p>
+						<p id="secret_key" style="font-weight: bold;word-wrap:break-word;">{{request.session.QR_KEY}}</p>
+					</div>
+					<br><br>
+					<button id="btnNextToken" type="button" class="btn loginBtn" style="width: 100px;">Next</button>
+				</div>
+			</p>
+		</div>
+
+			{% if not wizard.form.errors %}
+			<div id="verify_token" class="pl-5" style="display:none;margin-bottom:20px; padding-bottom: 17px; width: 100%; border-bottom: 1px solid darkgray;">
+			{% else %}
+			<div id="verify_token" class="pl-5" style="margin-bottom:20px; padding-bottom: 17px; width: 100%; border-bottom: 1px solid darkgray;">
+			{% endif %}
+
+			<div class="col-md-6 offset-md-3">
+				{% if wizard.form.errors %}
+					{% for field in wizard.form %}
+						{% for error in field.errors %}
+							<div class="alert alert-danger">
+								<strong>{{ error|escape }}</strong>
+							</div>
+						{% endfor %}
+					{% endfor %}
+					{% for error in wizard.form.non_field_errors %}
+						<div class="alert alert-danger">
+							<strong>{{ error|escape }}</strong>
+						</div>
+					{% endfor %}
+				{% endif %}
+
+				<p>Enter the 6-digit verification code generated by your authentication app.</p>
+				<div class="form-group">
+					{{wizard.form.token}}
+				</div>
+				<button type="submit" class="btn loginBtn" style="width: 100px;margin-left: auto;margin-right: auto;display: block;">Verify</button>
+			</div>
+		</div>
+		
+		{% endif %}
+
+		</form>
+
+
+    </div>
+
+{% endblock %}
+
+{% block scripts %}
+	<script type="text/javascript" src="{% static 'settings/javascript/2fa.js' %}"></script>
+{% endblock scripts %}

@@ -25,7 +25,6 @@ from django.conf.urls.static import static
 from users import views as user_views
 from blog import views as blog_views
 from settings.forms import CustomPasswordChangeForm
-from settings import views as setting_views
 from django.contrib import messages
 
 
@@ -99,11 +98,7 @@ urlpatterns = [
 
     path('new-notification/', blog_views.check_for_new_notification, name='new-notification'),
 
-    path('profile-setting/', setting_views.change_profile_setting, name='profile-setting'),
-
-    path('security-setting/', setting_views.security_setting, name='security-setting'),
-
-    path('two-factor-auth-setting/', setting_views.two_factor_authentication, name='two-fact-auth-setting')
+    path('setting/',include('settings.urls'))
 
 ]
 if settings.DEBUG:

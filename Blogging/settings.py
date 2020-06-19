@@ -41,6 +41,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'blog.templatetags.custom_tag',
+    'django_otp',
+    'django_otp.plugins.otp_static',
+    'django_otp.plugins.otp_totp',
+    'two_factor',
 
     #Third party apps
     'phonenumber_field',
@@ -59,6 +63,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django_otp.middleware.OTPMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -153,7 +158,6 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 LOGIN_REDIRECT_URL = 'login-home'
 LOGIN_URL = 'login'
-
 LOGOUT_URL = 'login-home'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -163,5 +167,28 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'talkingmindblog@gmail.com'
 EMAIL_HOST_PASSWORD = 'account@#007$1132'
 
+#settings for pagination of infinite scrolling
 POST_PAGINATION_PER_PAGE = 2
 FOLLOW_PAGINATION_PER_PAGE = 5
+
+#settings for 2FA
+# TWO_FACTOR_QR_FACTORY = 'qrcode.image.pil.PilImage'
+TWO_FACTOR_SMS_GATEWAY = 'two_factor.gateways.fake.Fake'
+TWO_FACTOR_PATCH_ADMIN  = False
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'two_factor': {
+            'handlers': ['console'],
+            'level': 'INFO',
+        }
+    }
+}

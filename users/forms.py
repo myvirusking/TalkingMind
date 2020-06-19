@@ -8,7 +8,8 @@ from django.contrib.auth.forms import PasswordResetForm, SetPasswordForm
 from django.contrib.auth import password_validation
 from blog.models import Post
 import re
-
+from two_factor.forms import AuthenticationTokenForm
+from two_factor.utils import totp_digits
 
 class RegisterForm(forms.ModelForm):
     first_name = forms.CharField(widget=forms.TextInput(attrs={
@@ -53,6 +54,14 @@ class RegisterForm(forms.ModelForm):
 class CustomAuthForm(AuthenticationForm):
     username = forms.CharField(widget=TextInput(attrs={'class':'validate form-control regInput','placeholder': 'Username'}))
     password = forms.CharField(widget=PasswordInput(attrs={'placeholder':'Password','class': 'form-control regInput'}))
+
+
+class CustomAuthenticationTokenForm(AuthenticationTokenForm):
+    otp_token = forms.IntegerField(widget=forms.NumberInput(attrs={'class':'form-control','placeholder': 'Token'}),min_value=1,max_value=int('9' * totp_digits()))
+
+
+class CustomBackupTokenForm(AuthenticationTokenForm):
+    otp_token = forms.CharField(widget=forms.TextInput(attrs={'class':'form-control','placeholder': 'Token','required':''}))
 
 
 class CustomPasswordResetForm(SetPasswordForm):

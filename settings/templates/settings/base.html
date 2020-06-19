@@ -10,6 +10,8 @@
 		<script src="https://kit.fontawesome.com/b99e675b6e.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
+        {% block css %}
+        {% endblock css %}
 
 	</head>
 
@@ -44,10 +46,10 @@
                     </div>
                 </div>
                 <ul class="siderbar_menu">
-                <li><a href="{% url 'profile-setting' %}" >
+                <li><a href="{% url 'profile-setting' %}" class="active">
                   <div class="title">Profile</div>
                   </a></li>
-              <li><a href="{% url 'security-setting' %}" class="active">
+              <li><a href="{% url 'security-setting' %}" >
                   <div class="title">Security</div>
                   </a></li>
               <li><a href="{% url 'change_password' %}" >
@@ -87,5 +89,8 @@
 
 
 		</script>
+
+        {% block scripts %}
+        {% endblock scripts %}
     </body>
 </html>

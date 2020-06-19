@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponseRedirect
 from django.contrib.auth.models import User
-from .forms import RegisterForm, UserUpdateForm, ProfileUpdateForm, AboutForm
+from .forms import RegisterForm, UserUpdateForm, ProfileUpdateForm, AboutForm,CustomAuthenticationTokenForm,CustomBackupTokenForm
 from django.views.generic.list import ListView
 from django.contrib.auth.decorators import login_required
 from django.views.generic import View
@@ -17,6 +17,7 @@ from django.template.loader import render_to_string
 from django.http import JsonResponse
 from settings.models import AccountPrivacySetting
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from two_factor.views import LoginView
 
 #global variable for making efficient infinite scrolling
 global_posts = None
@@ -78,15 +79,18 @@ def user_register(request):
 
     return render(request, template, {'form': form})
 
-
-class CustomLoginView(auth_views.LoginView):
+class CustomLoginView(LoginView):
     template_name = 'users/login.html'
-    authentication_form = CustomAuthForm
-
+    form_list = (
+        ('auth', CustomAuthForm),
+        ('token', CustomAuthenticationTokenForm),
+        ('backup', CustomBackupTokenForm),
+    )
+    
     def get(self, request, *args, **kwargs):
         if request.user.is_authenticated:
             return redirect("login-home")
-        return self.render_to_response(self.get_context_data())
+        return super().get(request,*args, **kwargs)
 
 
 @login_required
