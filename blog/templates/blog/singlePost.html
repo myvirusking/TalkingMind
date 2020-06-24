@@ -6,7 +6,9 @@
     <section>
         <div class="container-fluid">
             <div class="row">
-
+                <div id="replaceable-content" class="search-box col-6">
+                    {% include 'blog/user-search-results.html' %}
+                </div> 
                 <div class="col-lg-8 col-md-8">
 
                     <div class="mainCenterDiv">
@@ -225,6 +227,18 @@
         </div>
     </section>
 <!-- </div> -->
+
+<script>
+      $(document).ready(function(){
+        $(".userSearchInput").focusout(()=>{
+            $(".search-box").slideUp('fast');
+        });    
+
+        $(".userSearchInput").focusin(()=>{
+            $(".search-box").slideDown('fast');
+        });       
+    });
+</script>
 
 {% endblock section %}
 

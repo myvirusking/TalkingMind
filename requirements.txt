@@ -2,3 +2,20 @@ Django==3.0.5
 django-crispy-forms==1.9.0
 Pillow==7.1.1
 
+ # Use this for Social Authentication settings
+ pip install django-allauth
+ --> Include this in blogging/urls.py ---->path('accounts/', include('allauth.urls'))
+---> Include this in INSTALLED_APP in settings.py
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.facebook',
+--> python manage.py migrate
+--> 127.0.0.1:8000/admin --> Go back to django admin --> Select Sites --> Add Sites --> Give domain name i.e (127.0.0.1:8000)--> And give a display name whatever you want)--> save
+--> 127.0.0.1/admin --> Select Social Applications --> Add Social Application --> Select provider from drop down(Google)
+--> Give Name whatever you want --> For Google (Client Id: 1064110796353-bbk7lj09jvpva5ae3kk0cl40vk6p228a.apps.googleusercontent.com and Secret-key: x_vfYYkr_EWqapiSko-0w5bP) put this
+in the respective fields --> Select Sites 127.0.0.1:8000 --> Add it --> save
+--> Go to login and click on login with google
+ --> Same for Facebook

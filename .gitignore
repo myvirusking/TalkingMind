@@ -1,0 +1,6 @@
+db.sqlite3
+
+blog/migrations/0003_auto_20200621_2104.py
+blog/templates/blog/user_list.html
+settings/migrations/
+users/migrations/0002_auto_20200621_2104.py

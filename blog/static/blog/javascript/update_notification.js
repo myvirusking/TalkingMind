@@ -11,5 +11,5 @@ function newNotification(){
 }
 
 $(document).ready(function(){
- setInterval(newNotification,5000);
+ setInterval(newNotification,8000);
 });

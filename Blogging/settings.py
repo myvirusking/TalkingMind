@@ -41,10 +41,17 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'blog.templatetags.custom_tag',
-
+    'django.contrib.sites',
     #Third party apps
     'phonenumber_field',
     'crispy_forms',
+
+    
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.facebook',
 
 
 ]
@@ -165,3 +172,24 @@ EMAIL_HOST_PASSWORD = 'account@#007$1132'
 
 POST_PAGINATION_PER_PAGE = 2
 FOLLOW_PAGINATION_PER_PAGE = 5
+
+
+
+SITE_ID = 2
+
+# Will change to https in production, but also note that to change to https in google developers API console
+ACCOUNT_DEFAULT_HTTP_PROTOCOL='http'
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        }
+    }
+}
+
+SOCIALACCOUNT_QUERY_EMAIL = True
