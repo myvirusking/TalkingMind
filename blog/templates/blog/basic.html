@@ -9,39 +9,45 @@
     }
 
 </style>
+    {% block pagecss %}
+    {% endblock pagecss %}
 {% endblock css %}
 
 {% block content %}
-    <div class="sidenav" id="mySidenav">
-        <h6 class="brandName" href="#" >TalkingMind</h6>
-        <div class="menuProfileMainDiv">
-            <a href="#" class="menuProfile">
-                <div class="profileImg"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></div>
-                <div class="profileTitle">
-                    <h6>Abhishek Gupta</h6><p>@abhishek </p>
+
+    <div class="wrapper">
+        <div class="bg-shadow"></div>
+        <div class="sidenav" id="mySidenav">
+            <h6 class="brandName" href="#" >TalkingMind</h6>
+            <div class="menuProfileMainDiv">
+                <a href="#" class="menuProfile">
+                    <div class="profileImg"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></div>
+                    <div class="profileTitle">
+                        <h6>Abhishek Gupta</h6><p>@abhishek </p>
+                    </div>
+                </a>
+            </div>
+            <div class="sideMenu">
+              <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+
+                <a href="{% url 'login-home' %}" class="{{home_page}}"><i class="fa fa-home" aria-hidden="true"></i><p>Home</p></a>
+                <a href="{% url 'notification' %}"><i class="fa fa-bell bell-icon" aria-hidden="true"><span class="total-notification icon-badge"></span></i></span><p>Notifications</p></a>
+                <a href="{% url 'post-create' %}" class="{{create_post}}"><i class="fa fa-th-large" aria-hidden="true"></i><p>Posts</p></a>
+                <a href="#"><i class="fa fa-users" aria-hidden="true"></i><p>Users</p></a>
+                <a href="{% url 'saved-post-list' %}"><i class="fa fa-bookmark" aria-hidden="true"></i><p>Saved</p></a>
+                <a href="{% url 'profile-setting' %}"><i class="fa fa-cog" aria-hidden="true"></i><p>Settings</p></a>
+                <a href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i><p>Logout</p></a>
+            </div>
+            <div class="sideNavBottom">
+                <div>
+                    <ul>
+                        <li><a href="#">About</a></li>
+                        <li><a href="#">Terms</a></li>
+                        <li><a href="#">Privacy policy</a></li>
+                    </ul>
+                    <a href="#" class="copyright">&copy; 2020 TalkingMind</a>
+
                 </div>
-            </a>
-        </div>
-        <div class="sideMenu">
-          <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-
-            <a href="{% url 'login-home' %}" class="{{home_page}}"><i class="fa fa-home" aria-hidden="true"></i><p>Home</p></a>
-            <a href="{% url 'notification' %}"><i class="fa fa-bell" aria-hidden="true"></i><p>Notifications</p><p class="total-notification"></p></a>
-            <a href="{% url 'post-create' %}" class="{{create_post}}"><i class="fa fa-th-large" aria-hidden="true"></i><p>Posts</p></a>
-            <a href="#"><i class="fa fa-users" aria-hidden="true"></i><p>Users</p></a>
-            <a href="{% url 'saved-post-list' %}"><i class="fa fa-bookmark" aria-hidden="true"></i><p>Saved</p></a>
-            <a href="{% url 'profile-setting' %}"><i class="fa fa-cog" aria-hidden="true"></i><p>Settings</p></a>
-            <a href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i><p>Logout</p></a>
-        </div>
-        <div class="sideNavBottom">
-            <div>
-                <ul>
-                    <li><a href="#">About</a></li>
-                    <li><a href="#">Terms</a></li>
-                    <li><a href="#">Privacy policy</a></li>
-                </ul>
-                <a href="#" class="copyright">&copy; 2020 TalkingMind</a>
-
             </div>
         </div>
     </div>
@@ -77,6 +83,14 @@
         {% endblock section %}
       </div>
 {% endblock content %}
+
+
+
+{% block pagescript %}
+    {% block script %}
+
+    {% endblock script %}
+{% endblock pagescript %}
 
 
 

@@ -45,12 +45,28 @@ INSTALLED_APPS = [
     #Third party apps
     'phonenumber_field',
     'crispy_forms',
-
+    # 'django_extensions',
+    'django_otp',
+    'django_otp.plugins.otp_totp',
+    'django_otp.plugins.otp_hotp',
+    'django_otp.plugins.otp_static',
+    'axes'
 
 ]
 
+# CELERY_BROKER_URL = 'amqp://localhost'
+
 SHELL_PLUS = "plain"
 SHELL_PLUS_PRINT_SQL = True
+
+
+AUTHENTICATION_BACKENDS = [
+    # AxesBackend should be the first backend in the AUTHENTICATION_BACKENDS list.
+    'settings.backend.CustomAxesBackend',
+
+    # Django ModelBackend is the default authentication backend.
+    'django.contrib.auth.backends.ModelBackend',
+]
 
 
 MIDDLEWARE = [
@@ -59,8 +75,11 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django_otp.middleware.OTPMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django_currentuser.middleware.ThreadLocalUserMiddleware',
+    'axes.middleware.AxesMiddleware',
 ]
 
 ROOT_URLCONF = 'Blogging.urls'
@@ -125,6 +144,11 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+
+AXES_FAILURE_LIMIT = 4
+AXES_LOCKOUT_URL = 'otp-screen'
+CURRENT_USER = "admin"
+AXES_RESET_ON_SUCCESS = True
 
 
 # Internationalization

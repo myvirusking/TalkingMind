@@ -4,12 +4,15 @@ function newNotification(){
   type: 'post',
   success: function(response){
       if(response['newNotification']>0){
-          $(".total-notification").text(response['newNotification'])
+          console.log("new noti")
+          $(".total-notification").text(response['newNotification']).addClass("d-block")
       }
   }
  });
 }
 
+
 $(document).ready(function(){
- setInterval(newNotification,5000);
+    newNotification();
+ setInterval(newNotification,3000);
 });
