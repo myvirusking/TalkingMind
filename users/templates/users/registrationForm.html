@@ -16,62 +16,22 @@
 {% endblock css %}
 
 {% block content %}
-    <!-- <div class="container">
-        <div class="col-lg-4  offset-lg-4 mt-5 registration-form shadow-lg p-3 mb-5 pb-5 bg-white rounded">
-            {% if form.errors %}
-                {% for field in form %}
-                    {% for error in field.errors %}
-                        <div class="alert alert-danger">
-                            <strong>{{ error|escape }}</strong>
-                        </div>
-                    {% endfor %}
-                {% endfor %}
-                {% for error in form.non_field_errors %}
-                    <div class="alert alert-danger">
-                        <strong>{{ error|escape }}</strong>
-                    </div>
-                {% endfor %}
-            {% endif %}
-            {% if error_message %}
-                <div class="alert alert-danger">
-                    <strong>{{ error_message }}</strong>
-                </div>
-            {% endif %}
-            <center><img src="{% static 'blog/website_logo.png' %}"></center>
-            <form method="post">
-                {% csrf_token %}
-                <div class="form-group">
-                    {{form.username}}
-                </div>
-                <div class="form-group">
-                    {{form.email}}
 
-                </div>
-                <div class="form-group ">
-                    {{form.password}}
-                </div>
-                <div class="form-group ">
-                    {{form.repeat_password}}
-                </div>
-                <button type="submit" class="btn btn-block" style="background-color:#4b204f;color:white;">Register</button>
-            </form>
-        </div>
-    </div> -->
 
     <nav class="navbar navbar-expand-md navbar-inverse regNav">
         <div class="container">
             <a class="navbar-brand" href="#">TalkingMind</a>
 
-            <ul class="nav navbar-nav">          
+            <ul class="nav navbar-nav">
             </ul>
 
             <ul class="nav navbar-nav navbar-right">
                 <li><a href="{% url 'login'%}">Login</a></li>
             </ul>
         </div>
-        
-    </nav>    
-    
+
+    </nav>
+
     <div class="main-container">
         <div class="container">
             <div class="row sub-container">
@@ -81,42 +41,37 @@
                         <h2>Registration</h2>
                         <p>Just One Step To Explore The New World</p>
                     </div>
-                    <div class="row centerRow">                        
+                    <div class="row centerRow">
                         <div class="col-md-6 leftDiv">
                             <img src="/static/blog/website_logo.png">
                         </div>
                         <div class="col-md-6 rightDiv">
                             {% if form.errors %}
-                {% for field in form %}
-                    {% for error in field.errors %}
-                        <div class="alert alert-danger">
-                            <strong>{{ error|escape }}</strong>
-                        </div>
-                    {% endfor %}
-                {% endfor %}
-                {% for error in form.non_field_errors %}
-                    <div class="alert alert-danger">
-                        <strong>{{ error|escape }}</strong>
-                    </div>
-                {% endfor %}
-            {% endif %}
-            {% if error_message %}
-                <div class="alert alert-danger">
-                    <strong>{{ error_message }}</strong>
-                </div>
-            {% endif %}
+                                {% for field in form %}
+                                    {% for error in field.errors %}
+                                        <div class="alert alert-danger">
+                                            <strong>{{ error|escape }}</strong>
+                                        </div>
+                                    {% endfor %}
+                                {% endfor %}
+                                {% for error in form.non_field_errors %}
+                                    <div class="alert alert-danger">
+                                        <strong>{{ error|escape }}</strong>
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+                            {% if error_message %}
+                                <div class="alert alert-danger">
+                                    <strong>{{ error_message }}</strong>
+                                </div>
+                            {% endif %}
                             <form method="post">
                                 {% csrf_token %}
                                 <div class="regFormFLname">
-                                    {{form.first_name}} 
-                                    {{form.last_name}}
-                                </div> 
-                                <!-- <div class="form-group">
                                     {{form.first_name}}
-                                </div>
-                                <div class="form-group">
                                     {{form.last_name}}
-                                </div> -->
+                                </div>
+
                                 <div class="form-group">
                                     {{form.username}}
                                 </div>

@@ -8,6 +8,7 @@ from .models import *
 from django.contrib.auth.mixins import LoginRequiredMixin
 from users.forms import CustomAuthForm
 from blog.forms import NewPostForm, CommentForm
+from blog.forms import NewPostForm, CommentForm
 from django.contrib.auth import views as auth_views
 from django.conf import settings
 from django.contrib.auth.decorators import user_passes_test
@@ -18,6 +19,12 @@ from django.http import JsonResponse
 from settings.models import AccountPrivacySetting
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
+import Blogging.settings
+from django.contrib.auth import signals
+from django.http import HttpResponseRedirect
+
+
+
 
 #global variable for making efficient infinite scrolling
 global_posts = None
@@ -89,6 +96,13 @@ class CustomLoginView(auth_views.LoginView):
             return redirect("login-home")
         return self.render_to_response(self.get_context_data())
 
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
 
 @login_required
 def profile(request):
@@ -139,7 +153,7 @@ def profile(request):
         paginated_posts = global_profile_post_paginator.page(1)
     except EmptyPage:
         paginated_posts = global_profile_post_paginator.page(global_profile_post_paginator.num_pages)
-
+    print(global_posts.count())
     context = {
         'user_form': user_form,
         'profile_form': profile_form,
@@ -590,8 +604,11 @@ def user_search_list(request):
     #     'name': obj.first_name,
     #     'username' :obj.username
     # }
-
-    url_parameter = request.POST['name']
+    if 'name' in request.POST:
+        url_parameter = request.POST['name']
+    else:
+        url_parameter = False
+        
     
     if url_parameter:
         name = User.objects.filter(
@@ -603,7 +620,7 @@ def user_search_list(request):
             'name': name,
             'search':url_parameter
         }
-
+        
     return render(request, "blog/user_list.html", context=ctx)
 
 

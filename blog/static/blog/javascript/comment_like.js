@@ -1,14 +1,16 @@
-$(document).ready(function(){
-    $('.commentlikeBtn i').click(function(e){
-        $(this).toggleClass('press');
+function cmt_like(el){
+        console.log("------comment like----------")
+        $(el).toggleClass('press');
 
-        var cmt_id = $(this).attr('data-catid')
+        var cmt_id = $(el).attr('data-catid')
+        var postid = $(el).attr('data-postid')
         console.log('cmt_id '+ cmt_id)
         $.ajax({
             type: 'GET',
             url: 'comment_like/',
             data: {
-                cmt_id: cmt_id
+                cmt_id: cmt_id,
+                postid: postid
             },
             success: function(data){
                 console.log(data)
@@ -27,5 +29,4 @@ $(document).ready(function(){
             }
         })
 
-    })
-})
+}

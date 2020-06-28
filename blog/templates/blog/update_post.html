@@ -2,6 +2,7 @@
 {% load custom_tag %}
 {% load crispy_forms_tags %}
 
+
 {% block scripts %}
     <script type="text/javascript">
         var imgFile = Array(3)
@@ -48,7 +49,6 @@
                                             <button type="button" class="btn btn-outline-danger w-25 ml-auto btn-sm" data-toggle="modal" data-target="#deleteModal">Delete</button>
                                             <!-- <a type="button" class="btn btn-outline-danger"  onclick="showDeleteInfo()">Delete</a> -->
                                         </div>
-
                                         <div class="form-group mt-3">
                                             {{form.title}}
                                         </div>
@@ -85,7 +85,6 @@
                                                     var imgAvailableIndex = [0,1,2];
                                             </script>
                                             {% endif %}
-
                                             </div>
                                         </div>
 
@@ -301,7 +300,8 @@
 
 
 
-{% block footer %}
+{% block script %}
+
     <script type="text/javascript">
 
         function removeImg(imgCurrentIndex){
@@ -383,4 +383,4 @@
     });
 
     </script>
-{% endblock %}
+{% endblock script %}

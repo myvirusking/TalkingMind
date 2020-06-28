@@ -1,4 +1,3 @@
-
 function post_like(e,post_id){
     $.ajax({
         type: "GET",

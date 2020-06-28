@@ -1,0 +1,82 @@
+{% extends "blog/base.html" %}
+<!-- {% load crispy_forms_tags %} -->
+
+{% block css %}
+
+<!-- <style>
+    .mainNav {
+        display: none;
+    }
+</style> -->
+
+
+{% endblock css %}
+
+{% block content %}
+    <!-- <div class="content-section">
+        <form method="POST">
+            {% csrf_token %}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4">Reset Password</legend>
+                {{ form.email }}
+            </fieldset>
+            <div class="form-group">
+                <button class="btn btn-outline-info" type="submit">Request Password Reset</button>
+            </div>
+        </form>
+    </div> -->
+    
+    <!-- <nav class="navbar navbar-expand-md navbar-inverse regNav">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'login-home' %}">TalkingMind</a>
+            <button class="navbar-toggler" data-toggle="collapse" data-target="#navMenu">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div id="navMenu" class="collapse navbar-collapse">
+                <ul class="nav navbar-nav">
+                    <li class="nav-item"><a class="nav-link" href="{% url 'login'%}">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">About</a></li>
+                </ul>
+        
+                <ul class="nav navbar-nav ml-auto">
+                    <li class="nav-item"><a class="nav-link" href="{% url 'login'%}">Login</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'registration-form'%}">Sign Up</a></li>
+                </ul>
+            </div>
+    
+            
+        </div>
+    
+    </nav> -->
+    
+    <div class="main-container">
+        <div class="container">
+            <div class="row sub-container">
+                <div class="col-md-3"></div>
+                <div class="col-md-6 centerDiv">
+                    <div class="centerDivHeader">
+                        <p>Due to many unsuccessful attempt your IP has been blocked and you are locked out of your account. Please enter the 6-digit otp sent to your email {{ email }}</p>
+                        <h2>Enter OTP</h2>
+                    </div>
+                    <div class="row centerRow">
+                        <div class="col-md-12 rightDiv">
+
+                            <form method="post">
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    <input type="number" placeholder="Enter OTP" name="otp"/>
+                                </div>
+                                <button type="submit" class="btn loginBtn " >Verify</button>
+                            </form>
+                            <a class="mt-4" href="{% url 'otp-screen' %}">Didn't receive the OTP? send again</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3"></div>
+            </div>
+    
+        </div>
+    </div>
+
+{% endblock content %}
