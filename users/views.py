@@ -86,6 +86,7 @@ def user_register(request):
     return render(request, template, {'form': form})
 
 
+
 class CustomLoginView(auth_views.LoginView):
     template_name = 'users/login.html'
     authentication_form = CustomAuthForm
@@ -441,7 +442,7 @@ def accept_follow_request(request):
                                              notification_content="",
                                              notification_type="follow_request_approved")
         request_sender.profile.notification_count += 1
-        request_sender.profile.save(update_fields=["notification_count"])
+        request_sender.profile.save(update_fields=["notification_count"]) 
 
         print(request_sender)
 
@@ -544,7 +545,7 @@ def notification_view(request):
     if request.user.is_authenticated:
         notification_list = request.user.profile.notification.all().order_by('-id')
 
-        ctx = {'notification_list':notification_list}
+        ctx = {'notification_list':notification_list} 
 
         return render(request,"users/notifications.html", context=ctx)
 

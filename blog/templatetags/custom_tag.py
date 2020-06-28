@@ -8,11 +8,9 @@ register = template.Library()
 def liked_list(model):
     return model.likes.all()
 
-
 @register.filter(name='comment_liked_list')
 def comment_liked_list(model):
     return model.cmt_likes.all()
-
 
 @register.filter(name='saved_post')
 def saved_post(profile):
@@ -42,14 +40,13 @@ def get_nested_comment(parent_id, root, autoescape=True):
             commented_date = timesince.timesince(replied_to_comment.comment_date)
             likeclass = ""
             commentflag = ""
-
             if get_current_authenticated_user() in replied_to_comment.cmt_likes.all():
                 likeclass = "press"
             if replied_to_comment.flag:
                 commentflag = "d-block"
 
             if get_current_authenticated_user().username == replied_to_comment.author.username:
-
+    
                 result_comment += '<li class="media" id="{3}">\
                     <a href="#"><img class="mr-3 profilePic" src="/media/default.jpeg" alt="img" width="50px" height="50px"></a>\
                     <div class="media-body">\
@@ -88,12 +85,12 @@ def get_nested_comment(parent_id, root, autoescape=True):
                         <h6 class="mt-0 mb-1 profileName">\
                         <a href="#">{0} {1}</a>\
                         <span class="ml-3 commentlikeBtn"><i class="fa fa-heart {8}" data-postid="{10}" data-catid="{3}" onclick="cmt_like(this)"></i></span>\
-                        <span class="comment-editbtn">\
+                        <span class="comment-editbtn d-block">\
                             <div class="dropleft">\
                                 <p class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-ellipsis-v"></i></p>\
                                 <div class="dropdown-menu">\
-                                    <a class="dropdown-item" href="#">Edit</a>\
-                                    <a class="dropdown-item" href="#" data-dismiss="modal" aria-label="Close">delete</a>\
+                                    <a class="dropdown-item" data-catid="{3}" onclick="editComment(event);">Edit</a>\
+                                    <a class="dropdown-item deleteCommentbtn" data-catid="{3}" onclick="deleteCommentbtn(this)" data-toggle="modal" data-target="#deleteCommentModal">delete</a>\
                                 </div>\
                             </div>\
                         </span>\

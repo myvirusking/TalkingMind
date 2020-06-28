@@ -106,7 +106,7 @@ def send_otp_for_email_verification(request):
 
 
 def send_otp_mail(otp, ip, email, user):
-
+    
     message = 'Hey {0} we recieved many unsuccessful login attempts from the IP address: {1}, so the TP has been blocked due to suspicion, so to unblock that IP  please verify youself by entering the below 6-digit OTP. OTP is {2} If it wasn\'t you then your account might be in danger secure your account by changing your password'.format(user.username,ip,otp)
 
     send_mail(subject='Account verification mail',message=message,from_email=settings.EMAIL_HOST_USER,recipient_list=[email], fail_silently=False)

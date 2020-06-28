@@ -45,7 +45,6 @@ INSTALLED_APPS = [
     #Third party apps
     'phonenumber_field',
     'crispy_forms',
-    # 'django_extensions',
     'django_otp',
     'django_otp.plugins.otp_totp',
     'django_otp.plugins.otp_hotp',
@@ -59,6 +58,13 @@ INSTALLED_APPS = [
 SHELL_PLUS = "plain"
 SHELL_PLUS_PRINT_SQL = True
 
+AUTHENTICATION_BACKENDS = [
+    # AxesBackend should be the first backend in the AUTHENTICATION_BACKENDS list.
+    'axes.backends.AxesBackend',
+
+    # Django ModelBackend is the default authentication backend.
+    'django.contrib.auth.backends.ModelBackend',
+]
 
 AUTHENTICATION_BACKENDS = [
     # AxesBackend should be the first backend in the AUTHENTICATION_BACKENDS list.
@@ -143,6 +149,10 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+AXES_FAILURE_LIMIT = 4
+AXES_LOCKOUT_URL = 'otp-screen'
+CURRENT_USER = "admin"
 
 
 AXES_FAILURE_LIMIT = 4

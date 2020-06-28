@@ -60,16 +60,16 @@
                                 <div class="footerBtn">
                                     {% csrf_token %}
                                     {% if user in singlePost|liked_list  %}
-                                        <div id="like"  class="like" ><i id="heart" class="fa fa-heart press" aria-hidden="true" data-catid="{{singlePost.id}}"><span class="total-likes" >{{singlePost.likes_count}}</span></i ></div>
+                                        <div id="like"  class="like" ><i id="heart" class="fa fa-heart press" onclick="post_like(this,{{singlePost.id}})" aria-hidden="true" data-catid="{{singlePost.id}}"><span class="total-likes" >{{singlePost.likes_count}}</span></i ></div>
                                     {% else %}
-                                        <div id="like"  class="like" ><i id="heart" class="fa fa-heart" aria-hidden="true" data-catid="{{singlePost.id}}"><span class="total-likes" >{{singlePost.likes_count}}</span></i ></div>
+                                        <div id="like"  class="like" ><i id="heart" class="fa fa-heart" onclick="post_like(this,{{singlePost.id}})" aria-hidden="true" data-catid="{{singlePost.id}}"><span class="total-likes" >{{singlePost.likes_count}}</span></i ></div>
                                     {% endif %}
                                     <div class="comment"><i class="far fa-comments"></i><span>13</span></div>
                                     <div class="share"><i class="fa fa-paper-plane" aria-hidden="true"></i><span>28</span></div>
                                     {% if singlePost.id in user.profile|saved_post %}
-                                        <div class="save"><i class="fa fa-bookmark saved" aria-hidden="true" data-catid = {{singlePost.id}}></i></div>
+                                        <div class="save"><i class="fa fa-bookmark saved" aria-hidden="true" data-catid = {{singlePost.id}} onclick="post_save(this,{{singlePost.id}})"></i></div>
                                     {% else %}
-                                        <div class="save"><i class="fa fa-bookmark " aria-hidden="true" data-catid = {{singlePost.id}}></i></div>
+                                        <div class="save"><i class="fa fa-bookmark " aria-hidden="true" data-catid = {{singlePost.id}} onclick="post_save(this,{{singlePost.id}})"></i></div>
                                     {% endif %}
                                 </div>
                                 <!-- {{ post.date_posted }} -->
@@ -112,7 +112,6 @@
                                                                 </div>
                                                             </span>
                                                         {% endif %}
-
                                                     </h6>
                                                     <div class="comment-main-content{{comment.id}} mb-2">
                                                         <p class="commentText">{{comment.commented_text}}</p>
@@ -125,8 +124,7 @@
                                                             {% endif %}
                                                         </div>
                                                     </div>
-                                                    <div class="comment-main-content"></div>
-
+                                                    <div class="replace-maincontent{{comment.id}}"></div>
 
                                                     <div class="commentRplyDiv" id="commentRplyDiv{{comment.id}}">
                                                         <ul class="list-unstyled">
@@ -342,6 +340,9 @@
 </div>
 
 {% endblock section %}
+    
+
+
 
 {% block script %}
 
@@ -420,7 +421,7 @@
                                     <span class="textBtn float-right text-edited text-theme">edited</span>\
                                 </div>\
                             </div>\
-                            <div class="comment-main-content"></div>\
+                            <div class="replace-maincontent'+data.commentId+'"></div>\
                             <div class="commentRplyDiv" id="commentRplyDiv'+data.commentId+'">\
                                 <ul class="list-unstyled">\
                                 </ul>\
@@ -558,7 +559,7 @@
                                         <span class="textBtn float-right text-edited text-theme">edited</span>\
                                     </div>\
                                 </div>\
-                                <div class="comment-main-content"></div>\
+                                <div class="replace-maincontent'+data.commentId+'"></div>\
                             </div>\
                         </li>');
                 },
