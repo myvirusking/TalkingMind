@@ -98,6 +98,10 @@ urlpatterns = [
     path('edit-comment/', blog_views.editcomment, name="edit-comment"),
 
     path('remove-from-followers/', user_views.remove_from_followers_list, name='remove-from-follower-list'),
+    
+    path('post/<int:pid>/', blog_views.single_post, name="single-post"),
+    
+    path('post/<int:pid>/comment_like/', blog_views.comment_like, name="like-comment"),
 
     path('post/<int:pid>/', blog_views.single_post, name="single-post"),
 

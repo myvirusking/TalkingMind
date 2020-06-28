@@ -160,7 +160,7 @@
             <script type="text/javascript" src="{% static 'blog/javascript/send_follow_request.js' %}"></script>
 
             <script type="text/javascript" src="{% static 'blog/javascript/update_notification.js' %}"></script>
-
+            
 
             <!-- <script>
 
@@ -177,18 +177,17 @@
             </script> -->
 
 
-
+    
     <script>
         $(".bg-shadow").click(function(){
             console.log("bg");
             closeNav();
         });
-
         function openNav() {
           document.getElementById("mySidenav").style.left = "0px";
           $(".wrapper").addClass("active");
         }
-
+        
         function closeNav() {
           document.getElementById("mySidenav").style.left = "-250px";
           $(".wrapper").removeClass("active");

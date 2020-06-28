@@ -26,7 +26,7 @@ def user_in_follow_request(current_user, follower):
         return True
 
 
-@register.filter(name='get_nested_comment', needs_autoescape=True)
+@register.filter(name='get_nested_comment', needs_autoescape=True)    
 def get_nested_comment(parent_id, root, autoescape=True):
     from django.utils import timesince
     from django_currentuser.middleware import (
@@ -37,7 +37,7 @@ def get_nested_comment(parent_id, root, autoescape=True):
     rootId = root
 
     reply_comment = Comment.objects.filter(parent_comment_id=parent_id).order_by('id')
-    if len(reply_comment) > 0:
+    if len(reply_comment)>0:
         for replied_to_comment in reply_comment:
             commented_date = timesince.timesince(replied_to_comment.comment_date)
             likeclass = ""
