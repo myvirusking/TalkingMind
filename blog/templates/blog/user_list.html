@@ -1,77 +1,22 @@
-{% extends 'blog/base.html' %}
+{% extends "blog/basic.html" %}
+{% load custom_tag %}
 
 
-{% block css %}
-
-<style>
-
-    /* *{
-        box-sizing: border-box;
-    } */
-
-</style>
-
-{% endblock css %}
-
-
-
-    <!-- {{ name } -->
-{% block content %}
-    <!-- {% if name %}
-        {% for data in name %}
-            Name: {{data.first_name}}{{data.last_name}} Username: {{data.username}}
-            <img src="{{data.profile.image.url}}" alt="User profile picture">
-        {% endfor %}
-    {% else %}
-    <h1>No data found</h1>
-    {% endif %} -->
-    <!-- <div class="cards">
-        {% if name %}
-            {% for data in name %}
-            <div class="card_image">
-                <a href="{% url 'other-profile' data.id %}"><img src="{{data.profile.image.url}}" alt="User profile picture"></a>
-            </div>
-                <div class="card__content">
-                    <p>Name: {{data.first_name}} {{data.last_name}}</p>
-                    <p>Username: {{data.username}}</p>
-                    <p>{{data.profile.bio}}</p>
-                </div>
-                <hr>
-            {% endfor %}
-        {% else %}
-        <h1>No data found</h1>
-        {% endif %}
-    </div> -->
-
-<body class="searchBody">
-
-
-
+{% block section %}
+    <section>
+        <div class="container-fluid">
+            <div class="row">
+                <div id="replaceable-content" class="search-box col-6">
+                    {% include 'blog/user-search-results.html' %}
+                </div> 
+                
+                <div>
+                    
     {% if name %}
-    <h1 class="user_list_heading">{{name.count}}+ results for "{{search}}"</h1>
+    
+        <h1 class="user_list_heading">{{name.count}} results for "{{search}}"</h1>
+    
         {% for data in name %}
-        
-        <!-- <section class="con">
-            <hr style="background-color: #0dc9ef;">
-            <ul class="list_content">
-                <li class="list-item">
-                    <a href="{% url 'other-profile' data.id %}" class="base-search-card">
-                        <div class="search-entity-media">
-                            <img src="{{data.profile.image.url}}" alt="User profile picture" class="artdeco-entity-image artdeco-entity-image--profile artdeco-entity-image--circle-4">
-                        </div> -->
-                        <!-- <div class="profileEditBtn">
-                            <p><a class='btn btn-primary {{button_class}}' id="follow-user" data-id="{{user_id.id}}" >{{button_text}}</a></p> -->
-                            <!-- <p><a ><i class="fas fa-cog" data-toggle="modal" data-target="#settingModal"></i></a></p> -->
-                        <!-- </div> -->
-                        <!-- <div class="base-search-card__info">
-                            <h3 class="base-search-card__title">{{data.first_name}} {{data.last_name}}</h3>
-                            <h4 class="base-search-card__subtitle">@{{data.username}}</h4>
-                            <h4 class="base-search-card__bio">{{data.profile.bio}}</h4>
-                        </div>
-                    </a>
-                </li>
-            </ul>           
-        </section> -->
 
         <div class="users">
             <div class="user">
@@ -82,18 +27,139 @@
                     <li>{{data.profile.bio}}</li>
                 </ul>
             </div>
-            <!-- <hr style="background: black;margin: 0 25px 0 25px;"> -->
         </div>
 
         {% endfor %}
     {% else %}
-    <h1 style="text-align: center;">We couldn't find a match for  <bold>"{{search}}"</bold></h1>
-    <h4 style="text-align: center; color: gray;font-family: Arial, Helvetica, sans-serif;">Try double-checking your spelling.</h2>
+    <div class="emptyResults">
+        <h1 style="text-align: center;">We couldn't find a match for  <bold>"{{search}}"</bold></h1>
+        <h4 style="text-align: center; color: gray;font-family: Arial, Helvetica, sans-serif;">Try double-checking your spelling.</h2>
+    </div>
     {% endif %}
-
-</body>
-{% endblock content %}
+                </div>
 
 
+                <div class="col-lg-4 col-md-4">
+                    <div class="mainLeftDiv">
+
+                        <div>
+                            <div class="card recomdCard">
+                                <div class="card-header">
+                                    <p class="cardHeaderName">Recommendation for you</p>
+                                </div>
+                                <div class="card-body recomdBody">
+                                    <div class="list-group">
+                                        <a href="#" class="list-group-item">
+                                            <div class="cardHeadSection">
+                                                <div class="profileImg"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></div>
+                                                <div class="profileTitle">
+                                                    <h6>Prashant jha</h6><p>@user </p>
+                                                </div>
+                                                <div class="recomdAddBtn">
+                                                    <p><i class="fa fa-plus" aria-hidden="true"></i></p>
+                                                </div>
+                                            </div>
+                                        </a>
+                                        <a href="#" class="list-group-item">
+                                            <div class="cardHeadSection">
+                                                <div class="profileImg"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></div>
+                                                <div class="profileTitle">
+                                                    <h6>Prashant jha</h6><p>@user </p>
+                                                </div>
+                                                <div class="recomdAddBtn">
+                                                    <p><i class="fa fa-plus" aria-hidden="true"></i></p>
+                                                </div>
+                                            </div>
+                                        </a>
+                                        <a href="#" class="list-group-item">
+                                            <div class="cardHeadSection">
+                                                <div class="profileImg"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></div>
+                                                <div class="profileTitle">
+                                                    <h6>Prashant jha</h6><p>@user </p>
+                                                </div>
+                                                <div class="recomdAddBtn">
+                                                    <p><i class="fa fa-plus" aria-hidden="true"></i></p>
+                                                </div>
+                                            </div>
+                                        </a>
+                                        <a href="#" class="list-group-item">
+                                            <div class="cardHeadSection">
+                                                <div class="profileImg"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></div>
+                                                <div class="profileTitle">
+                                                    <h6>Prashant jha</h6><p>@user </p>
+                                                </div>
+                                                <div class="recomdAddBtn">
+                                                    <p><i class="fa fa-plus" aria-hidden="true"></i></p>
+                                                </div>
+                                            </div>
+                                        </a>
+                                        <a href="#" class="list-group-item">
+                                            <div class="cardHeadSection">
+                                                <div class="profileImg"><img src="https://www.dropbox.com/s/7zlj89m72yw28d1/3.jpg?raw=1"></div>
+                                                <div class="profileTitle">
+                                                    <h6>Prashant jha</h6><p>@user </p>
+                                                </div>
+                                                <div class="recomdAddBtn">
+                                                    <p><i class="fa fa-plus" aria-hidden="true"></i></p>
+                                                </div>
+                                            </div>
+                                        </a>
+
+                                    </div>
+                                </div>
+
+                                <div class="card-footer recomdFooter text-center">
+                                    <a href="">Explore More</a>
+                                </div>
+                                </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
   
+    </div>
+
+{% endblock section %}
+
+
+{% block scripts %}
+
+<script>
+    var infinite = new Waypoint.Infinite({
+        element: $('.infinite-container'),
+        onBeforePageLoad: function () {
+            $('.spinner-border').show();
+        },
+        onAfterPageLoad: function () {
+            $('.spinner-border').hide();
+        }
+    });
+
+    function openNav() {
+        document.getElementById("mySidenav").style.width = "250px";
+    }
+    function closeNav() {
+        document.getElementById("mySidenav").style.width = "0";
+    }
+
+    
+    $(document).ready(function(){
+        $(".userSearchInput").focusout(()=>{
+            $(".search-box").slideUp('fast');
+        });    
+
+        $(".userSearchInput").focusin(()=>{
+            $(".search-box").slideDown('fast');
+        });       
+    });
+
+</script>
+    
+{% endblock scripts %}
+
+   
+
+
