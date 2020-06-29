@@ -1831,9 +1831,7 @@ a:hover {
     }
 }
 @media screen and (max-width:1500px){
-    .mainLeftDiv{
-        display: none;
-    }
+    
 
     .user {
         max-width: 100%;

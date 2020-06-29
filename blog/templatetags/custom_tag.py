@@ -72,7 +72,7 @@ def get_nested_comment(parent_id, root, autoescape=True):
                                 <span class="textBtn float-right text-edited text-theme {9}">edited</span>\
                             </div>\
                         </div>\
-                        <div class="comment-main-content"></div>\
+                        <div class="replace-maincontent{3}"></div>\
                     </div>\
                 </li>'.format(replied_to_comment.author.first_name, replied_to_comment.author.last_name,
                               replied_to_comment.commented_text, replied_to_comment.id, parent_id, rootId,
@@ -85,7 +85,7 @@ def get_nested_comment(parent_id, root, autoescape=True):
                         <h6 class="mt-0 mb-1 profileName">\
                         <a href="#">{0} {1}</a>\
                         <span class="ml-3 commentlikeBtn"><i class="fa fa-heart {8}" data-postid="{10}" data-catid="{3}" onclick="cmt_like(this)"></i></span>\
-                        <span class="comment-editbtn d-block">\
+                        <span class="comment-editbtn">\
                             <div class="dropleft">\
                                 <p class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-ellipsis-v"></i></p>\
                                 <div class="dropdown-menu">\
@@ -104,7 +104,7 @@ def get_nested_comment(parent_id, root, autoescape=True):
                                 <span class="textBtn float-right text-edited text-theme {9}">edited</span>\
                             </div>\
                         </div>\
-                        <div class="comment-main-content"></div>\
+                        <div class="replace-maincontent{3}"></div>\
                     </div>\
                 </li>'.format(replied_to_comment.author.first_name, replied_to_comment.author.last_name,
                               replied_to_comment.commented_text, replied_to_comment.id, parent_id, rootId,

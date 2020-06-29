@@ -305,36 +305,6 @@ def comment_like(request, pid):
             return JsonResponse(data=data_dict, safe=False)
     return render(request, 'blog/singlePost.html')
 
-@login_required
-def comment_like(request, pid):
-    print('comment like')
-    if request.method == 'GET':
-        cmt_id = request.GET['cmt_id']
-        liked_comment = Comment.objects.filter(id= int(cmt_id) ).first()
-        user_who_liked_cmt = [user for id, user in liked_comment.cmt_likes.values_list()]
-
-        if request.user.id in user_who_liked_cmt:
-            print("user in user_who_liked_cmt")
-            print(liked_comment.cmt_likes.all()[user_who_liked_cmt.index(request.user.id)].delete())
-            liked_comment.cmt_likes_count -= 1
-            liked_comment.save()
-
-            cmt_likes_count = liked_comment.cmt_likes_count
-            data_dict = {'likes_count': cmt_likes_count}
-            return JsonResponse(data=data_dict, safe=False)
-
-        else:
-            print("user not in user_who_liked_cmt")
-            liked_comment.cmt_likes.create(user = request.user)
-            liked_comment.cmt_likes_count += 1
-            liked_comment.save()
-
-            cmt_likes_count = liked_comment.cmt_likes_count
-            data_dict = {'likes_count': cmt_likes_count}
-            return JsonResponse(data=data_dict, safe=False)
-        
-    return render(request, 'blog/singlePost.html')
-
 def single_post(request, pid):
     singlePost = Post.objects.filter(id=pid).first()
     comment_form = CommentForm()
