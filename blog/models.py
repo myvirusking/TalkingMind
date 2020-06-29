@@ -7,7 +7,6 @@ from users.models import ArticleCategory
 class Likes(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
-
 class CommentLikes(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
@@ -39,6 +38,9 @@ class Comment(models.Model):
     def __str__(self):
         return self.author.username
 
+   
+
+   
 
 class Post(models.Model):
     title = models.CharField(max_length=100)
