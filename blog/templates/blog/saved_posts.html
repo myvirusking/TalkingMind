@@ -5,7 +5,9 @@
         <section>
             <div class="container-fluid">
                 <div class="row">
-
+                    <div id="replaceable-content" class="search-box col-6">
+                        {% include 'blog/user-search-results.html' %}
+                    </div> 
                     <div class="col-lg-8 col-md-8 mt-2">
                         <div class="filterDiv">
                             <h2><span>Filter by: <i class="fa fa-filter" aria-hidden="true" data-toggle="modal" data-target="#filterModal"></i></span></h2>
@@ -258,6 +260,23 @@
         });
 
 
+        function openNav() {
+          document.getElementById("mySidenav").style.width = "250px";
+        }
+
+        function closeNav() {
+          document.getElementById("mySidenav").style.width = "0";
+        }
+
+        $(document).ready(function(){
+        $(".userSearchInput").focusout(()=>{
+            $(".search-box").slideUp('fast');
+        });    
+
+        $(".userSearchInput").focusin(()=>{
+            $(".search-box").slideDown('fast');
+        });       
+    });
     </script>
     {% endblock %}
 

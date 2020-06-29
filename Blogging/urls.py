@@ -78,9 +78,10 @@ urlpatterns = [
         name='password_change_done'
     ),
 
-         # Search user
     path('userSearch/',user_views.user_search_view,name="user_search"),
-
+    #path('userSearchname/',user_views.user_search_name,name="user_search_name"),
+    path('userList/',user_views.user_search_list,name="userList"),
+    
     path('like/', blog_views.post_like, name="like-post"),
 
     path('save/', blog_views.save_post, name="save-post"),
@@ -114,9 +115,9 @@ urlpatterns = [
     path('two-factor-auth-setting/', setting_views.two_factor_authentication, name='two-fact-auth-setting'),
 
     path('login/otp-screen/', setting_views.send_otp_for_email_verification, name='otp-screen'),
-
-    path('admin/login/otp-screen/', setting_views.send_otp_for_email_verification, name='otp-screen')
+    path('admin/login/otp-screen/', setting_views.send_otp_for_email_verification, name='otp-screen'),
+    path('accounts/', include('allauth.urls')),
 
 ]
-if settings.DEBUG:
-    urlpatterns+= static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+urlpatterns+= static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

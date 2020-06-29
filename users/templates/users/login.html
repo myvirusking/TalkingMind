@@ -1,6 +1,8 @@
 {% extends 'blog/base.html' %}
 {% load static %}
 {% load crispy_forms_tags %}
+{% load socialaccount %}
+{% providers_media_js %}
 
 {% block css %}
 
@@ -72,7 +74,10 @@
                             </div>
                             <button type="submit" class="btn loginBtn">Login</button>
                         </form>
-                        <p class="forgotPswd"><a href="{% url 'password_reset' %}" >Forgot Password ?</a></p>
+                        <label style="font-weight: bold; font-family: Arial, Helvetica, sans-serif; font-size: large;">OR</label><br>
+                        <button class="loginButton loginButton--google"><a href="{% provider_login_url 'google' method='js_sdk' %}" class="link">Login with Google</a></button></br></br>
+                        <button class="loginButton loginButton--facebook"><a href="{% provider_login_url 'facebook' %}" class="link">Login with Facebook</a></button>
+                        <p  class="forgotPswd"><a href="{% url 'password_reset' %}" >Forgot Password ?</a></p>
                     </div>
                 </div>
             </div>

@@ -2,11 +2,14 @@
 {% load custom_tag %}
 {% load static %}
 
+
 {% block section %}
     <section>
         <div class="container-fluid">
-
             <div class="row">
+                <div id="replaceable-content" class="search-box col-6">
+                    {% include 'blog/user-search-results.html' %}
+                </div> 
                 <div class="col-lg-8 col-md-8">
                     <a href="{% url 'post-create' %}" class="card" >
                         <div class="postBtnBody">
@@ -345,6 +348,25 @@
         }
     });
 
+    function openNav() {
+        document.getElementById("mySidenav").style.width = "250px";
+    }
+    function closeNav() {
+        document.getElementById("mySidenav").style.width = "0";
+    }
+
+    
+    $(document).ready(function(){
+        $(".userSearchInput").focusout(()=>{
+            $(".search-box").slideUp('fast');
+        });    
+
+        $(".userSearchInput").focusin(()=>{
+            $(".search-box").slideDown('fast');
+        });       
+    });
+
 </script>
+
 
 {% endblock scripts %}

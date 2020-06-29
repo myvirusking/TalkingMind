@@ -7,7 +7,9 @@
     <section>
         <div class="container-fluid">
             <div class="row">
-
+                <div id="replaceable-content" class="search-box col-6">
+                    {% include 'blog/user-search-results.html' %}
+                </div> 
                 <div class="col-lg-8 col-md-8">
 
                     <div class="mainCenterDiv">
@@ -263,6 +265,17 @@
     </section>
 <!-- </div> -->
 
+<script>
+      $(document).ready(function(){
+        $(".userSearchInput").focusout(()=>{
+            $(".search-box").slideUp('fast');
+        });    
+
+        $(".userSearchInput").focusin(()=>{
+            $(".search-box").slideDown('fast');
+        });       
+    });
+</script>
 <div class="modal fade" id="deleteCommentModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
