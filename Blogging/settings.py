@@ -45,20 +45,17 @@ INSTALLED_APPS = [
     #Third party apps
     'phonenumber_field',
     'crispy_forms',
-
-    
+    'django_otp',
+    'django_otp.plugins.otp_totp',
+    'django_otp.plugins.otp_hotp',
+    'django_otp.plugins.otp_static',
+    'axes' ,
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.facebook',
 
-    # 'django_extensions',
-    'django_otp',
-    'django_otp.plugins.otp_totp',
-    'django_otp.plugins.otp_hotp',
-    'django_otp.plugins.otp_static',
-    'axes'
 
 ]
 
@@ -67,7 +64,6 @@ INSTALLED_APPS = [
 SHELL_PLUS = "plain"
 SHELL_PLUS_PRINT_SQL = True
 
-
 AUTHENTICATION_BACKENDS = [
     # AxesBackend should be the first backend in the AUTHENTICATION_BACKENDS list.
     'settings.backend.CustomAxesBackend',
@@ -75,6 +71,8 @@ AUTHENTICATION_BACKENDS = [
     # Django ModelBackend is the default authentication backend.
     'django.contrib.auth.backends.ModelBackend',
 ]
+
+
 
 
 MIDDLEWARE = [
@@ -152,10 +150,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 AXES_FAILURE_LIMIT = 4
 AXES_LOCKOUT_URL = 'otp-screen'
-CURRENT_USER = "admin"
+CURRENT_USER = ""
 AXES_RESET_ON_SUCCESS = True
 
 
@@ -200,7 +197,7 @@ FOLLOW_PAGINATION_PER_PAGE = 5
 
 
 
-SITE_ID = 2
+SITE_ID = 3
 
 # Will change to https in production, but also note that to change to https in google developers API console
 ACCOUNT_DEFAULT_HTTP_PROTOCOL='http'

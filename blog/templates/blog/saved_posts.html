@@ -259,24 +259,17 @@
             }
         });
 
-
-        function openNav() {
-          document.getElementById("mySidenav").style.width = "250px";
-        }
-
-        function closeNav() {
-          document.getElementById("mySidenav").style.width = "0";
-        }
-
         $(document).ready(function(){
-        $(".userSearchInput").focusout(()=>{
-            $(".search-box").slideUp('fast');
-        });    
+            $(".userSearchInput").focusout(()=>{
+                $(".search-box").slideUp('fast');
+            });    
+    
+            $(".userSearchInput").focusin(()=>{
+                $(".search-box").slideDown('fast');
+            });       
+        });
 
-        $(".userSearchInput").focusin(()=>{
-            $(".search-box").slideDown('fast');
-        });       
-    });
+
     </script>
     {% endblock %}
 

@@ -62,16 +62,16 @@
                                 <div class="footerBtn">
                                     {% csrf_token %}
                                     {% if user in singlePost|liked_list  %}
-                                        <div id="like"  class="like" ><i id="heart" class="fa fa-heart press" aria-hidden="true" data-catid="{{singlePost.id}}"><span class="total-likes" >{{singlePost.likes_count}}</span></i ></div>
+                                        <div id="like"  class="like" ><i id="heart" class="fa fa-heart press" onclick="post_like(this,{{singlePost.id}})" aria-hidden="true" data-catid="{{singlePost.id}}"><span class="total-likes" >{{singlePost.likes_count}}</span></i ></div>
                                     {% else %}
-                                        <div id="like"  class="like" ><i id="heart" class="fa fa-heart" aria-hidden="true" data-catid="{{singlePost.id}}"><span class="total-likes" >{{singlePost.likes_count}}</span></i ></div>
+                                        <div id="like"  class="like" ><i id="heart" class="fa fa-heart" onclick="post_like(this,{{singlePost.id}})" aria-hidden="true" data-catid="{{singlePost.id}}"><span class="total-likes" >{{singlePost.likes_count}}</span></i ></div>
                                     {% endif %}
                                     <div class="comment"><i class="far fa-comments"></i><span>13</span></div>
                                     <div class="share"><i class="fa fa-paper-plane" aria-hidden="true"></i><span>28</span></div>
                                     {% if singlePost.id in user.profile|saved_post %}
-                                        <div class="save"><i class="fa fa-bookmark saved" aria-hidden="true" data-catid = {{singlePost.id}}></i></div>
+                                        <div class="save"><i class="fa fa-bookmark saved" aria-hidden="true" data-catid = {{singlePost.id}} onclick="post_save(this,{{singlePost.id}})"></i></div>
                                     {% else %}
-                                        <div class="save"><i class="fa fa-bookmark " aria-hidden="true" data-catid = {{singlePost.id}}></i></div>
+                                        <div class="save"><i class="fa fa-bookmark " aria-hidden="true" data-catid = {{singlePost.id}} onclick="post_save(this,{{singlePost.id}})"></i></div>
                                     {% endif %}
                                 </div>
                                 <!-- {{ post.date_posted }} -->
@@ -114,7 +114,6 @@
                                                                 </div>
                                                             </span>
                                                         {% endif %}
-
                                                     </h6>
                                                     <div class="comment-main-content{{comment.id}} mb-2">
                                                         <p class="commentText">{{comment.commented_text}}</p>
@@ -127,8 +126,7 @@
                                                             {% endif %}
                                                         </div>
                                                     </div>
-                                                    <div class="comment-main-content"></div>
-
+                                                    <div class="replace-maincontent{{comment.id}}"></div>
 
                                                     <div class="commentRplyDiv" id="commentRplyDiv{{comment.id}}">
                                                         <ul class="list-unstyled">
@@ -265,17 +263,7 @@
     </section>
 <!-- </div> -->
 
-<script>
-      $(document).ready(function(){
-        $(".userSearchInput").focusout(()=>{
-            $(".search-box").slideUp('fast');
-        });    
 
-        $(".userSearchInput").focusin(()=>{
-            $(".search-box").slideDown('fast');
-        });       
-    });
-</script>
 <div class="modal fade" id="deleteCommentModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -313,31 +301,31 @@
             overflow: auto;
             height: 100%;">
                 <div id="carouselExampleControls" class="carousel slide h-100" data-interval="false" data-ride="carousel">
-
+                                        
                   <!-- Wrapper for slides -->
-
+                  
                   <div class="carousel-inner h-100">
                     {% if singlePost.images.all %}
                     <!-- <img src="{{singlePost.images.all.0.image}}"/> -->
-                        {% for i in singlePost.images.all %}
+                        {% for i in singlePost.images.all %}                        
                             <div class="carousel-item modalImage{{forloop.counter}} h-100">
                                 <div class="carouselbgdiv"  style="background:url(/media/{{i.image}});"></div>
                             </div>
-                        {% endfor %}
+                        {% endfor %}                        
                     {% endif %}
-
-
+                    
+              
                     <!-- <div class="carousel-item h-100">
                         <div class="carouselbgdiv" style="background:url(https://s.ftcdn.net/v2013/pics/all/curated/RKyaEDwp8J7JKeZWQPuOVWvkUjGQfpCx_cover_580.jpg?r=1a0fc22192d0c808b8bb2b9bcfbf4a45b1793687);"></div>
-
+                      
                     </div>
-
+                  
                     <div class="carousel-item h-100">
                         <div class="carouselbgdiv" style="background:url(https://i.pinimg.com/originals/83/f9/37/83f937b69f30bb886ab8a03390da6771.jpg);"></div>
-
+                      
                     </div> -->
                   </div>
-
+              
                   <!-- Left and right controls -->
                   <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
                     <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -355,6 +343,9 @@
 </div>
 
 {% endblock section %}
+    
+
+
 
 {% block script %}
 
@@ -371,6 +362,17 @@
             $('#imageModal').modal('hide');
         });
     })
+</script>
+<script>
+    $(document).ready(function(){
+      $(".userSearchInput").focusout(()=>{
+          $(".search-box").slideUp('fast');
+      });    
+
+      $(".userSearchInput").focusin(()=>{
+          $(".search-box").slideDown('fast');
+      });       
+  });
 </script>
 
 <script type="text/javascript" src="{% static 'blog/javascript/delete_comment.js' %}"></script>
@@ -433,7 +435,7 @@
                                     <span class="textBtn float-right text-edited text-theme">edited</span>\
                                 </div>\
                             </div>\
-                            <div class="comment-main-content"></div>\
+                            <div class="replace-maincontent'+data.commentId+'"></div>\
                             <div class="commentRplyDiv" id="commentRplyDiv'+data.commentId+'">\
                                 <ul class="list-unstyled">\
                                 </ul>\
@@ -571,7 +573,7 @@
                                         <span class="textBtn float-right text-edited text-theme">edited</span>\
                                     </div>\
                                 </div>\
-                                <div class="comment-main-content"></div>\
+                                <div class="replace-maincontent'+data.commentId+'"></div>\
                             </div>\
                         </li>');
                 },
@@ -610,7 +612,7 @@
 
 
 
-
+ 
 
 
 
