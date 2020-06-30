@@ -33,6 +33,34 @@
                                     </div>
                                     <div class="col-md-8">
                                         <div class="profileDetailDiv">
+
+                                            {% if profile_other.facebook and profile_other.instagram and profile_other.twitter %}
+                                            <a href="{{ profile_other.facebook }}" target="_blank"><img src="/media/icons/facebookIcon2.png" alt="facebook"></a>
+                                            <a href="{{ profile_other.twitter }}" target="_blank"><img src="/media/icons/twitterIcon2.png" alt="twitter"></a>
+                                            <a href="{{ profile_other.instagram }}" target="_blank"><img src="/media/icons/instagramIcon.png" alt="instagram"></a>
+
+                                            {% elif profile_other.facebook and profile_other.instagram %}
+                                            <a href="{{ profile_other.facebook }}" target="_blank"><img src="/media/icons/facebookIcon2.png" alt="facebook"></a>
+                                            <a href="{{ profile_other.instagram }}" target="_blank"><img src="/media/icons/instagramIcon.png" alt="instagram"></a>
+                                            
+                                            {% elif profile_other.facebook and profile_other.twitter %}
+                                            <a href="{{ profile_other.facebook }}" target="_blank"><img src="/media/icons/facebookIcon2.png" alt="facebook"></a>
+                                            <a href="{{ profile_other.twitter }}" target="_blank"><img src="/media/icons/twitterIcon2.png" alt="twitter"></a>
+
+                                            {% elif profile_other.instagram and profile_other.twitter %}
+                                            <a href="{{ profile_other.instagram }}" target="_blank"><img src="/media/icons/instagramIcon.png" alt="instagram"></a>
+                                            <a href="{{ profile_other.twitter }}" target="_blank"><img src="/media/icons/twitterIcon2.png" alt="twitter"></a>
+
+                                            {% elif profile_other.facebook %}
+                                            <a href="{{ profile_other.facebook }}" target="_blank"><img src="/media/icons/facebookIcon2.png" alt="facebook"></a>
+
+                                            {% elif profile_other.twitter %}
+                                            <a href="{{ profile_other.twitter }}" target="_blank"><img src="/media/icons/twitterIcon2.png" alt="twitter"></a>
+
+                                            {% elif profile_other.instagram %}
+                                            <a href="{{ profile_other.instagram }}" target="_blank"><img src="/media/icons/instagramIcon.png" alt="instagram"></a>
+                                            {% else %}
+                                            {% endif %}
                                             <h5 class="name">{{user_id.first_name}} {{user_id.last_name}}</h5>
                                             <h6 class="username">@{{user_id.username}}</h6>
                                             <p class="about">{{user_id.profile.bio}} </p>

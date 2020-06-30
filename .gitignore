@@ -3,3 +3,6 @@ blog/migrations/0003_auto_20200621_2104.py
 blog/migrations/0004_auto_20200628_2104.py
 settings/migrations/
 users/migrations/0002_auto_20200621_2104.py
+media/post_pics/
+users/migrations/0003_auto_20200630_2343.py
+users/migrations/0004_auto_20200701_0034.py
