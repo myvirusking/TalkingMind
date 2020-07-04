@@ -13,9 +13,12 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.conf.urls import url
 from django.contrib import admin
 from django.urls import path, include
 from django.contrib.auth import views as auth_views
+from user_sessions.views import SessionListView, SessionDeleteOtherView
+
 from users.forms import (
     CustomAuthForm,
     CustomPasswordResetForm,
@@ -30,6 +33,8 @@ from django.contrib import messages
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+
+    url(r'', include('settings.user_sessions_url')),
     path('blog/', include('blog.urls')),
     path('user/', include('users.urls')),
     path('profile/',user_views.profile, name='profile'),
@@ -80,7 +85,7 @@ urlpatterns = [
     path('userSearch/',user_views.user_search_view,name="user_search"),
     #path('userSearchname/',user_views.user_search_name,name="user_search_name"),
     path('userList/',user_views.user_search_list,name="userList"),
-    
+
     path('like/', blog_views.post_like, name="like-post"),
 
     path('save/', blog_views.save_post, name="save-post"),
@@ -98,9 +103,9 @@ urlpatterns = [
     path('edit-comment/', blog_views.editcomment, name="edit-comment"),
 
     path('remove-from-followers/', user_views.remove_from_followers_list, name='remove-from-follower-list'),
-    
+
     path('post/<int:pid>/', blog_views.single_post, name="single-post"),
-    
+
     path('post/<int:pid>/comment_like/', blog_views.comment_like, name="like-comment"),
 
     path('post/<int:pid>/', blog_views.single_post, name="single-post"),
@@ -114,7 +119,11 @@ urlpatterns = [
     path('login/otp-screen/', setting_views.send_otp_for_email_verification, name='otp-screen'),
 
     path('admin/login/otp-screen/', setting_views.send_otp_for_email_verification, name='otp-screen'),
-    
+
+    path('user/block/', user_views.block_user, name='block-user'),
+
+    path('user/unblock/', user_views.unblock_user, name='unblock-user'),
+
     path('accounts/', include('allauth.urls')),
 ]
 

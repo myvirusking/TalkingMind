@@ -48,6 +48,8 @@ class Profile(models.Model):
     article_category = models.ManyToManyField(ArticleCategory)
     followers = models.ManyToManyField(Followers)
     following = models.ManyToManyField(Following)
+    blocked_users = models.ManyToManyField(User, null=True, related_name="blocked_users")
+    blocked_by = models.ManyToManyField(User, null=True, related_name="blocked_by")
     following_count = models.PositiveIntegerField(default=0)
     followers_count = models.PositiveIntegerField(default=0)
     saved_posts = models.ManyToManyField(SavedPost)
