@@ -8,11 +8,9 @@ register = template.Library()
 def liked_list(model):
     return model.likes.all()
 
-
 @register.filter(name='comment_liked_list')
 def comment_liked_list(model):
     return model.cmt_likes.all()
-
 
 @register.filter(name='saved_post')
 def saved_post(profile):
@@ -26,7 +24,7 @@ def user_in_follow_request(current_user, follower):
         return True
 
 
-@register.filter(name='get_nested_comment', needs_autoescape=True)
+@register.filter(name='get_nested_comment', needs_autoescape=True)    
 def get_nested_comment(parent_id, root, autoescape=True):
     from django.utils import timesince
     from django_currentuser.middleware import (
@@ -37,19 +35,18 @@ def get_nested_comment(parent_id, root, autoescape=True):
     rootId = root
 
     reply_comment = Comment.objects.filter(parent_comment_id=parent_id).order_by('id')
-    if len(reply_comment) > 0:
+    if len(reply_comment)>0:
         for replied_to_comment in reply_comment:
             commented_date = timesince.timesince(replied_to_comment.comment_date)
             likeclass = ""
             commentflag = ""
-
             if get_current_authenticated_user() in replied_to_comment.cmt_likes.all():
                 likeclass = "press"
             if replied_to_comment.flag:
                 commentflag = "d-block"
 
             if get_current_authenticated_user().username == replied_to_comment.author.username:
-
+    
                 result_comment += '<li class="media" id="{3}">\
                     <a href="#"><img class="mr-3 profilePic" src="/media/default.jpeg" alt="img" width="50px" height="50px"></a>\
                     <div class="media-body">\
@@ -75,7 +72,7 @@ def get_nested_comment(parent_id, root, autoescape=True):
                                 <span class="textBtn float-right text-edited text-theme {9}">edited</span>\
                             </div>\
                         </div>\
-                        <div class="comment-main-content"></div>\
+                        <div class="replace-maincontent{3}"></div>\
                     </div>\
                 </li>'.format(replied_to_comment.author.first_name, replied_to_comment.author.last_name,
                               replied_to_comment.commented_text, replied_to_comment.id, parent_id, rootId,
@@ -92,8 +89,8 @@ def get_nested_comment(parent_id, root, autoescape=True):
                             <div class="dropleft">\
                                 <p class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-ellipsis-v"></i></p>\
                                 <div class="dropdown-menu">\
-                                    <a class="dropdown-item" href="#">Edit</a>\
-                                    <a class="dropdown-item" href="#" data-dismiss="modal" aria-label="Close">delete</a>\
+                                    <a class="dropdown-item" data-catid="{3}" onclick="editComment(event);">Edit</a>\
+                                    <a class="dropdown-item deleteCommentbtn" data-catid="{3}" onclick="deleteCommentbtn(this)" data-toggle="modal" data-target="#deleteCommentModal">delete</a>\
                                 </div>\
                             </div>\
                         </span>\
@@ -107,7 +104,7 @@ def get_nested_comment(parent_id, root, autoescape=True):
                                 <span class="textBtn float-right text-edited text-theme {9}">edited</span>\
                             </div>\
                         </div>\
-                        <div class="comment-main-content"></div>\
+                        <div class="replace-maincontent{3}"></div>\
                     </div>\
                 </li>'.format(replied_to_comment.author.first_name, replied_to_comment.author.last_name,
                               replied_to_comment.commented_text, replied_to_comment.id, parent_id, rootId,

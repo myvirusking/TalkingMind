@@ -13,7 +13,6 @@ function newNotification(){
 
 
 $(document).ready(function(){
- setInterval(newNotification,8000);
     newNotification();
  setInterval(newNotification,3000);
 });

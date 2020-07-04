@@ -37,7 +37,7 @@ class Notification(models.Model):
     notification_type = models.CharField(max_length=100, null=True)
     notification_content = models.CharField(max_length=100, null=True)
     post_involved = models.ForeignKey("blog.Post",on_delete=models.CASCADE, null=True)
-    status = models.CharField(max_length = 100, default="new")
+    status = models.CharField(max_length = 100, default="new")  
 
 
 class Profile(models.Model):

@@ -880,7 +880,7 @@ input {
     font-size: 25px;
     font-weight: 800;
     margin-left: 170px;
-  }
+  } 
 
   .bell-icon{
       position: relative;
@@ -1831,9 +1831,7 @@ a:hover {
     }
 }
 @media screen and (max-width:1500px){
-    .mainLeftDiv{
-        display: none;
-    }
+    
 
     .user {
         max-width: 100%;
