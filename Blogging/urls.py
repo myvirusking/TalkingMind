@@ -28,16 +28,15 @@ from django.conf.urls.static import static
 from users import views as user_views
 from blog import views as blog_views
 from settings.forms import CustomPasswordChangeForm
-from settings import views as setting_views
 from django.contrib import messages
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
 
-    url(r'', include('settings.user_sessions_url')),
     path('blog/', include('blog.urls')),
     path('user/', include('users.urls')),
+    path('setting/',include('settings.urls')),
     path('profile/',user_views.profile, name='profile'),
     path('login/', user_views.CustomLoginView.as_view(),name='login'),
     path('logout/', auth_views.LogoutView.as_view(template_name='users/login.html', next_page='/login/'), name='logout'),
@@ -117,22 +116,11 @@ urlpatterns = [
 
     path('new-notification/', blog_views.check_for_new_notification, name='new-notification'),
 
-    path('profile-setting/', setting_views.change_profile_setting, name='profile-setting'),
-
-    path('security-setting/', setting_views.security_setting, name='security-setting'),
-
-    path('two-factor-auth-setting/', setting_views.two_factor_authentication, name='two-fact-auth-setting'),
-
-    path('login/otp-screen/', setting_views.send_otp_for_email_verification, name='otp-screen'),
-
-    path('admin/login/otp-screen/', setting_views.send_otp_for_email_verification, name='otp-screen'),
-
     path('user/block/', user_views.block_user, name='block-user'),
 
     path('user/unblock/', user_views.unblock_user, name='unblock-user'),
 
     path('accounts/', include('allauth.urls')),
-
 ]
 
 urlpatterns+= static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

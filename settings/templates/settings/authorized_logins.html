@@ -1,0 +1,46 @@
+{% extends 'settings/base.html' %}
+{% load static %}
+
+{% block content %}
+
+    <div class="container-fluid security-container" style="padding-left: 0; padding-right: 0; margin-left: 0">
+
+			<div id="header" class="pl-5" style="margin-bottom:20px; padding-bottom: 20px; width: 100%; border-bottom: 1px solid darkgray; display: flex;">
+				<a href="{% url 'security-setting' %}">
+				<img style="width: 40px;"src="{% static 'settings/icons/back_button_bold.svg' %}" alt="back_button">
+				</a>
+				<h3 class="ml-4 font-weight-bold" style=" width: 100%;">Authorized Logins</h3>
+			</div>
+    </div>
+
+
+<div class="pl-5" style="margin-bottom:20px; padding-bottom: 17px; width: 100%; border-bottom: 1px solid darkgray;">
+	<div class="col-md-12" style="width:98%">
+    {% if authorized_devices.count > 0 %}
+        <table class="table">
+            <thead>
+                <tr>
+                <th scope="col">Location</th>
+                <th scope="col">Device</th>
+                <th scope="col">OS</th>
+                <th scope="col">Remove Device</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for device in authorized_devices %}
+                <tr{% if device.id == current_device_id %} style="background-color:#aee1f3;" {% endif %}>
+                    <td>{{device.ip_address}}</td>
+                    <td>{{device.browser_family}}</td>
+                    <td>{{device.os_family}}</td>
+                    <td><a href="{% url 'delete_authorized_device' pk=device.id %}" class="btn btn-danger btn-sm">Remove Device</a></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p style="text-align: center;color:red;">You don't have any trusted device yet.</p>
+    {% endif %}
+    </div>
+</div>
+
+{% endblock %}

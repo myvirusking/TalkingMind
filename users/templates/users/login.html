@@ -1,6 +1,7 @@
 {% extends 'blog/base.html' %}
 {% load static %}
 {% load crispy_forms_tags %}
+{% load i18n two_factor %}
 {% load socialaccount %}
 {% providers_media_js %}
 
@@ -36,41 +37,45 @@
         <div class="row sub-container">
             <div class="col-md-1"></div>
             <div class="col-md-10 centerDiv">
-                <div class="centerDivHeader">
-                    <h2>Login</h2>
-                    <p>Just One Step To Explore The New World</p>
-                </div>
-                <div class="row centerRow">
-                    <div class="col-md-6 leftDiv">
-                        <img src="/static/blog/website_logo.png">
+                <form method="post">
+                {{ wizard.management_form }}
+                {% csrf_token %}
+            
+                {% if wizard.steps.current == 'auth' %}
+                    <div class="centerDivHeader">
+                        <h2>Login</h2>
+                        <p>Just One Step To Explore The New World</p>
                     </div>
-                    <div class="col-md-6 rightDiv">
-                        {% if form.errors %}
-                        {% for field in form %}
-                        {% for error in field.errors %}
-                        <div class="alert alert-danger">
-                            <strong>{{ error|escape }}</strong>
+                    <div class="row centerRow">
+                        <div class="col-md-6 leftDiv">
+                            <img src="/static/blog/website_logo.png">
                         </div>
-                        {% endfor %}
-                        {% endfor %}
-                        {% for error in form.non_field_errors %}
-                        <div class="alert alert-danger">
-                            <strong>{{ error|escape }}</strong>
-                        </div>
-                        {% endfor %}
-                        {% endif %}
-                        {% if error_message %}
-                        <div class="alert alert-danger">
-                            <strong>{{ error_message }}</strong>
-                        </div>
-                        {% endif %}
-                        <form method="post">
-                            {% csrf_token %}
+                        <div class="col-md-6 rightDiv">
+                            {% if wizard.form.errors %}
+                                {% for field in wizard.form %}
+                                    {% for error in field.errors %}
+                                    <div class="alert alert-danger">
+                                        <strong>{{ error|escape }}</strong>
+                                    </div>
+                                {% endfor %}
+                                {% endfor %}
+                                {% for error in wizard.form.non_field_errors %}
+                                    <div class="alert alert-danger">
+                                        <strong>{{ error|escape }}</strong>
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+                            {% if error_message %}
+                            <div class="alert alert-danger">
+                                <strong>{{ error_message }}</strong>
+                            </div>
+                            {% endif %}
+              
                             <div class="form-group">
-                                {{form.username}}
+                                {{wizard.form.username}}
                             </div>
                             <div class="form-group">
-                                {{form.password}}
+                                {{wizard.form.password}}
                             </div>
                             <button type="submit" class="btn loginBtn">Login</button>
                         </form>
@@ -79,7 +84,115 @@
                         <button class="loginButton loginButton--facebook"><a href="{% provider_login_url 'facebook' %}" class="link">Login with Facebook</a></button>
                         <p  class="forgotPswd"><a href="{% url 'password_reset' %}" >Forgot Password ?</a></p>
                     </div>
-                </div>
+
+                {% elif wizard.steps.current == 'token' %}
+                    <div class="centerDivHeader">
+                        <h2>Two Factor Authentication</h2>
+                        <p>This extra layer of securit to ensure that it’s really you trying to login</p>
+                    </div>
+                    <div class="row centerRow">
+                        <div id="general_method" class="col-md-6 offset-md-3" style="margin-bottom: 20px;margin-bottom: 20px;">
+                            {% if wizard.form.errors %}
+                                {% for field in wizard.form %}
+                                    {% for error in field.errors %}
+                                        <div class="alert alert-danger">
+                                            <strong>{{ error|escape }}</strong>
+                                        </div>
+                                    {% endfor %}
+                                {% endfor %}
+                                {% for error in wizard.form.non_field_errors %}
+                                    <div class="alert alert-danger">
+                                        <strong>{{ error|escape }}</strong>
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+                            {% if error_message %}
+                                <div class="alert alert-danger">
+                                    <strong>{{ error_message }}</strong>
+                                </div>
+                            {% endif %}
+                            {% if device.method == 'sms' %}
+                                <p>We sent you a text message on {{device.number|mask_phone_number}}, please enter the confirmation code we sent</p>
+                            {% else %}
+                                <p>Enter the 6-digit confirmation code generated by your authentication app.</p>
+                            {% endif %}
+            
+                            <div class="form-group">
+                                {{wizard.form.otp_token}}
+                                <div class="custom-control custom-checkbox">
+                                    <input name="authorized_device" type="checkbox" class="custom-control-input" id="authorizedDevice">
+                                    <label class="custom-control-label" for="authorizedDevice">Don't ask again on this device.</label>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn loginBtn">{% trans "Login" %}</button>
+                            
+                            {% if other_devices or backup_tokens %}
+                                <p style="text-align:center" class="forgotPswd"><a id="try_alternative" style="cursor: pointer;color:#0dc9ef">Try another way to authenticate?</a></p>
+                            {% endif %}
+
+                        </div>
+
+                        <div id="alternative_methods" class="col-md-6 offset-md-3" style="margin-bottom: 20px;margin-bottom: 20px;display:none;">
+                            {% if other_devices %}
+                                <p style="margin-bottom: 5px;">Alternatively, you can use a backup phones</p>
+                                <ul>
+                                {% for device in other_devices %}
+                                    <li><button style="margin-bottom: 10px;background: none;border: none;color: #0dc9ef;" name="challenge_device" value="{{ device.persistent_id }}" type="submit">
+                                        {{ device|device_action }}
+                                    </button></li>
+                                {% endfor %}
+                                </ul>
+                            {% endif %}
+                            
+                            {% if backup_tokens %}
+                                <p style="margin-bottom: 5px;">As a last resort, you can use a backup token</p>
+                                <ul>
+                                    <li><button style="margin-bottom: 10px;background: none;border: none;color: #0dc9ef;" name="wizard_goto_step" type="submit" value="backup">Use Backup Token</button></li>
+                                </ul>
+                            {% endif %}
+                        </div>
+
+                    </div>
+
+                {% elif wizard.steps.current == 'backup' %}
+                    <div class="centerDivHeader">
+                        <h2>Two Factor Authentication</h2>
+                        <p>This extra layer of securit to ensure that it’s really you trying to login</p>
+                    </div>
+                    <div class="row centerRow">
+                        <div id="general_method" class="col-md-6 offset-md-3" style="margin-bottom: 20px;margin-bottom: 20px;">
+                            {% if wizard.form.errors %}
+                                {% for field in wizard.form %}
+                                    {% for error in field.errors %}
+                                        <div class="alert alert-danger">
+                                            <strong>{{ error|escape }}</strong>
+                                        </div>
+                                    {% endfor %}
+                                {% endfor %}
+                                {% for error in wizard.form.non_field_errors %}
+                                    <div class="alert alert-danger">
+                                        <strong>{{ error|escape }}</strong>
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+                            {% if error_message %}
+                                <div class="alert alert-danger">
+                                    <strong>{{ error_message }}</strong>
+                                </div>
+                            {% endif %}
+
+                            <p>Please enter any one of unused backup tokens to login to your account</p>
+            
+                            <div class="form-group">
+                                {{wizard.form.otp_token}}
+                            </div>
+                            <button type="submit" class="btn loginBtn">{% trans "Login" %}</button>
+
+                        </div>
+
+                {% endif %}
+                </form>
+
             </div>
             <div class="col-md-1"></div>
         </div>
@@ -88,3 +201,17 @@
 </div>
 
 {% endblock content %}
+
+
+{% block scripts %}
+
+<script>
+    $(document).ready(function(){
+        $("#try_alternative").click(function(){
+            $("#general_method").hide();
+            $("#alternative_methods").show();
+        });
+    });
+</script>
+
+{% endblock %}
