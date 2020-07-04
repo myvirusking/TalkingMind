@@ -77,9 +77,10 @@ urlpatterns = [
         name='password_change_done'
     ),
 
-         # Search user
     path('userSearch/',user_views.user_search_view,name="user_search"),
-
+    #path('userSearchname/',user_views.user_search_name,name="user_search_name"),
+    path('userList/',user_views.user_search_list,name="userList"),
+    
     path('like/', blog_views.post_like, name="like-post"),
 
     path('save/', blog_views.save_post, name="save-post"),
@@ -92,14 +93,29 @@ urlpatterns = [
 
     path('comment/', blog_views.comment, name="comment"),
 
+    path('delete-comment/', blog_views.deletecomment, name="delete-comment"),
+
+    path('edit-comment/', blog_views.editcomment, name="edit-comment"),
+
     path('remove-from-followers/', user_views.remove_from_followers_list, name='remove-from-follower-list'),
+    
+    path('post/<int:pid>/', blog_views.single_post, name="single-post"),
+    
+    path('post/<int:pid>/comment_like/', blog_views.comment_like, name="like-comment"),
+
+    path('post/<int:pid>/', blog_views.single_post, name="single-post"),
+
+    path('post/<int:pid>/comment_like/', blog_views.comment_like, name="like-comment"),
 
     path('notification/', user_views.notification_view, name='notification'),
 
     path('new-notification/', blog_views.check_for_new_notification, name='new-notification'),
 
-    path('setting/',include('settings.urls'))
+    path('login/otp-screen/', setting_views.send_otp_for_email_verification, name='otp-screen'),
 
+    path('admin/login/otp-screen/', setting_views.send_otp_for_email_verification, name='otp-screen'),
+    
+    path('accounts/', include('allauth.urls')),
 ]
-if settings.DEBUG:
-    urlpatterns+= static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+urlpatterns+= static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

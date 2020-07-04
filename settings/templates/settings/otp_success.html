@@ -1,24 +1,35 @@
 
+
+
+
 {% extends "blog/base.html" %}
 
+{% block css %}
+
+
+
+
+{% endblock css %}
 
 {% block content %}
+    
+    
+    
     <div class="main-container">
         <div class="container">
             <div class="row sub-container">
                 <div class="col-md-3"></div>
                 <div class="col-md-6 centerDiv">
                     <div class="centerDivHeader">
-                        <h2>Password Reset Successful</h2>
-                        <p>Just One Step To Explore The New World</p>
+                        <h2>Email verification Successful</h2>
                     </div>
                     <div class="row centerRow">
                         <div class="col-md-12 rightDiv">                                
                             <div class="alert alert-info">
-                                Your password has been set.
+                                Login now
                             </div>
-                            <a href="{% url 'login'%}" class="btn loginBtn" role="button">Sign In Here</a>
-                              
+                            <a href="{% url 'login'%}" class="btn loginBtn" role="button">Login</a>
+                            <a href="{% url 'password_reset'%}" class="btn loginBtn mt-3" role="button">Forgot password?</a>
                         </div>
                     </div>
                 </div>

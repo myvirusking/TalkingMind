@@ -8,6 +8,7 @@ from .models import *
 from django.contrib.auth.mixins import LoginRequiredMixin
 from users.forms import CustomAuthForm
 from blog.forms import NewPostForm, CommentForm
+from blog.forms import NewPostForm, CommentForm
 from django.contrib.auth import views as auth_views
 from django.conf import settings
 from django.contrib.auth.decorators import user_passes_test
@@ -18,6 +19,11 @@ from django.http import JsonResponse
 from settings.models import AccountPrivacySetting
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from two_factor.views import LoginView
+from django.db.models import Q
+import Blogging.settings
+from django.contrib.auth import signals
+from django.http import HttpResponseRedirect
+
 
 #global variable for making efficient infinite scrolling
 global_posts = None
@@ -92,6 +98,13 @@ class CustomLoginView(LoginView):
             return redirect("login-home")
         return super().get(request,*args, **kwargs)
 
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
 
 @login_required
 def profile(request):
@@ -142,7 +155,7 @@ def profile(request):
         paginated_posts = global_profile_post_paginator.page(1)
     except EmptyPage:
         paginated_posts = global_profile_post_paginator.page(global_profile_post_paginator.num_pages)
-
+    print(global_posts.count())
     context = {
         'user_form': user_form,
         'profile_form': profile_form,
@@ -431,7 +444,7 @@ def accept_follow_request(request):
                                              notification_content="",
                                              notification_type="follow_request_approved")
         request_sender.profile.notification_count += 1
-        request_sender.profile.save(update_fields=["notification_count"])
+        request_sender.profile.save(update_fields=["notification_count"]) 
 
         print(request_sender)
 
@@ -529,12 +542,99 @@ def user_search_view(request):
     return render(request, "blog/base.html", context=ctx)
 
 
+#user search view
+@login_required
+def user_search_view(request):
+    ctx = {}
+    url_parameter = request.GET.get("q")
+
+    users= []
+    if url_parameter:
+        users = User.objects.filter(
+            Q(username__icontains=url_parameter ) |
+            Q(first_name__icontains=url_parameter) |
+            Q(last_name__icontains=url_parameter)
+            ).distinct()
+    
+
+    ctx["users"] = users
+    if request.is_ajax():
+        print("Ajax request")
+
+        html = render_to_string(
+            template_name="blog/user-search-results.html", context={"users": users,"searchVal":url_parameter}
+        )
+        data_dict = {"html_from_view": html}
+        return JsonResponse(data=data_dict, safe=False)
+
+    return render(request, "blog/base.html", context=ctx)
+
+#search by username
+# @login_required
+# def user_search_name(request):
+#     ctx = {}
+#     url_parameter = request.GET.get("q")
+
+#     name= []
+#     if url_parameter:
+#         name = User.objects.filter(first_name__icontains=url_parameter)
+    
+
+#     ctx["name"] = name
+#     if request.is_ajax():
+#         print("Ajax name request")
+
+#         html = render_to_string(
+#             template_name="blog/user-search-results.html", context={"name": name}
+#         )
+#         data_dict = {"html_from_view": html}
+#         return JsonResponse(data=data_dict, safe=False)
+
+#     return render(request, "blog/base.html", context=ctx)
+
+""" This view function is used for directing user to the search results page i.e user_list.html when the user search for some other users 
+in the search-form field and if the results are found it will show the users profile fetch from the database and if the user is not found
+it will simply show that no results with the search query is available
+"""
+
+@login_required
+def user_search_list(request):
+    ctx = {}
+    # obj = User.objects.get(id=2)
+
+    # ctx = {
+    #     'name': obj.first_name,
+    #     'username' :obj.username
+    # }
+    if 'name' in request.POST:
+        url_parameter = request.POST['name']
+    else:
+        url_parameter = False
+        
+    
+    if url_parameter:
+        name = User.objects.filter(
+            Q(first_name__startswith=url_parameter) |
+            Q(last_name__startswith=url_parameter) |
+            Q(username__startswith=url_parameter) 
+            ).all()
+        ctx = {
+            'name': name,
+            'search':url_parameter
+        }
+        
+    return render(request, "blog/user_list.html", context=ctx)
+
+
+
+
+
 @login_required
 def notification_view(request):
     if request.user.is_authenticated:
         notification_list = request.user.profile.notification.all().order_by('-id')
 
-        ctx = {'notification_list':notification_list}
+        ctx = {'notification_list':notification_list} 
 
         return render(request,"users/notifications.html", context=ctx)
 

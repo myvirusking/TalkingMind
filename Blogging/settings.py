@@ -41,20 +41,39 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'blog.templatetags.custom_tag',
-    'django_otp',
-    'django_otp.plugins.otp_static',
-    'django_otp.plugins.otp_totp',
-    'two_factor',
 
     #Third party apps
+    'two_factor',
+    'django.contrib.sites',
     'phonenumber_field',
     'crispy_forms',
+    'django_otp',
+    'django_otp.plugins.otp_totp',
+    'django_otp.plugins.otp_static',
+    'axes' ,
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.facebook',
 
 
 ]
 
+# CELERY_BROKER_URL = 'amqp://localhost'
+
 SHELL_PLUS = "plain"
 SHELL_PLUS_PRINT_SQL = True
+
+AUTHENTICATION_BACKENDS = [
+    # AxesBackend should be the first backend in the AUTHENTICATION_BACKENDS list.
+    'settings.backend.CustomAxesBackend',
+
+    # Django ModelBackend is the default authentication backend.
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+
 
 
 MIDDLEWARE = [
@@ -66,6 +85,8 @@ MIDDLEWARE = [
     'django_otp.middleware.OTPMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django_currentuser.middleware.ThreadLocalUserMiddleware',
+    'axes.middleware.AxesMiddleware',
 ]
 
 ROOT_URLCONF = 'Blogging.urls'
@@ -130,6 +151,10 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AXES_FAILURE_LIMIT = 4
+AXES_LOCKOUT_URL = 'otp-screen'
+CURRENT_USER = ""
+AXES_RESET_ON_SUCCESS = True
 
 
 # Internationalization
@@ -172,7 +197,6 @@ POST_PAGINATION_PER_PAGE = 2
 FOLLOW_PAGINATION_PER_PAGE = 5
 
 #settings for 2FA
-# TWO_FACTOR_QR_FACTORY = 'qrcode.image.pil.PilImage'
 TWO_FACTOR_SMS_GATEWAY = 'two_factor.gateways.fake.Fake'
 TWO_FACTOR_PATCH_ADMIN  = False
 
@@ -192,3 +216,23 @@ LOGGING = {
         }
     }
 }
+
+
+SITE_ID = 3
+
+# Will change to https in production, but also note that to change to https in google developers API console
+ACCOUNT_DEFAULT_HTTP_PROTOCOL='http'
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        }
+    }
+}
+
+SOCIALACCOUNT_QUERY_EMAIL = True

@@ -1,12 +1,14 @@
 {% extends "blog/basic.html" %}
 {% load custom_tag %}
+{% load static %}
 
 {% block section %}
     <section>
         <div class="container-fluid">
-
             <div class="row">
-
+                <div id="replaceable-content" class="search-box col-6">
+                    {% include 'blog/user-search-results.html' %}
+                </div> 
                 <div class="col-lg-8 col-md-8">
                     <a href="{% url 'post-create' %}" class="card" >
                         <div class="postBtnBody">
@@ -30,7 +32,12 @@
                                                 <a href="{% url 'other-profile' post.author.id %}"><h6>{{ post.author.first_name }} {{post.author.last_name}}</h6></a><p>{{post.date_posted|timesince}} ago </p>
                                             </div>
                                             <div class="threeDot">
-                                                <p><i class="fa fa-ellipsis-v" aria-hidden="true"></i></p>
+                                                <div class="dropleft">
+                                                    <p class="dropdown-toggle cursor-pointer" data-toggle="dropdown"><i class="fa fa-ellipsis-v"></i></p>
+                                                    <div class="dropdown-menu">
+                                                        <a class="dropdown-item">report</a>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
 
@@ -43,7 +50,8 @@
                                         </a>
 
                                         {% if post.images.all %}
-                                            <div class="image-div" data-toggle="modal" data-target="#imageModal" data-id="{{post.images.all}}">
+                                        <a href="{% url 'single-post' post.id %}">
+                                            <div class="image-div" data-id="{{post.images.all}}">
                                                 <div class="card-group image-group h-100 d-flex" style="flex-direction: row;">
                                                     {% if post.images.all.count > 2 %}
                                                             <div class="card w-100" style='background: url("{{post.images.all.0.image.url}}");'>
@@ -60,6 +68,7 @@
                                                     {% endif %}
                                                 </div>
                                             </div>
+                                        </a>
                                         {% endif %}
 
                                 </div>
@@ -70,7 +79,7 @@
                                     <div class="card-footer">
                                         <div class="footerBtn">
                                             {% csrf_token %}
-                                            {% if user.id in post|liked_list  %}
+                                            {% if user in post|liked_list  %}
                                                 <div id="like"  class="like" ><i id="heart" onclick="post_like(this,{{post.id}})" class="fa fa-heart press" aria-hidden="true" data-catid="{{post.id}}" ><span class="total-likes" >{{post.likes_count}}</span></i ></div>
                                             {% else %}
                                                 <div id="like"  class="like" ><i id="heart" onclick="post_like(this,{{post.id}})" class="fa fa-heart" aria-hidden="true" data-catid="{{post.id}}"><span class="total-likes" >{{post.likes_count}}</span></i ></div>
@@ -87,17 +96,18 @@
 
                                         </div>
                                     </div>
-                                    <div class="card-footer">
+                                    <div class="card-footer card-footer-comment">
                                         <div class="footerCommentDiv">
                                             <div class="commentBox">
                                                 <form class="comment-form">
                                                     {% csrf_token %}
+                                                    <input type="hidden" value="0" id="hiddenInput">
                                                     {{comment_form.commented_text}}
                                                     <button type="submit" class="btn btn-outline-info commentBtn" data-catid="{{post.id}}"><i class="fas fa-paper-plane"></i></button>
                                                 </form>
                                             </div>
                                         </div>
-                                        <div class="allCommentDiv" id="allCommentDiv">
+                                        <div class="allCommentDiv" id="allCommentDiv"> 
                                             <ul class="list-unstyled single-post-cmt-div{{post.id}} mb-0">
                                                 {% if post.comments.all %}
                                                     <li class="media">
@@ -274,9 +284,8 @@
         </div>
     </div>
 
+
 {% endblock section %}
-
-
 
 
 {% block scripts %}
@@ -292,12 +301,19 @@
         }
     });
 
-    function openNav() {
-        document.getElementById("mySidenav").style.width = "250px";
-    }
-    function closeNav() {
-        document.getElementById("mySidenav").style.width = "0";
-    }
-</script>
+
     
+    $(document).ready(function(){
+        $(".userSearchInput").focusout(()=>{
+            $(".search-box").slideUp('fast');
+        });    
+
+        $(".userSearchInput").focusin(()=>{
+            $(".search-box").slideDown('fast');
+        });       
+    });
+
+</script>
+
+
 {% endblock scripts %}

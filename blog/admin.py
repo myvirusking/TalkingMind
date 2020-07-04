@@ -3,6 +3,7 @@ from .models import Post, Likes,PostImages, Comment, CommentLikes
 from users.models import (Profile, ArticleCategory,
                           Followers, Following,
                           FollowRequest, Notification)
+from users.models import Profile, ArticleCategory, Followers, Following, FollowRequest
 
 # Register your models here
 admin.site.register(Post)

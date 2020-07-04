@@ -1,12 +1,15 @@
 {% extends "blog/basic.html" %}
 {% load custom_tag %}
+{% load static %}
 
 {% block section %}
 
     <section>
         <div class="container-fluid">
             <div class="row">
-
+                <div id="replaceable-content" class="search-box col-6">
+                    {% include 'blog/user-search-results.html' %}
+                </div> 
                 <div class="col-lg-8 col-md-8">
 
                     <div class="mainCenterDiv">
@@ -15,10 +18,15 @@
                                 <div class="cardHeadSection">
                                     <div class="profileImg"><a href="{% url 'other-profile' singlePost.author.id %}"><img src="{{singlePost.author.profile.image.url}}"></a></div>
                                     <div class="profileTitle">
-                                        <a href="#"><h6>{{ singlePost.author }}</h6></a><p>@prashant </p>
+                                        <a href="{% url 'other-profile' singlePost.author.id %}"><h6>{{ singlePost.author.first_name }} {{ singlePost.author.last_name }}</h6></a><p>@prashant </p>
                                     </div>
                                     <div class="threeDot">
-                                        <p><i class="fa fa-ellipsis-v" aria-hidden="true"></i></p>
+                                        <div class="dropleft">
+                                            <p class="dropdown-toggle cursor-pointer" data-toggle="dropdown"><i class="fa fa-ellipsis-v"></i></p>
+                                            <div class="dropdown-menu">
+                                                <a class="dropdown-item">report</a>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -28,18 +36,18 @@
                                 <pre class="card-text">{{ singlePost.content }}</pre>
 
                                 {% if singlePost.images.all %}
-                                    <div class="image-div">
+                                    <div class="image-div"  >
                                         <div class="card-group image-group h-100 d-flex" style="flex-direction: row;">
                                             {% if singlePost.images.all.count > 2 %}
-                                                    <div class="card w-100" style='background: url("{{singlePost.images.all.0.image.url}}");'>
+                                                    <div class="card openImageModal w-100" data-catid="1" style='background: url("{{singlePost.images.all.0.image}}");'>
                                                     </div>
                                                     <div class="card w-100">
-                                                        <div class="card-header card-in-image h-50" style='background: url("{{singlePost.images.all.1.image.url}}");'></div>
-                                                        <div class="card-footer card-in-image h-50" style='background: url("{{singlePost.images.all.2.image.url}}");'></div>
+                                                        <div class="card-header openImageModal card-in-image h-50" data-catid="2" style='background: url("{{singlePost.images.all.1.image}}");'></div>
+                                                        <div class="card-footer openImageModal card-in-image h-50" data-catid="3" style='background: url("{{singlePost.images.all.2.image}}");'></div>
                                                     </div>
                                             {%else%}
                                                 {% for postImage in singlePost.images.all %}
-                                                    <div class="card w-100" style='background: url("{{postImage.image.url}}");'>
+                                                    <div class="card openImageModal w-100" data-catid="{{forloop.counter}}" style='background: url("{{postImage.image.url}}");'>
                                                     </div>
                                                 {% endfor %}
                                             {% endif %}
@@ -53,17 +61,17 @@
                             <div class="card-footer">
                                 <div class="footerBtn">
                                     {% csrf_token %}
-                                    {% if user.id in singlePost|liked_list  %}
-                                        <div id="like"  class="like" ><i id="heart" class="fa fa-heart press" aria-hidden="true" data-catid="{{singlePost.id}}"><span class="total-likes" >{{singlePost.likes_count}}</span></i ></div>
+                                    {% if user in singlePost|liked_list  %}
+                                        <div id="like"  class="like" ><i id="heart" class="fa fa-heart press" onclick="post_like(this,{{singlePost.id}})" aria-hidden="true" data-catid="{{singlePost.id}}"><span class="total-likes" >{{singlePost.likes_count}}</span></i ></div>
                                     {% else %}
-                                        <div id="like"  class="like" ><i id="heart" class="fa fa-heart" aria-hidden="true" data-catid="{{singlePost.id}}"><span class="total-likes" >{{singlePost.likes_count}}</span></i ></div>
+                                        <div id="like"  class="like" ><i id="heart" class="fa fa-heart" onclick="post_like(this,{{singlePost.id}})" aria-hidden="true" data-catid="{{singlePost.id}}"><span class="total-likes" >{{singlePost.likes_count}}</span></i ></div>
                                     {% endif %}
                                     <div class="comment"><i class="far fa-comments"></i><span>13</span></div>
                                     <div class="share"><i class="fa fa-paper-plane" aria-hidden="true"></i><span>28</span></div>
                                     {% if singlePost.id in user.profile|saved_post %}
-                                        <div class="save"><i class="fa fa-bookmark saved" aria-hidden="true" data-catid = {{singlePost.id}}></i></div>
+                                        <div class="save"><i class="fa fa-bookmark saved" aria-hidden="true" data-catid = {{singlePost.id}} onclick="post_save(this,{{singlePost.id}})"></i></div>
                                     {% else %}
-                                        <div class="save"><i class="fa fa-bookmark " aria-hidden="true" data-catid = {{singlePost.id}}></i></div>
+                                        <div class="save"><i class="fa fa-bookmark " aria-hidden="true" data-catid = {{singlePost.id}} onclick="post_save(this,{{singlePost.id}})"></i></div>
                                     {% endif %}
                                 </div>
                                 <!-- {{ post.date_posted }} -->
@@ -71,7 +79,7 @@
                             <div class="card-footer card-footer-comment" id="comment">
                                 <div class="footerCommentDiv">
                                     <div class="commentBox">
-                                        <form class="comment-form">
+                                        <form class="comment-form" method="post">
                                             {% csrf_token %}
                                             <input type="hidden" value="0" id="hiddenInput">
                                             {{comment_form.commented_text}}
@@ -80,25 +88,45 @@
                                     </div>
                                 </div>
 
-                                <div class="allCommentDiv">
-                                    <ul class="list-unstyled single-post-cmt-div{{singlePost.id}} mb-0">
-                                        {% if allComments %}
-                                        {% for comment in allComments %}
-                                            <li class="media">
+                                <div class="allCommentDiv ">
+                                    <ul class="list-unstyled infinite-container single-post-cmt-div{{singlePost.id}} mb-0">
+                                        {% if paginated_comment %}
+                                        {% for comment in paginated_comment %}
+                                            <li class="media infinite-item" id="{{comment.id}}">
                                                 <a href="#"><img class="mr-3 profilePic" src="/media/default.jpeg" alt="img"></a>
                                                 <div class="media-body w-50">
                                                     <h6 class="mt-0 mb-1 profileName">
                                                         <a href="#">{{comment.author.first_name}} {{comment.author.last_name}}</a>
                                                         {% csrf_token %}
-                                                        <span class="ml-3 commentlikeBtn"><i class="fa fa-heart" data-catid="{{comment.id}}"></i></span>
+                                                        {% if user in comment|comment_liked_list %}
+                                                            <span class="ml-3 commentlikeBtn"><i class="fa fa-heart press" data-postid="{{singlePost.id}}" data-catid="{{comment.id}}" onclick="cmt_like(this)"></i></span>
+                                                        {% else %}
+                                                            <span class="ml-3 commentlikeBtn"><i class="fa fa-heart" data-postid="{{singlePost.id}}" data-catid="{{comment.id}}" onclick="cmt_like(this)"></i></span>
+                                                        {% endif %}
+                                                        {% if user == comment.author %}
+                                                            <span class="comment-editbtn d-block">
+                                                                <div class="dropleft">
+                                                                    <p class="dropdown-toggle cursor-pointer" data-toggle="dropdown"><i class="fa fa-ellipsis-v"></i></p>
+                                                                    <div class="dropdown-menu">
+                                                                        <a class="dropdown-item" data-catid="{{comment.id}}" onclick="editComment(event);">Edit</a>
+                                                                        <a class="dropdown-item deleteCommentbtn" data-catid="{{comment.id}}" onclick="deleteCommentbtn(this)" data-toggle="modal" data-target="#deleteCommentModal">delete</a>
+                                                                    </div>
+                                                                </div>
+                                                            </span>
+                                                        {% endif %}
                                                     </h6>
-                                                    <p class="commentText">{{comment.commented_text}}</p>
-                                                    <div class="commentTextBottomBtn mb-1" id="commentTextBottomBtn{{comment.id}}">
-                                                        <span class="textBtn">{{comment.comment_date|timesince}}</span>
-                                                        <span class="textBtn"><span class="likes_count{{comment.id}}" >{{comment.cmt_likes_count}}</span> likes</span>
-                                                        <span id="repltBtn{{comment.id}}" class="textBtn replyBtn" data-catid="{{comment.id}}" data-root="{{comment.id}}" onclick="reply(this);">reply</span>
-
+                                                    <div class="comment-main-content{{comment.id}} mb-2">
+                                                        <p class="commentText">{{comment.commented_text}}</p>
+                                                        <div class="commentTextBottomBtn mb-1" id="commentTextBottomBtn{{comment.id}}">
+                                                            <span class="textBtn">{{comment.comment_date|timesince}}</span>
+                                                            <span class="textBtn"><span class="likes_count{{comment.id}}" >{{comment.cmt_likes_count}}</span> likes</span>
+                                                            <span id="repltBtn{{comment.id}}" class="textBtn replyBtn" data-catid="{{comment.id}}" data-root="{{comment.id}}" onclick="reply(this);">reply</span>
+                                                            {% if comment.flag %}
+                                                            <span class="textBtn float-right text-theme text-edited d-block">edited</span>
+                                                            {% endif %}
+                                                        </div>
                                                     </div>
+                                                    <div class="replace-maincontent{{comment.id}}"></div>
 
                                                     <div class="commentRplyDiv" id="commentRplyDiv{{comment.id}}">
                                                         <ul class="list-unstyled">
@@ -107,7 +135,7 @@
                                                     </div>
 
                                                     <div class="collapse-div" id="replyInput{{comment.id}}" style="display: none;">
-                                                       <form class="reply-comment-form d-flex">
+                                                       <form class="reply-comment-form d-flex" onsubmit="nestReplyComment(event)" method="post" id="{{comment.id}}">
                                                             {% csrf_token %}
                                                             {{comment_form.commented_text}}
                                                             <button id="commentBtn" type="submit" class="btn btn-outline-info commentBtn" data-catid="{{singlePost.id}}"><i class="fas fa-paper-plane"></i></button>
@@ -119,6 +147,15 @@
                                         {% endif %}
                                     </ul>
 
+                                </div>
+
+                                {% if paginated_comment.has_next %}
+                                    <a class="infinite-more-link" href="?page={{ paginated_comment.next_page_number }}">More</a>
+                                {% endif %}
+                                <div class="d-flex justify-content-center" style="display:none;">
+                                    <div class="spinner-border" role="status" style="display:none;">
+                                        <span class="sr-only">Loading...</span>
+                                    </div>
                                 </div>
 
 
@@ -226,10 +263,356 @@
     </section>
 <!-- </div> -->
 
+
+<div class="modal fade" id="deleteCommentModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Delete Post</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body followingsModalBody">
+                <!-- <form id="deleteComment" method="post"> -->
+                    {% csrf_token %}
+                    <h5>Are you sure, you want to delete the comment ?</h5>
+                    <p class="postIdd"></p>
+                    <div class="d-flex flex-row-reverse mt-3 w-100">
+                        <button type="submit" class="btn btn-outline-danger ml-1 modal-deleteCommentBtn" >Delete</button>
+                        <button type="button" class="btn btn-outline-success mr-1 modal-deleteCancelBtn" data-dismiss="modal" aria-label="Close">Cancel</button>
+                    </div>
+                <!-- </form> -->
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document" style="height: 100vh;width: 100%;max-width: 100%;margin: 0px;">
+        <div class="modal-content bg-transparent border-0" style="height: 96%;">
+            <div class="modal-header border-0">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body border-0 overflow-hidden">
+            <div class="" style="position: absolute;
+            width: 100%;
+            overflow: auto;
+            height: 100%;">
+                <div id="carouselExampleControls" class="carousel slide h-100" data-interval="false" data-ride="carousel">
+                                        
+                  <!-- Wrapper for slides -->
+                  
+                  <div class="carousel-inner h-100">
+                    {% if singlePost.images.all %}
+                    <!-- <img src="{{singlePost.images.all.0.image}}"/> -->
+                        {% for i in singlePost.images.all %}                        
+                            <div class="carousel-item modalImage{{forloop.counter}} h-100">
+                                <div class="carouselbgdiv"  style="background:url(/media/{{i.image}});"></div>
+                            </div>
+                        {% endfor %}                        
+                    {% endif %}
+                    
+              
+                    <!-- <div class="carousel-item h-100">
+                        <div class="carouselbgdiv" style="background:url(https://s.ftcdn.net/v2013/pics/all/curated/RKyaEDwp8J7JKeZWQPuOVWvkUjGQfpCx_cover_580.jpg?r=1a0fc22192d0c808b8bb2b9bcfbf4a45b1793687);"></div>
+                      
+                    </div>
+                  
+                    <div class="carousel-item h-100">
+                        <div class="carouselbgdiv" style="background:url(https://i.pinimg.com/originals/83/f9/37/83f937b69f30bb886ab8a03390da6771.jpg);"></div>
+                      
+                    </div> -->
+                  </div>
+              
+                  <!-- Left and right controls -->
+                  <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Previous</span>
+                  </a>
+                  <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="sr-only">Next</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% endblock section %}
+    
 
 
 
+{% block script %}
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        $(".openImageModal").click(function(){
+            let catid = $(this).attr("data-catid");
+            console.log(catid)
+            $(".modalImage"+catid).addClass("active");
+            $('#imageModal').modal('show');
+        });
+        $(".close").click(function(){
+            $(".carousel-item").removeClass("active");
+            $('#imageModal').modal('hide');
+        });
+    })
+</script>
+<script>
+    $(document).ready(function(){
+      $(".userSearchInput").focusout(()=>{
+          $(".search-box").slideUp('fast');
+      });    
+
+      $(".userSearchInput").focusin(()=>{
+          $(".search-box").slideDown('fast');
+      });       
+  });
+</script>
+
+<script type="text/javascript" src="{% static 'blog/javascript/delete_comment.js' %}"></script>
+<script type="text/javascript" src="{% static 'blog/javascript/update_comment.js' %}"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(".comment-form").submit(function (e) {
+            console.log(" comment ")
+            e.preventDefault();
+            var thisLike = $(this);
+
+            var input = $('input.commentInpt', this).val();
+            console.log('input ' + input)
+
+            var postId = $(".commentBtn", this).attr("data-catid");
+            var commentText = $("input.commentInpt", this).val();
+
+            var hiddenVal = $("#hiddenInput").val();
+            console.log("hiddenVal " + hiddenVal);
+
+
+
+            $.ajax({
+                type: "POST",
+                url: "/comment/",
+                data: {
+                    commentText: commentText,
+                    postId: postId,
+                    commentId: hiddenVal,
+                    csrfmiddlewaretoken: $("input[type=hidden]").val()
+
+
+                },
+                success: function (data) {
+                    console.log(data)
+                    $("#allCommentDiv ul.single-post-cmt-div" + postId + " li:nth-child(1)").remove();
+
+                    $('.single-post-cmt-div' + postId).
+                        prepend('<li class="media" id="'+data.commentId+'">\
+                        <a href="#"><img class="mr-3 profilePic" src="/media/default.jpeg" alt="img"></a>\
+                        <div class="media-body">\
+                            <h6 class="mt-0 mb-1 profileName"><a href="#">'+ data.author_fname+' '+ data.author_lname + '</a>\
+                            <span class="ml-3 commentlikeBtn"><i class="fa fa-heart" data-postid="'+data.postId+'" data-catid="'+data.commentId+'" onclick="cmt_like(this)"></i></span>\
+                            <span class="comment-editbtn d-block" >\
+                                <div class="dropleft">\
+                                    <p class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-ellipsis-v"></i></p>\
+                                    <div class="dropdown-menu">\
+                                        <a class="dropdown-item" data-catid="'+data.commentId+'" onclick="editComment(event);">Edit</a>\
+                                        <a class="dropdown-item deleteCommentbtn" data-catid="'+data.commentId+'" onclick="deleteCommentbtn(this)" data-toggle="modal" data-target="#deleteCommentModal">delete</a>\
+                                    </div>\
+                                </div>\
+                            </span>\
+                            </h6>\
+                            <div class="comment-main-content'+data.commentId+' mb-2">\
+                                <p class="commentText">'+ data.commented_text + '</p>\
+                                <div class="commentTextBottomBtn">\
+                                    <span class="textBtn">0 minutes</span>\
+                                    <span class="textBtn"><span>0</span> likes</span>\
+                                    <span id="repltBtn'+ data.commentId + '" class="textBtn replyBtn" onclick="reply(this);" data-catid="' + data.commentId + '" >reply</span>\
+                                    <span class="textBtn float-right text-edited text-theme">edited</span>\
+                                </div>\
+                            </div>\
+                            <div class="replace-maincontent'+data.commentId+'"></div>\
+                            <div class="commentRplyDiv" id="commentRplyDiv'+data.commentId+'">\
+                                <ul class="list-unstyled">\
+                                </ul>\
+                            </div>\
+                            <div class="collapse-div" id="replyInput'+ data.commentId + '" style="display: none;">\
+                                <form class="reply-comment-form d-flex" onsubmit="nestReplyComment(event)" method="post">\
+                                    {% csrf_token %}\
+                                    {{comment_form.commented_text}}\
+                                    <button id="commentBtn" type="submit" class="btn btn-outline-info commentBtn" data-catid="'+postId+'"><i class="fas fa-paper-plane"></i></button>\
+                                </form>\
+                            </div>\
+                        </div>\
+                    </li>\
+                    ');
+                },
+                error: function (xhr, status, error) {
+                    console.log(error);
+                }
+            })
+            $("input.commentInpt", this).val('');
+
+        })
+
+    })
+
+    function reply(elm){
+        console.log("clicked")
+        console.log(elm)
+
+            var commentId = $(elm).attr("data-catid");
+            console.log(commentId)
+            $('.reply-comment-form input.commentInpt').val("");
+
+            $(".collapse-div").slideUp().removeClass("d-block");
+            $("#replyInput" + commentId).slideDown().addClass("d-block");
+
+            $("#hiddenInput").val(commentId);
+
+            $('#replyInput' + commentId + ' form input.commentInpt').attr('data-root', commentId);
+
+            $('form.comment-form input.commentInpt').click(function () {
+                $('#hiddenInput').val(0);
+            });
+
+
+
+    }
+
+    $('.comment-form input.commentInpt').click(function () {
+        $(".collapse-div").slideUp().removeClass("d-block");
+    });
+
+
+    function nestedReply(elm){
+
+            console.log('nested clicked')
+
+            var rootId = $(elm).attr("data-root");
+            console.log(rootId)
+
+            $(".collapse-div").slideUp().removeClass("d-block");
+            $("#replyInput" + rootId).slideDown().addClass("d-block");
+
+            var uname = $(elm).attr("data-uname");
+            console.log(uname)
+            var commentId = $(elm).attr("data-catid");
+            console.log(commentId)
+
+            $('#replyInput' + rootId + ' form input').attr('data-catid', commentId);
+            $('#replyInput' + rootId + ' form input').attr('data-root', rootId);
+            $('#replyInput' + rootId + ' .reply-comment-form input.commentInpt').val(uname+' ');
+
+
+
+            $("#hiddenInput").val(commentId);
+
+            $('form.comment-form input.commentInpt').click(function () {
+                $('#hiddenInput').val(0);
+            });
+
+
+            $('replyInput' + rootId + ' .reply-comment-form input.commentInpt').click(function () {
+                $("#hiddenInput").val($('#replyInput' + rootId + ' form input').attr('data-catid'));
+                console.log('hidden value '+ commentId)
+            });
+    }
+
+    function nestReplyComment(event) {
+            console.log(event)
+            event.preventDefault();
+            console.log(" nest-comment ")
+
+            var postId = $(".commentBtn", event.target).attr("data-catid");
+            console.log('postId ', postId)
+            var commentText = $("input.commentInpt", event.target).val();
+
+            var hiddenVal = $("#hiddenInput").val();
+            console.log("hiddenVal " + hiddenVal)
+            var rootId = $("input.commentInpt", event.target).attr("data-root");
+            console.log('form id', rootId)
+
+            $.ajax({
+                type: "POST",
+                url: "/comment/",
+                data: {
+                    commentText: commentText,
+                    postId: postId,
+                    commentId: hiddenVal,
+                    csrfmiddlewaretoken: $("input[type=hidden]").val()
+
+                },
+                success: function (data) {
+                    console.log(data)
+                    $('#commentRplyDiv' + rootId + ' ul').append(
+                        '<li class="media" id="'+data.commentId+'">\
+                            <a href="#"><img class="mr-3 profilePic" src="/media/default.jpeg" alt="img"></a>\
+                            <div class="media-body">\
+                                <h6 class="mt-0 mb-1 profileName"><a href="#">'+ data.author_fname+' '+ data.author_lname + '</a><span class="ml-3 commentlikeBtn"><i class="fa fa-heart" data-postid="'+data.postId+'" data-catid="'+data.commentId+'" onclick="cmt_like(this)"></i></span>\
+                                    <span class="comment-editbtn d-block">\
+                                        <div class="dropleft">\
+                                            <p class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-ellipsis-v"></i></p>\
+                                            <div class="dropdown-menu">\
+                                                <a class="dropdown-item" data-catid="'+data.commentId+'" onclick="editComment(event);">Edit</a>\
+                                                <a class="dropdown-item deleteCommentbtn" data-catid="'+data.commentId+'" onclick="deleteCommentbtn(this)" data-toggle="modal" data-target="#deleteCommentModal">delete</a>\
+                                            </div>\
+                                        </div>\
+                                    </span>\
+                                </h6>\
+                                <div class="comment-main-content'+data.commentId+' mb-2">\
+                                    <p class="commentText">'+ data.commented_text + '</p>\
+                                    <div class="commentTextBottomBtn">\
+                                        <span class="textBtn">0 minutes</span>\
+                                        <span class="textBtn"><span>0</span> likes</span>\
+                                        <span id="repltBtn'+ data.commentId + '" class="textBtn replyBtn" data-catid="' + data.commentId + '" data-parent_id="' + data.parent_comment_id + '" data-root="' + rootId + '" data-uname="' + data.author_fname+' '+ data.author_lname + '"  onclick="nestedReply(this);"  >reply</span>\
+                                        <span class="textBtn float-right text-edited text-theme">edited</span>\
+                                    </div>\
+                                </div>\
+                                <div class="replace-maincontent'+data.commentId+'"></div>\
+                            </div>\
+                        </li>');
+                },
+                error: function (xhr, status, error) {
+                    console.log(error);
+                    console.log(xhr);
+                }
+            })
+            $("input.commentInpt", event.target).val('');
+            $("input.commentInpt", event.target).attr('data-catid', rootId);
+
+
+
+    }
+
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].trim();
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+
+</script>
+{% endblock script %}
+
+
+
+
+ 
 
 
 

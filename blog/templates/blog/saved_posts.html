@@ -2,12 +2,12 @@
 {% load custom_tag %}
 
 {% block section %}
-
-
         <section>
             <div class="container-fluid">
                 <div class="row">
-
+                    <div id="replaceable-content" class="search-box col-6">
+                        {% include 'blog/user-search-results.html' %}
+                    </div> 
                     <div class="col-lg-8 col-md-8 mt-2">
                         <div class="filterDiv">
                             <h2><span>Filter by: <i class="fa fa-filter" aria-hidden="true" data-toggle="modal" data-target="#filterModal"></i></span></h2>
@@ -46,8 +46,6 @@
                                         <!-- <img class="card-img-bottom" data-src="holder.js/100px180/" alt="100%x180" src="https://unknown-ag.github.io/sheetal_academy/ProjectImages/abhishek.jpeg" data-holder-rendered="true">-->
                                         </div>
 
-
-
                                         <div class="card-footer">
                                             <div class="footerBtn">
                                                 {% csrf_token %}
@@ -65,36 +63,7 @@
                                                 {% endif %}
                                             </div>
                                         </div>
-                                        <div class="card-footer">
-                                            <div class="footerCommentDiv">
-                                                <div class="commentBox">
-                                                    <form class="comment-form">
-                                                        {% csrf_token %}
-                                                        {{comment_form.commented_text}}
-                                                        <button type="submit" class="btn btn-outline-info commentBtn" data-catid="{{post.id}}"><i class="fas fa-paper-plane"></i></button>
-                                                    </form>
-                                                </div>
-                                            </div>
-                                            <div class="allCommentDiv" id="allCommentDiv">
-                                                <ul class="list-unstyled single-post-cmt-div{{post.id}} mb-0">
-                                                    {% if post.comments.all %}
-                                                        <li class="media">
-                                                        <a href="#"><img class="mr-3 profilePic" src="/media/default.jpeg" alt="img"></a>
-                                                        <div class="media-body w-50">
-                                                            <h6 class="mt-0 mb-1 profileName"><a href="#">{{post|latest_author_fname}} {{post|latest_author_lname}}</a><span class="ml-3 commentlikeBtn"><i class="far fa-heart"></i></span></h6>
-                                                            <p class="commentText">{{post|latest_comment}}</p>
-                                                            <div class="commentTextBottomBtn">
-                                                                <span class="textBtn">9h</span>
-                                                                <span class="textBtn"><span>5</span> likes</span>
-                                                                <span class="textBtn">reply</span>
-                                                            </div>
-                                                        </div>
-                                                    </li>
-                                                    {% endif %}
-                                                </ul>
 
-                                            </div>
-                                        </div>
 
 
                                     </div>
@@ -200,9 +169,34 @@
                 </div>
             </div>
         </section>
-      <!-- </div> -->
+      </div>
 
       <!-- Modal -->
+    <div class="modal fade" id="postModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">New Post</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        {{new_post_form.title}}
+                        {{new_post_form.content}}
+                        {{new_post_form.category}}
+                        <button type="submit" class="btn btn-block mt-2" style="background-color:#4b204f;color:white;">Post</button>
+                    </form>
+                </div>
+                <!-- <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div> -->
+            </div>
+        </div>
+    </div>
 
     <div class="modal fade" id="filterModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
@@ -253,7 +247,7 @@
 {% endblock section %}
 
     {% block scripts %}
-    
+
     <script>
         var infinite = new Waypoint.Infinite({
             element: $('.infinite-container'),
@@ -264,17 +258,19 @@
                 $('.spinner-border').hide();
             }
         });
-       
-        
-        function openNav() {
-          document.getElementById("mySidenav").style.width = "250px";
-        }
-        
-        function closeNav() {
-          document.getElementById("mySidenav").style.width = "0";
-        }
+
+        $(document).ready(function(){
+            $(".userSearchInput").focusout(()=>{
+                $(".search-box").slideUp('fast');
+            });    
+    
+            $(".userSearchInput").focusin(()=>{
+                $(".search-box").slideDown('fast');
+            });       
+        });
+
+
     </script>
     {% endblock %}
 
-{% endblock content %}
 
