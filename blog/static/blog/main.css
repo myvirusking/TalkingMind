@@ -1236,9 +1236,9 @@ button:focus {
      display: flex;
      padding: 10px 15px 0px 15px;
  }
- .profileHeaderDiv div{
-     width: 50%;
- }
+ /*.profileHeaderDiv div{*/
+ /*    width: 50%;*/
+ /*}*/
  .profileHeaderDiv .profileEditBtn{
      text-align: end;
      cursor: pointer;

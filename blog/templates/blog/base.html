@@ -15,7 +15,7 @@
     <script src="{% static 'blog/javascript/infinite.min.js' %}"></script>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossorigin="anonymous">
 
-    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script> -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
     {% block css %}
@@ -148,8 +148,8 @@
         {% endblock pagescript %}
 
         {% block footer %}
-        
             <script type="text/javascript" src="{% static 'blog/javascript/main.js' %}"></script>
+
             <script type="text/javascript" src="{% static 'blog/javascript/post_like.js' %}"></script>
 
             <script type="text/javascript" src="{% static 'blog/javascript/post_save.js' %}"></script>
@@ -160,7 +160,10 @@
             <script type="text/javascript" src="{% static 'blog/javascript/send_follow_request.js' %}"></script>
 
             <script type="text/javascript" src="{% static 'blog/javascript/update_notification.js' %}"></script>
-            
+
+            <script type="text/javascript" src="{% static 'blog/javascript/block_user.js' %}"></script>
+
+
 
             <!-- <script>
 
@@ -177,17 +180,18 @@
             </script> -->
 
 
-    
+
     <script>
         $(".bg-shadow").click(function(){
             console.log("bg");
             closeNav();
         });
+
         function openNav() {
           document.getElementById("mySidenav").style.left = "0px";
           $(".wrapper").addClass("active");
         }
-        
+
         function closeNav() {
           document.getElementById("mySidenav").style.left = "-250px";
           $(".wrapper").removeClass("active");

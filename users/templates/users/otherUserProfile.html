@@ -11,14 +11,22 @@
                 <div class="col-md-8">
                     <div class="row">
                         <div class="col-md-12">
-                            <div class="card profileCard">
+                            <div class="card profileCard" id="other-profile-action">
                                 <div class="profileHeaderDiv">
-                                    <div class="profileHeader">
+                                    <div class="profileHeader w-100">
                                         <h5>Profile</h5>
                                     </div>
                                     <div class="profileEditBtn">
                                         <p><a class='btn btn-primary {{button_class}}' id="follow-user" data-id="{{user_id.id}}" >{{button_text}}</a></p>
                                         <!-- <p><a ><i class="fas fa-cog" data-toggle="modal" data-target="#settingModal"></i></a></p> -->
+                                    </div>
+                                    <div class="threeDot ml-3 mt-1">
+                                        <div class="dropleft">
+                                            <p class="dropdown-toggle cursor-pointer" data-toggle="dropdown"><i class="fa fa-ellipsis-v"></i></p>
+                                            <div class="dropdown-menu">
+                                                <a class="dropdown-item blocking {{ block_user_class }}" data-id="{{ user_id.id }}">{{ block_user_text }}</a>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="row">

@@ -8,7 +8,6 @@
 
 
 $(document).ready(function(){
-    console.log("reached");
     $("#follow-user").click(function(e){
         if ($(".profileEditBtn p a").hasClass("followBtn"))
         {
@@ -97,6 +96,32 @@ $(document).ready(function(){
                     $(".profileEditBtn p a").removeClass("unfollowBtn").
                     addClass("followBtn").
                     text("Follow");
+
+                },
+                error:function (xhr,status, error) {
+                    console.log(error);
+                    console.log(xhr);
+                }
+            });
+
+        }
+
+        else if($(".profileEditBtn p a").hasClass("unblock"))
+        {
+            e.preventDefault();
+
+            var user_id = $(this).attr("data-id");
+            console.log(user_id);
+            $.ajax({
+
+                type: "GET",
+                url: "/user/unblock/",
+                data: {
+                    userid:user_id
+                },
+                success:function(data)
+                {
+                    location.reload()
 
                 },
                 error:function (xhr,status, error) {

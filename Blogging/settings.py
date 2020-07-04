@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
-    'django.contrib.sessions',
+    'user_sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'blog.templatetags.custom_tag',
@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     #Third party apps
     'phonenumber_field',
     'crispy_forms',
+    # 'django_extensions',
     'django_otp',
     'django_otp.plugins.otp_totp',
     'django_otp.plugins.otp_hotp',
@@ -55,14 +56,22 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.facebook',
-
+    'django_user_agents',
 
 ]
+
+
+SESSION_ENGINE = 'user_sessions.backends.db'
+
+SILENCED_SYSTEM_CHECKS = ['admin.E410']
+
+GEOIP_PATH = 'D:/WebDevelopment/git/TalkingMind/geoip_database'
 
 # CELERY_BROKER_URL = 'amqp://localhost'
 
 SHELL_PLUS = "plain"
 SHELL_PLUS_PRINT_SQL = True
+
 
 AUTHENTICATION_BACKENDS = [
     # AxesBackend should be the first backend in the AUTHENTICATION_BACKENDS list.
@@ -73,11 +82,9 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 
-
-
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
+    'user_sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -86,6 +93,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django_currentuser.middleware.ThreadLocalUserMiddleware',
     'axes.middleware.AxesMiddleware',
+    'django_user_agents.middleware.UserAgentMiddleware',
 ]
 
 ROOT_URLCONF = 'Blogging.urls'
@@ -150,6 +158,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+
 AXES_FAILURE_LIMIT = 4
 AXES_LOCKOUT_URL = 'otp-screen'
 CURRENT_USER = ""
@@ -185,6 +194,8 @@ LOGIN_URL = 'login'
 
 LOGOUT_URL = 'login-home'
 
+LOGOUT_REDIRECT_URL = 'login-home'
+
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
@@ -197,7 +208,7 @@ FOLLOW_PAGINATION_PER_PAGE = 5
 
 
 
-SITE_ID = 3
+SITE_ID = 4
 
 # Will change to https in production, but also note that to change to https in google developers API console
 ACCOUNT_DEFAULT_HTTP_PROTOCOL='http'
@@ -215,3 +226,9 @@ SOCIALACCOUNT_PROVIDERS = {
 }
 
 SOCIALACCOUNT_QUERY_EMAIL = True
+
+
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'static'),
+)
+
