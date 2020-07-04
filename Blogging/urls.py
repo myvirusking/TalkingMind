@@ -34,9 +34,9 @@ from django.contrib import messages
 urlpatterns = [
     path('admin/', admin.site.urls),
 
-    url(r'', include('settings.user_sessions_url')),
     path('blog/', include('blog.urls')),
     path('user/', include('users.urls')),
+    path('setting/',include('settings.urls')),
     path('profile/',user_views.profile, name='profile'),
     path('login/', user_views.CustomLoginView.as_view(),name='login'),
     path('logout/', auth_views.LogoutView.as_view(template_name='users/login.html', next_page='/login/'), name='logout'),
@@ -115,10 +115,6 @@ urlpatterns = [
     path('notification/', user_views.notification_view, name='notification'),
 
     path('new-notification/', blog_views.check_for_new_notification, name='new-notification'),
-
-    path('login/otp-screen/', setting_views.send_otp_for_email_verification, name='otp-screen'),
-
-    path('admin/login/otp-screen/', setting_views.send_otp_for_email_verification, name='otp-screen'),
 
     path('user/block/', user_views.block_user, name='block-user'),
 

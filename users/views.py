@@ -13,7 +13,7 @@ from blog.forms import NewPostForm, CommentForm
 from django.contrib.auth import views as auth_views
 from django.conf import settings
 from django.contrib.auth.decorators import user_passes_test
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, signals
 from blog.models import Post
 from django.template.loader import render_to_string
 from django.http import JsonResponse
@@ -22,9 +22,12 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from two_factor.views import LoginView
 from django.db.models import Q
 import Blogging.settings
-from django.contrib.auth import signals
 from django.http import HttpResponseRedirect
-
+from settings.models import AuthorizedLogin
+from two_factor import signals
+from django.contrib.auth import login
+from django.shortcuts import resolve_url
+from django.utils.http import is_safe_url
 
 #global variable for making efficient infinite scrolling
 global_posts = None
@@ -94,17 +97,58 @@ class CustomLoginView(LoginView):
         ('backup', CustomBackupTokenForm),
     )
     
-    def get(self, request, *args, **kwargs):
+    def get(self, request, *args, **kwargs):    
         if request.user.is_authenticated:
             return redirect("login-home")
         return super().get(request,*args, **kwargs)
 
-    def post(self, request, *args, **kwargs):
-        form = self.get_form()
-        if form.is_valid():
-            return self.form_valid(form)
-        else:
-            return self.form_invalid(form)
+    
+    def done(self, form_list, **kwargs):
+        login(self.request, self.get_user())
+        redirect_to = self.request.POST.get(
+            self.redirect_field_name,
+            self.request.GET.get(self.redirect_field_name, '')
+        )
+        if not is_safe_url(url=redirect_to, allowed_hosts=[self.request.get_host()]):
+            redirect_to = resolve_url(settings.LOGIN_REDIRECT_URL)
+        device = getattr(self.get_user(), 'otp_device', None)
+        if device:
+            signals.user_verified.send(sender=__name__, request=self.request,
+                                       user=self.get_user(), device=device)
+
+        #storing authorized device information
+        if 'authorized_device' in self.request.POST and self.request.POST["authorized_device"]=="on":
+            browser_family = self.request.user_agent.browser.family
+            os_family = self.request.user_agent.os.family
+            x_forwarded_for = self.request.META.get('HTTP_X_FORWARDED_FOR')
+            if x_forwarded_for:
+                ip = x_forwarded_for.split(',')[0]
+            else:
+                ip = self.request.META.get('REMOTE_ADDR')
+            AuthorizedLogin.objects.create(
+                    user=self.request.user,
+                    ip_address=ip,
+                    browser_family=browser_family,
+                    os_family=os_family
+                )
+
+        return redirect(redirect_to)
+
+    def render(self, form=None, **kwargs):
+        if self.steps.current == 'token':
+            #matching current browser info with aurhorized_login model
+            browser_family = self.request.user_agent.browser.family
+            os_family = self.request.user_agent.os.family
+            x_forwarded_for = self.request.META.get('HTTP_X_FORWARDED_FOR')
+            if x_forwarded_for:
+                ip = x_forwarded_for.split(',')[0]
+            else:
+                ip = self.request.META.get('REMOTE_ADDR')
+            authorized_device_obj = AuthorizedLogin.objects.filter(user=self.get_user(),browser_family=browser_family,os_family=os_family,ip_address=ip)
+            if authorized_device_obj:
+                login(self.request, self.get_user())
+                return redirect("login-home")
+        return super().render(form, **kwargs)
 
 
 @login_required

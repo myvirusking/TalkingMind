@@ -3,9 +3,14 @@ django-crispy-forms==1.9.0
 Pillow==7.1.1
 phonenumbers==8.12.5
 django-two-factor-auth==1.11.0
+django-user-agents==0.4.0
+
+django-otp
+django-axes
+django-user-sessions
+django-allauth
 
  # Use this for Social Authentication settings
- pip install django-allauth
 --> python manage.py migrate
 --> 127.0.0.1:8000/admin --> Go back to django admin --> Select Sites --> Add Sites --> Give domain name i.e (127.0.0.1:8000)--> And give a display name whatever you want)--> save
 --> 127.0.0.1/admin --> Select Social Applications --> Add Social Application --> Select provider from drop down(Google)
@@ -13,8 +18,5 @@ django-two-factor-auth==1.11.0
 in the respective fields --> Select Sites 127.0.0.1:8000 --> Add it --> save
 --> Go to login and click on login with google
  --> Same for Facebook(Not implemented due to Facebook API issue, will implement it later)
-
-django-otp
-django-axes
 
 

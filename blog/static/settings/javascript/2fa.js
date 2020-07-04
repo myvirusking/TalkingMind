@@ -1,20 +1,13 @@
 $(document).ready(function () {
 
-  $("form input[type=checkbox]").click(function(){
+  $("#2FAForm input[type=checkbox]").click(function(){
+      $("input[name=method]").val(this.value);
       if(this.checked){
-        $("input[name=method]").val(this.value);
-        $("form").submit();
+        $("#2FAForm").submit();
       }
       else{
-          var input = confirm("You are about to disable two-factor authentication. This weakens your account security, are you sure?");     
-          if(input){
-            $("input[name=method]").val(this.value);
-            $("form").submit();
-          }
-          else{
-            this.checked = true;
-          }
-
+          this.checked = true;
+          $("#verifyPasswordModal").modal("show");
       }
   });
 
@@ -28,9 +21,29 @@ $(document).ready(function () {
   });
 
   $("#btnNextToken").click(function(){
-      $(".font-weight-bold.pl-5").html("Verification Process");
+      $("#p_token_verification").html("Token Verification");
       $("#set_up_authentication").hide();
       $("#verify_token").show();
+  });
+
+  $("#verifyPasswordForm").submit(function(e){
+    e.preventDefault();
+      $.ajax({
+          type : "POST",
+          url : window.location,
+          data : {
+            "csrfmiddlewaretoken" : $("input[name=csrfmiddlewaretoken]").val(),
+            "password" : $("input[name=password]").val(),
+            "method" : $("input[name=method]").val()
+          },
+          success : function(data){
+            if(data.is_verify){
+              window.location = window.location.href;
+            }else{
+              $("#invalid_password_error").show();
+            }
+          }
+      });
   });
 
 });

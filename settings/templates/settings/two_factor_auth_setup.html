@@ -40,53 +40,127 @@
        <form method="post">
         {{ wizard.management_form }}
 		{% csrf_token %}
-		
-		{% if wizard.steps.current == 'sms' %}
-			<br><br>
-		    <div class="d-flex justify-content-center">
-                <div class="spinner-border" role="status">
-                    <span class="sr-only">Loading...</span>
-                </div>
-        	</div>
-			{% if skippedSMS %}
-				<script>$("form").submit();</script>
-			{% endif %}
-		
-		{% elif wizard.steps.current == 'validation' %}
-			<p class="font-weight-bold pl-5" style="margin-bottom:20px; padding-bottom: 20px;width: 100%;color: #585858; font-size: larger; border-bottom: 1px solid darkgray;">Text Message</p>
-			<div class="pl-5" style="margin-bottom:20px; padding-bottom: 17px; width: 100%; border-bottom: 1px solid darkgray;">
-			<div class="col-md-6 offset-md-3">
-				{% if wizard.form.errors %}
-					{% for field in wizard.form %}
-						{% for error in field.errors %}
+
+		{% if wizard.steps.current == 'welcome' %}
+		<div class="pl-5" style="margin-bottom:20px; padding-bottom: 17px; width: 100%; border-bottom: 1px solid darkgray;">
+			<div class="container-fluid">
+				<div class="col-md-8 offset-md-2 text-center border" style="padding: 40px;">
+					<img src="{% static 'settings/icons/shieldIcon.png' %}" alt='image not found'>
+					<h4 style="margin-bottom: 25px;margin-top: 10px;font-weight: bold;">Protect your account with two factor authentication in just two steps</h4>
+					<img src="{% static 'settings/icons/messageVectormessage.png' %}" style="width: 60px;height: auto;margin-left: 15px;" alt='image not found'>
+					<p style="font-size: smaller;margin-top: 10px;">Verify your mobile phone number and receive a text message with a confirmation code.</p>
+					<img src="{% static 'settings/icons/stars.png' %}" style="width: 110px;height: auto;" alt='image not found'>
+					<p style="font-size: smaller;margin-top: 20px;">Enter the confirmation code to turn on two-factor authentication.</p>
+					<button type="submit" class="btn loginBtn" style="margin-top: 20px;width: 150px;margin-left: auto;margin-right: auto;display: block;height: 40px;">Get Started</button>
+				</div>
+			</div>
+			<br>
+		</div>
+
+		{% elif wizard.steps.current == 'verify_password' %}
+		<p class="font-weight-bold pl-5" style="margin-bottom:20px; padding-bottom: 20px;width: 100%;color: #585858; font-size: larger; border-bottom: 1px solid darkgray;">Password Verification</p>
+		<div class="pl-5" style="margin-bottom:20px; padding-bottom: 17px; width: 100%; border-bottom: 1px solid darkgray;">
+			<div class="container-fluid">
+				<div class="col-md-8 offset-md-2 border" style="padding: 30px;">
+					{% if wizard.form.errors %}
+						{% for field in wizard.form %}
+							{% for error in field.errors %}
+								<div class="alert alert-danger">
+									<strong>{{ error|escape }}</strong>
+								</div>
+							{% endfor %}
+						{% endfor %}
+						{% for error in wizard.form.non_field_errors %}
 							<div class="alert alert-danger">
 								<strong>{{ error|escape }}</strong>
 							</div>
 						{% endfor %}
-					{% endfor %}
-					{% for error in wizard.form.non_field_errors %}
-						<div class="alert alert-danger">
-							<strong>{{ error|escape }}</strong>
-						</div>
-					{% endfor %}
-				{% endif %}
+					{% endif %}
 
-				{% if device.method == 'sms' %}
-					<p>We sent you a text message to {{device.number|mask_phone_number}}, please enter the tokens we sent</p>
-				{% endif %}
-				<div class="form-group">
-					{{wizard.form.token}}
+					<h5 style="margin-bottom: 25px;margin-top: 10px;font-weight: bold;">Enter your password</h5>
+					<p>To get started, first enter your TalkingMind password to verify it's really you.</p>
+					<div class="form-group">
+						{{wizard.form.password}}
+					</div>
+					<button type="submit" class="btn loginBtn" style="width: 100px;">Verify</button>
 				</div>
-				<button id="btnNextToken" type="submit" class="btn loginBtn" style="width: 100px;margin-left: auto;margin-right: auto;display: block;">Verify</button>
 			</div>
+			<br>
+		</div>
+		
+		{% elif wizard.steps.current == 'sms' %}
+			{% if skipMobileForm %}
+				<br><br>
+				<div class="d-flex justify-content-center">
+					<div class="spinner-border" role="status">
+						<span class="sr-only">Loading...</span>
+					</div>
+				</div>
+				<script>$("form").submit();</script>
+			{% else %}
+			<p class="font-weight-bold pl-5" style="margin-bottom:20px; padding-bottom: 20px;width: 100%;color: #585858; font-size: larger; border-bottom: 1px solid darkgray;">Text Message</p>
+			<div class="pl-5" style="margin-bottom:20px; padding-bottom: 17px; width: 100%; border-bottom: 1px solid darkgray;">
+				<div class="col-md-8 offset-md-2 border" style="padding: 30px;">
+					{% if wizard.form.errors %}
+						{% for field in wizard.form %}
+							{% for error in field.errors %}
+								<div class="alert alert-danger">
+									<strong>{{ error|escape }}</strong>
+								</div>
+							{% endfor %}
+						{% endfor %}
+						{% for error in wizard.form.non_field_errors %}
+							<div class="alert alert-danger">
+								<strong>{{ error|escape }}</strong>
+							</div>
+						{% endfor %}
+					{% endif %}
+					<h5 style="margin-bottom: 25px;margin-top: 10px;font-weight: bold;">Enter your mobile number</h5>
+					<p>Verify your mobile phone number and receive a text message with a confirmation code.</p>
+					<div class="form-group">
+						{{wizard.form.number}}
+					</div>
+					<button type="submit" class="btn loginBtn" style="width: 100px;">Verify</button>
+				</div>
+				<br>
+			</div>
+			{% endif %}
+		
+		{% elif wizard.steps.current == 'validation' %}
+			<p class="font-weight-bold pl-5" style="margin-bottom:20px; padding-bottom: 20px;width: 100%;color: #585858; font-size: larger; border-bottom: 1px solid darkgray;">Mobile Verification</p>
+			<div class="pl-5" style="margin-bottom:20px; padding-bottom: 17px; width: 100%; border-bottom: 1px solid darkgray;">
+				<div class="col-md-8 offset-md-2 border" style="padding: 30px;">
+					{% if wizard.form.errors %}
+						{% for field in wizard.form %}
+							{% for error in field.errors %}
+								<div class="alert alert-danger">
+									<strong>{{ error|escape }}</strong>
+								</div>
+							{% endfor %}
+						{% endfor %}
+						{% for error in wizard.form.non_field_errors %}
+							<div class="alert alert-danger">
+								<strong>{{ error|escape }}</strong>
+							</div>
+						{% endfor %}
+					{% endif %}
 
+					<h5 style="margin-bottom: 25px;margin-top: 10px;font-weight: bold;">Enter confirmation code</h5>
+					<p>We sent you a text message on {{device.number|mask_phone_number}}, please enter the confirmation code we sent</p>
+					<div class="form-group">
+						{{wizard.form.token}}
+					</div>
+					<button type="submit" class="btn loginBtn" style="width: 100px;">Verify</button>
+				</div>
+				<br>
+			</div>
 		{% elif wizard.steps.current == 'generator' %}
 
 			{% if not wizard.form.errors %}
-			<p class="font-weight-bold pl-5" style="margin-bottom:20px; padding-bottom: 20px;width: 100%;color: #585858; font-size: larger; border-bottom: 1px solid darkgray;">Set Up Authenticator</p>
+			<p id="p_token_verification" class="font-weight-bold pl-5" style="margin-bottom:20px; padding-bottom: 20px;width: 100%;color: #585858; font-size: larger; border-bottom: 1px solid darkgray;">Set Up Authenticator</p>
 			<div id="set_up_authentication" class="pl-5" style="margin-bottom:20px; padding-bottom: 17px; width: 100%; border-bottom: 1px solid darkgray;">
 			{% else %}
-			<p class="font-weight-bold pl-5" style="margin-bottom:20px; padding-bottom: 20px;width: 100%;color: #585858; font-size: larger; border-bottom: 1px solid darkgray;">Verification Process</p>
+			<p id="p_token_verification" class="font-weight-bold pl-5" style="margin-bottom:20px; padding-bottom: 20px;width: 100%;color: #585858; font-size: larger; border-bottom: 1px solid darkgray;">Token Verification</p>
 			<div id="set_up_authentication" class="pl-5" style="display:none;margin-bottom:20px; padding-bottom: 17px; width: 100%; border-bottom: 1px solid darkgray;">
 			{% endif %}
 		
@@ -122,7 +196,7 @@
 			<div id="verify_token" class="pl-5" style="margin-bottom:20px; padding-bottom: 17px; width: 100%; border-bottom: 1px solid darkgray;">
 			{% endif %}
 
-			<div class="col-md-6 offset-md-3">
+			<div class="col-md-8 offset-md-2 border" style="padding: 30px;">
 				{% if wizard.form.errors %}
 					{% for field in wizard.form %}
 						{% for error in field.errors %}
@@ -137,13 +211,15 @@
 						</div>
 					{% endfor %}
 				{% endif %}
-
-				<p>Enter the 6-digit verification code generated by your authentication app.</p>
+				
+				<h5 style="margin-bottom: 25px;margin-top: 10px;font-weight: bold;">Enter confirmation code</h5>
+				<p>Enter the 6-digit confirmation code generated by your authentication app.</p>
 				<div class="form-group">
 					{{wizard.form.token}}
 				</div>
-				<button type="submit" class="btn loginBtn" style="width: 100px;margin-left: auto;margin-right: auto;display: block;">Verify</button>
+				<button type="submit" class="btn loginBtn" style="width: 100px;">Verify</button>
 			</div>
+			<br>
 		</div>
 		
 		{% endif %}
