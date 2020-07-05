@@ -7,12 +7,14 @@
     <link href="{% static 'blog/settings.css' %}" rel="stylesheet" type="text/css">
     <!-- <link href="{% static 'blog/main.css' %}" rel="stylesheet" type="text/css"> -->
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link href="{% static 'bootstrap/css/bootstrap.css' %}" rel="stylesheet" type="text/css">
 
     <script src="https://kit.fontawesome.com/b99e675b6e.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="{% static 'blog/javascript/jquery-3.4.1.min.js' %}"></script>
+    <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
 
+    {% block css %}
+    {% endblock css %}
 
 </head>
 
@@ -39,7 +41,7 @@
               <a href="{% url 'security-setting' %}" class="{{security_setting}}">Security</a>
               <a href="{% url 'change_password' %}"><div class="{% url 'change_password' %}">Change password</div></a>
               <a href="#">Privacy</a>
-              <a href="#">Login activity</a>
+              <a href="{% url 'user_sessions:session_list' %}">Login activity</a>
               <a href="#">Logout</a>
             </div>
         </div>
@@ -129,6 +131,11 @@
           $(".wrapper").removeClass("active");
         }
     </script>
+
+
+{% block scripts %}
+{% endblock scripts %}
+
 </body>
 
 </html>

@@ -13,9 +13,12 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.conf.urls import url
 from django.contrib import admin
 from django.urls import path, include
 from django.contrib.auth import views as auth_views
+from user_sessions.views import SessionListView, SessionDeleteOtherView
+
 from users.forms import (
     CustomAuthForm,
     CustomPasswordResetForm,
@@ -25,14 +28,15 @@ from django.conf.urls.static import static
 from users import views as user_views
 from blog import views as blog_views
 from settings.forms import CustomPasswordChangeForm
-from settings import views as setting_views
 from django.contrib import messages
-
+from settings import views as setting_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+
     path('blog/', include('blog.urls')),
     path('user/', include('users.urls')),
+    path('setting/',include('settings.urls')),
     path('profile/',user_views.profile, name='profile'),
     path('login/', user_views.CustomLoginView.as_view(),name='login'),
     path('logout/', auth_views.LogoutView.as_view(template_name='users/login.html', next_page='/login/'), name='logout'),
@@ -81,7 +85,7 @@ urlpatterns = [
     path('userSearch/',user_views.user_search_view,name="user_search"),
     #path('userSearchname/',user_views.user_search_name,name="user_search_name"),
     path('userList/',user_views.user_search_list,name="userList"),
-    
+
     path('like/', blog_views.post_like, name="like-post"),
 
     path('save/', blog_views.save_post, name="save-post"),
@@ -99,9 +103,9 @@ urlpatterns = [
     path('edit-comment/', blog_views.editcomment, name="edit-comment"),
 
     path('remove-from-followers/', user_views.remove_from_followers_list, name='remove-from-follower-list'),
-    
+
     path('post/<int:pid>/', blog_views.single_post, name="single-post"),
-    
+
     path('post/<int:pid>/comment_like/', blog_views.comment_like, name="like-comment"),
 
     path('post/<int:pid>/', blog_views.single_post, name="single-post"),
@@ -112,15 +116,17 @@ urlpatterns = [
 
     path('new-notification/', blog_views.check_for_new_notification, name='new-notification'),
 
-    path('profile-setting/', setting_views.change_profile_setting, name='profile-setting'),
+    path('user/block/', user_views.block_user, name='block-user'),
 
-    path('security-setting/', setting_views.security_setting, name='security-setting'),
+    path('user/unblock/', user_views.unblock_user, name='unblock-user'),
 
-    path('two-factor-auth-setting/', setting_views.two_factor_authentication, name='two-fact-auth-setting'),
+    path('accounts/', include('allauth.urls')),
 
     path('login/otp-screen/', setting_views.send_otp_for_email_verification, name='otp-screen'),
+
     path('admin/login/otp-screen/', setting_views.send_otp_for_email_verification, name='otp-screen'),
-    path('accounts/', include('allauth.urls')),
+
+    path('user/registration/otp-screen',setting_views.send_otp_for_email_verification, name='otp-screen')
 
 ]
 

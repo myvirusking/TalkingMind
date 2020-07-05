@@ -30,7 +30,6 @@ def get_nested_comment(parent_id, root, autoescape=True):
     from django_currentuser.middleware import (
         get_current_user, get_current_authenticated_user)
     from blog.models import Comment
-    from django.contrib.sessions.models import Session
     result_comment = ''
     rootId = root
 

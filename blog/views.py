@@ -81,7 +81,6 @@ def home(request):
     
     context['paginated_posts'] = paginated_posts
     context['posts_count'] = global_posts.count()
-
     context['comment_form'] = comment_form
     context['home_page'] = 'active'
     context["category_list"] = [(category.id, category.name) for category in ArticleCategory.objects.all()]

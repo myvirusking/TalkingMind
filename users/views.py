@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404, HttpResponseRedirect
 from django.contrib.auth.models import User
-from .forms import RegisterForm, UserUpdateForm, ProfileUpdateForm, AboutForm
+from .forms import RegisterForm, UserUpdateForm, ProfileUpdateForm, AboutForm,CustomAuthenticationTokenForm,CustomBackupTokenForm
+from django.http import Http404
 from django.views.generic.list import ListView
 from django.contrib.auth.decorators import login_required
 from django.views.generic import View
@@ -12,19 +13,21 @@ from blog.forms import NewPostForm, CommentForm
 from django.contrib.auth import views as auth_views
 from django.conf import settings
 from django.contrib.auth.decorators import user_passes_test
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, signals
 from blog.models import Post
 from django.template.loader import render_to_string
 from django.http import JsonResponse
 from settings.models import AccountPrivacySetting
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from two_factor.views import LoginView
 from django.db.models import Q
 import Blogging.settings
-from django.contrib.auth import signals
 from django.http import HttpResponseRedirect
-
-
-
+from settings.models import AuthorizedLogin
+from two_factor import signals
+from django.contrib.auth import login
+from django.shortcuts import resolve_url
+from django.utils.http import is_safe_url
 
 #global variable for making efficient infinite scrolling
 global_posts = None
@@ -86,23 +89,66 @@ def user_register(request):
 
     return render(request, template, {'form': form})
 
-
-
-class CustomLoginView(auth_views.LoginView):
+class CustomLoginView(LoginView):
     template_name = 'users/login.html'
-    authentication_form = CustomAuthForm
-
-    def get(self, request, *args, **kwargs):
+    form_list = (
+        ('auth', CustomAuthForm),
+        ('token', CustomAuthenticationTokenForm),
+        ('backup', CustomBackupTokenForm),
+    )
+    
+    def get(self, request, *args, **kwargs):    
         if request.user.is_authenticated:
             return redirect("login-home")
-        return self.render_to_response(self.get_context_data())
+        return super().get(request,*args, **kwargs)
 
-    def post(self, request, *args, **kwargs):
-        form = self.get_form()
-        if form.is_valid():
-            return self.form_valid(form)
-        else:
-            return self.form_invalid(form)
+    
+    def done(self, form_list, **kwargs):
+        login(self.request, self.get_user())
+        redirect_to = self.request.POST.get(
+            self.redirect_field_name,
+            self.request.GET.get(self.redirect_field_name, '')
+        )
+        if not is_safe_url(url=redirect_to, allowed_hosts=[self.request.get_host()]):
+            redirect_to = resolve_url(settings.LOGIN_REDIRECT_URL)
+        device = getattr(self.get_user(), 'otp_device', None)
+        if device:
+            signals.user_verified.send(sender=__name__, request=self.request,
+                                       user=self.get_user(), device=device)
+
+        #storing authorized device information
+        if 'authorized_device' in self.request.POST and self.request.POST["authorized_device"]=="on":
+            browser_family = self.request.user_agent.browser.family
+            os_family = self.request.user_agent.os.family
+            x_forwarded_for = self.request.META.get('HTTP_X_FORWARDED_FOR')
+            if x_forwarded_for:
+                ip = x_forwarded_for.split(',')[0]
+            else:
+                ip = self.request.META.get('REMOTE_ADDR')
+            AuthorizedLogin.objects.create(
+                    user=self.request.user,
+                    ip_address=ip,
+                    browser_family=browser_family,
+                    os_family=os_family
+                )
+
+        return redirect(redirect_to)
+
+    def render(self, form=None, **kwargs):
+        if self.steps.current == 'token':
+            #matching current browser info with aurhorized_login model
+            browser_family = self.request.user_agent.browser.family
+            os_family = self.request.user_agent.os.family
+            x_forwarded_for = self.request.META.get('HTTP_X_FORWARDED_FOR')
+            if x_forwarded_for:
+                ip = x_forwarded_for.split(',')[0]
+            else:
+                ip = self.request.META.get('REMOTE_ADDR')
+            authorized_device_obj = AuthorizedLogin.objects.filter(user=self.get_user(),browser_family=browser_family,os_family=os_family,ip_address=ip)
+            if authorized_device_obj:
+                login(self.request, self.get_user())
+                return redirect("login-home")
+        return super().render(form, **kwargs)
 
 
 @login_required
@@ -194,90 +240,123 @@ def other_user_profile(request, pk):
     if request.user.id == pk:
         return HttpResponseRedirect('/profile')
 
-    #infinite scrolling with the help of pagination
-    page = request.GET.get('page', 1)
-    if int(page) == 1:
-        global global_posts,global_otherprofile_post_paginator
-        global_posts = Post.objects.filter(author_id=pk).order_by('-date_posted')
-        global_otherprofile_post_paginator = Paginator(global_posts, settings.POST_PAGINATION_PER_PAGE)
-    try:
-        paginated_posts = global_otherprofile_post_paginator.page(page)
-    except PageNotAnInteger:
-        paginated_posts = global_otherprofile_post_paginator.page(1)
-    except EmptyPage:
-        paginated_posts = global_otherprofile_post_paginator.page(global_otherprofile_post_paginator.num_pages)
-
     user = User.objects.get(id=pk)
 
-    profile_other = Profile.objects.filter(id=pk).first()
-    profile_current = Profile.objects.filter(user=request.user).first()
+    if request.user in user.profile.blocked_users.all():
+        print("User not found   ")
+        raise Http404("User doesn't exist")
 
-    following_list = profile_current.following.all()
+    if user not in request.user.profile.blocked_users.all():
 
-    profile_privacy_setting = AccountPrivacySetting.objects.get(user=user)
-    profile_privacy = profile_privacy_setting.profile_privacy
 
-    following_list_of_other_user = profile_other.following.all()
-    follower_list_of_other_user = profile_other.followers.all()
+        #infinite scrolling with the help of pagination
+        page = request.GET.get('page', 1)
+        if int(page) == 1:
+            global global_posts,global_otherprofile_post_paginator
+            global_posts = Post.objects.filter(author_id=pk).order_by('-date_posted')
+            global_otherprofile_post_paginator = Paginator(global_posts, settings.POST_PAGINATION_PER_PAGE)
+        try:
+            paginated_posts = global_otherprofile_post_paginator.page(page)
+        except PageNotAnInteger:
+            paginated_posts = global_otherprofile_post_paginator.page(1)
+        except EmptyPage:
+            paginated_posts = global_otherprofile_post_paginator.page(global_otherprofile_post_paginator.num_pages)
 
-    button_status = 'none'
-    button_class = 'unfollowBtn'
-    button_id = 'unfollow-user'
-    button_text = 'Unfollow'
+        user = User.objects.get(id=pk)
 
-    if user.id not in [user for id, user in profile_current.following.values_list()]:
+        profile_other = Profile.objects.filter(id=pk).first()
+        profile_current = Profile.objects.filter(user=request.user).first()
 
-        button_status = 'not_following'
-        button_class = 'followBtn'
-        button_id = 'follow-user'
-        button_text = 'Follow'
-        user_follows_profile = False
+        following_list = profile_current.following.all()
 
-        if len(FollowRequest.objects.filter(from_user=request.user).filter(to_user=user)) == 1:
-            button_status = 'requested'
-            button_class = 'cancelRequestBtn'
-            button_id = 'cancel-request'
-            button_text = 'Cancel request'
+        profile_privacy_setting = AccountPrivacySetting.objects.get(user=user)
+        profile_privacy = profile_privacy_setting.profile_privacy
+
+        following_list_of_other_user = profile_other.following.all()
+        follower_list_of_other_user = profile_other.followers.all()
+
+        button_status = 'none'
+        button_class = 'unfollowBtn'
+        button_id = 'unfollow-user'
+        button_text = 'Unfollow'
+
+        if user.id not in [user for id, user in profile_current.following.values_list()]:
+
+            button_status = 'not_following'
+            button_class = 'followBtn'
+            button_id = 'follow-user'
+            button_text = 'Follow'
+            user_follows_profile = False
+
+            if len(FollowRequest.objects.filter(from_user=request.user).filter(to_user=user)) == 1:
+                button_status = 'requested'
+                button_class = 'cancelRequestBtn'
+                button_id = 'cancel-request'
+                button_text = 'Cancel request'
+        else:
+            user_follows_profile = True
+        other_user_article_category = [name for id, name in Profile.objects.get(user=user).article_category.values_list()]
+        current_user_article_category = [name for id, name in Profile.objects.get(user=request.user).article_category.values_list()]
+        common_topics = [name for name in current_user_article_category if name in other_user_article_category]
+        current_user_following_list = [user for id, user in request.user.profile.following.values_list()]
+
+        following_count = profile_other.following_count
+        follower_count = profile_other.followers_count
+
+        comment_form = CommentForm(auto_id=False)
+
+        context = {
+            'paginated_posts': paginated_posts,
+            'posts_count' : global_posts.count(),
+            'user_id': user,
+            'article_category': other_user_article_category,
+            'button_status': button_status,
+            'button_class':button_class,
+            'button_id' : button_id,
+            'button_text':button_text,
+            'following_count': following_count,
+            'follower_count': follower_count,
+            'common_topics':common_topics,
+            'following_list': following_list_of_other_user,
+            'follower_list': follower_list_of_other_user,
+            'following_list_of_current_user': current_user_following_list,
+            'comment_form': comment_form,
+            'profile_privacy':profile_privacy,
+            'user_follows_profile':user_follows_profile,
+            'block_user_class':'block',
+            'block_user_text': 'Block user'
+        }
+
     else:
-        user_follows_profile = True
-    other_user_article_category = [name for id, name in Profile.objects.get(user=user).article_category.values_list()]
-    current_user_article_category = [name for id, name in Profile.objects.get(user=request.user).article_category.values_list()]
-    common_topics = [name for name in current_user_article_category if name in other_user_article_category]
-    current_user_following_list = [user for id, user in request.user.profile.following.values_list()]
-
-    following_count = profile_other.following_count
-    follower_count = profile_other.followers_count
-
-    comment_form = CommentForm(auto_id=False)
-
-    context = {
-        'paginated_posts': paginated_posts,
-        'posts_count' : global_posts.count(),
-        'user_id': user,
-        'article_category': other_user_article_category,
-        'button_status': button_status,
-        'button_class':button_class,
-        'button_id' : button_id,
-        'button_text':button_text,
-        'following_count': following_count,
-        'follower_count': follower_count,
-        'common_topics':common_topics,
-        'following_list': following_list_of_other_user,
-        'follower_list': follower_list_of_other_user,
-        'following_list_of_current_user': current_user_following_list,
-        'comment_form': comment_form,
-        'profile_privacy':profile_privacy,
-        'user_follows_profile':user_follows_profile,
-        'profile_other':profile_other
+        profile_privacy_setting = AccountPrivacySetting.objects.get(user=user)
+        profile_privacy = profile_privacy_setting.profile_privacy
+        context = {
+            'paginated_posts': [],
+            'posts_count': 0,
+            'user_id': user,
+            'article_category': [],
+            'button_status': "blocked",
+            'button_class': "unblock",
+            'button_id': "unblock-user",
+            'button_text': "Unblock",
+            'following_count': 0,
+            'follower_count': 0,
+            'common_topics': [],
+            'following_list': [],
+            'follower_list': [],
+            'following_list_of_current_user': [],
+            'profile_privacy': profile_privacy,
+            'user_follows_profile': False,
+            'block_user_class': 'unblock',
+            'block_user_text': 'Unblock user'
 
 
-    }
-
+        }
     return render(request, 'users/otherUserProfile.html', context)
 
 
 """  This function gets called when the user follows some other user. Url path in Blogging/urls and the
- name of the url is "send_follow_request.js"   """
+     name of the url is "send_follow_request.js"   """
 
 
 @login_required
@@ -352,7 +431,7 @@ def cancel_follow_request(request):
         except:
             pass
 
-        return render(request, 'users/userprofile.html')
+    return render(request, 'users/userprofile.html')
 
 
 """This view is called when the user who received the follow request deletes the request and this view 
@@ -414,6 +493,7 @@ def unfollow_user(request):
         return JsonResponse(data=data_dict, safe=False)
 
     return render(request, 'users/userprofile.html')
+
 
 
 """This view gets called if the user who received the follow request accepts it. This is accessible 
@@ -522,27 +602,30 @@ class SelectFavouriteArticleCategoryView(LoginRequiredMixin, View):
         return redirect("login-home")
 
 # user search view
-@login_required
-def user_search_view(request):
-    ctx = {}
-    url_parameter = request.GET.get("q")
-
-    users= []
-    if url_parameter:
-        users = User.objects.filter(username__icontains=url_parameter)
-    
-
-    ctx["users"] = users
-    if request.is_ajax():
-        print("Ajax request")
-
-        html = render_to_string(
-            template_name="blog/user-search-results.html", context={"users": users}
-        )
-        data_dict = {"html_from_view": html}
-        return JsonResponse(data=data_dict, safe=False)
-
-    return render(request, "blog/base.html", context=ctx)
+# @login_required
+# def user_search_view(request):
+#     ctx = {}
+#     url_parameter = request.GET.get("q")
+#
+#     users= []
+#     if url_parameter:
+#         print(request.user.profile.blocked_by.all())
+#         all_user = User.objects.filter(username__icontains=url_parameter)
+#         blocked_by_list = request.user.profile.blocked_by.all()
+#         qs3 = all_user.difference(blocked_by_list)
+#         users = qs3
+#
+#     ctx["users"] = users
+#     if request.is_ajax():
+#         print("Ajax request")
+#
+#         html = render_to_string(
+#             template_name="blog/user-search-results.html", context={"users": users}
+#         )
+#         data_dict = {"html_from_view": html}
+#         return JsonResponse(data=data_dict, safe=False)
+#
+#     return render(request, "blog/base.html", context=ctx)
 
 
 #user search view
@@ -553,11 +636,14 @@ def user_search_view(request):
 
     users= []
     if url_parameter:
-        users = User.objects.filter(
+        all_user = User.objects.filter(
             Q(username__icontains=url_parameter ) |
             Q(first_name__icontains=url_parameter) |
             Q(last_name__icontains=url_parameter)
             ).distinct()
+        blocked_by_list = request.user.profile.blocked_by.all()
+        qs3 = all_user.difference(blocked_by_list)
+        users = qs3
     
 
     ctx["users"] = users
@@ -616,20 +702,20 @@ def user_search_list(request):
         
     
     if url_parameter:
-        name = User.objects.filter(
+        all_user = User.objects.filter(
             Q(first_name__startswith=url_parameter) |
             Q(last_name__startswith=url_parameter) |
             Q(username__startswith=url_parameter) 
             ).all()
+        blocked_by_list = request.user.profile.blocked_by.all()
+        qs3 = all_user.difference(blocked_by_list)
+        users = qs3
         ctx = {
-            'name': name,
+            'name': users,
             'search':url_parameter
         }
         
     return render(request, "blog/user_list.html", context=ctx)
-
-
-
 
 
 @login_required
@@ -640,6 +726,114 @@ def notification_view(request):
         ctx = {'notification_list':notification_list} 
 
         return render(request,"users/notifications.html", context=ctx)
+
+
+@login_required
+def block_user(request):
+    if request.method == 'GET':
+        blocked_user_id = request.GET['userid']
+        blocked_user_obj = User.objects.get(id=blocked_user_id)
+        request.user.profile.blocked_users.add(blocked_user_obj)
+        blocked_user_obj.profile.blocked_by.add(request.user)
+
+        current_user_following = True
+        blocked_user_following = True
+        request_to = False
+        request_from = False
+        if blocked_user_obj.id not in [user for id, user in request.user.profile.following.values_list()]:
+
+            current_user_following = False
+
+        elif len(FollowRequest.objects.filter(from_user=request.user).filter(to_user=blocked_user_obj)) == 1:
+            request_to = True
+
+        if request.user.id not in [user for id, user in blocked_user_obj.profile.following.values_list()]:
+            blocked_user_following = False
+
+        elif len(FollowRequest.objects.filter(from_user=blocked_user_obj).filter(to_user=request.user)) == 1:
+            request_from = True
+
+        if current_user_following:
+            follower_list = [user for id, user in blocked_user_obj.profile.followers.values_list()]
+            follower_user_index = follower_list.index(request.user.id)
+            blocked_user_obj.profile.followers.all()[follower_user_index].delete()
+            blocked_user_obj.profile.followers_count -= 1
+
+            try:
+                blocked_user_obj.profile.notification.get(from_user=request.user, notification_type="followed_by").delete()
+                blocked_user_obj.profile.notification_count -= 1
+            except:
+                pass
+
+            blocked_user_obj.profile.save()
+
+            following_list = [user for id, user in request.user.profile.following.values_list()]
+            following_user_index = following_list.index(blocked_user_obj.id)
+            request.user.profile.following.all()[following_user_index].delete()
+            request.user.profile.following_count -= 1
+            request.user.profile.save()
+
+        elif request_to:
+            frequest = FollowRequest.objects.filter(
+                from_user=request.user,
+                to_user=blocked_user_obj
+            ).first()
+            frequest.delete()
+
+            try:
+                blocked_user_obj.profile.notification.get(from_user=request.user, notification_type="follow_request").delete()
+                blocked_user_obj.profile.notification_count -= 1
+            except:
+                pass
+
+        if blocked_user_following:
+            follower_list = [user for id, user in request.user.profile.followers.values_list()]
+            follower_user_index = follower_list.index(blocked_user_obj.id)
+            request.user.profile.followers.all()[follower_user_index].delete()
+            request.user.profile.followers_count -= 1
+
+            try:
+                request.user.profile.notification.get(from_user=blocked_user_obj,
+                                                          notification_type="followed_by").delete()
+                blocked_user_obj.profile.notification_count -= 1
+            except:
+                pass
+
+            request.user.profile.save()
+
+            following_list = [user for id, user in blocked_user_obj.profile.following.values_list()]
+            following_user_index = following_list.index(request.user.id)
+            blocked_user_obj.profile.following.all()[following_user_index].delete()
+            blocked_user_obj.profile.following_count -= 1
+            blocked_user_obj.profile.save()
+
+        elif request_from:
+            frequest = FollowRequest.objects.filter(
+                from_user=blocked_user_obj,
+                to_user=request.user
+            ).first()
+            frequest.delete()
+
+            try:
+                blocked_user_obj.profile.notification.get(from_user=blocked_user_obj,
+                                                          notification_type="follow_request").delete()
+                blocked_user_obj.profile.notification_count -= 1
+            except:
+                pass
+
+        return render(request, 'users/otherUserProfile.html')
+
+
+@login_required
+def unblock_user(request):
+    if request.method == 'GET':
+        unblocked_user_id = request.GET['userid']
+        unblocked_user_obj = User.objects.get(id=unblocked_user_id)
+        request.user.profile.blocked_users.remove(unblocked_user_obj)
+        unblocked_user_obj.profile.blocked_by.remove(request.user)
+
+    return render(request, 'users/otherUserProfile.html')
+
 
 
 

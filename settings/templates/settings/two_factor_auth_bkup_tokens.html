@@ -1,0 +1,76 @@
+{% extends 'settings/base.html' %}
+{% load static %}
+
+{% block css %}
+<style>
+	.loginBtn{
+		color: #fff;
+		border-radius: 20px;
+		width: 100%;
+		font-weight: bold;
+		letter-spacing: 1px;
+		font-size: 15px;
+		background-color: #0dc9ef;
+		border-color: #0dc9ef;
+		box-shadow: 1px 3px 5px 0px rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+	}
+	.loginBtn:hover{
+		color: white;
+	}
+</style>
+<title>TalkingMind 2FA Backup Tokens</title>
+{% endblock css %}
+
+
+{% block content %}
+
+    <div id="tokens_div" class="container-fluid security-container" style="padding-left: 0; padding-right: 0; margin-left: 0">
+
+			<div id="header" class="pl-5" style="margin-bottom:20px; padding-bottom: 20px; width: 100%; border-bottom: 1px solid darkgray; display: flex;">
+				<a href="{% url 'two-fact-auth-setting' %}">
+				<img style="width: 40px;"src="{% static 'settings/icons/back_button_bold.svg' %}" alt="back_button">
+				</a>
+				<h3 class="ml-4 font-weight-bold" style=" width: 100%;">Two Factor Authentication</h3>
+			</div>
+
+			<p class="font-weight-bold pl-5" style="margin-bottom:20px; padding-bottom: 20px;width: 100%;color: #585858; font-size: larger; border-bottom: 1px solid darkgray;">Backup Tokens</p>
+
+			<div class="pl-5" style="margin-bottom:20px; padding-bottom: 17px; width: 100%; border-bottom: 1px solid darkgray;">
+				<div class="col-md-8 offset-md-2">
+					<p>Backup tokens can be used when your authenticator app and backup
+						phone numbers aren't available. The backup tokens below can be used once
+						for login verification. If you've used up all your backup tokens, you
+						can generate a new set of backup tokens. Only the backup tokens shown
+						below will be valid.</p>
+						{% if device.token_set.count %}
+							<ul style="text-align: center;width: 225px;margin-right: auto;margin-left: auto;" class="list-group">
+								{% for token in device.token_set.all %}
+									<li class="list-group-item">
+										{{ token.token }}
+										<i class='fas fa-check-circle' style="color:green;float:right;font-size:20px;"></i>
+									</li>
+								{% endfor %}
+							</ul>
+							<br>
+							<p style="text-align: center;">Print these tokens and keep them somewhere safe.
+								<span onclick="printTokens()" style="cursor: pointer;color:#0dc9ef;">Print Tokens?</p>
+							</p>
+						{% else %}
+							<p style="text-align: center;color:red;">You don't have any backup tokens yet.</p>
+						{% endif %}
+				</div>
+
+				<form method="post">
+					{% csrf_token %}
+					<button type="submit" class="btn loginBtn" style="width:250px;margin-left: auto;margin-right: auto;display: block;">Generate New Tokens</button>
+				</form>
+				<br>
+		</div>
+
+      	</div>
+
+{% endblock %}
+
+{% block scripts %}
+	<script type="text/javascript" src="{% static 'settings/javascript/2fa.js' %}"></script>
+{% endblock scripts %}

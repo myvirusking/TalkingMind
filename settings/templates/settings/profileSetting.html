@@ -1,4 +1,12 @@
 {% extends 'settings/base.html' %}
+{% load two_factor %}
+{% load static %}
+
+
+{% block css %}
+	<link rel="stylesheet" href="{% static 'settings/css/croppie.css' %}" />
+{% endblock css %}
+
 
 {% block content %}
 
@@ -14,8 +22,10 @@
 				<div class="ml-3 mt-2">
 					<h5 style="margin-bottom: 0;font-weight: 600;
     color: #636363;
-}">Prashant Jha</h5>
-					<a href="#" class="mt-0 font-weight-bold" style="font-size: 13px;color: #57CCED; ">Change Profile Photo</a>
+}">{{request.user.first_name}} {{request.user.last_name}}</h5>
+
+					<label for="image" class="mt-0 font-weight-bold" style="font-size: 13px;color: #57CCED;cursor:pointer;">Change Profile Photo</label>
+					<input style="display:none;" id="image" type="file" name="image">
 				</div>
 
 			</div>
@@ -23,6 +33,27 @@
             <form enctype="multipart/form-data" method="post">
                 {% csrf_token %}
 		        <div class="mt-4">
+				
+				{% if mobile_form.errors %}
+					{% for field in mobile_form %} 
+						{% for error in field.errors %}
+							<div class="alert alert-danger" style="width:75%">
+								<strong>{{ error|escape }}</strong>
+							</div>
+						{% endfor %}
+					{% endfor %}
+				{% endif %}
+
+				{% if user_form.errors %}
+					{% for field in user_form %} 
+						{% for error in field.errors %}
+							<div class="alert alert-danger" style="width:75%">
+								<strong>{{ error|escape }}</strong>
+							</div>
+						{% endfor %}
+					{% endfor %}
+				{% endif %}
+
 				<div class="form-div first-name form-group">
 					<label class="ml-2"><b>First name</b></label><br>
 					{{ user_form.first_name }}
@@ -47,7 +78,7 @@
 
 				<div class=" form-div phone form-group mt-3">
 					<label class="ml-2"><b>Mobile no.</b></label><br>
-                    {{ user_form.mobile_no }}
+                    {{ mobile_form.mobile_no }}
 					<small id="phoneHelp" class="form-text text-muted ml-2">*Your mobile number won't be the part of your public profile</small>
 				</div>
 
@@ -86,4 +117,71 @@
             </form>
     </div>
 
+
+
+<!-- Modal -->
+<div class="modal fade" id="verifyMobileModal" data-keyboard="false" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="verifyMobileModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+		<div class="modal-header">
+			<h5 class="modal-title" id="verifyMobileModalCenterTitle">Mobile Number Verification</h5>
+		</div>
+		{% if new_mobile_no %}
+		<form id="verifyOTPForm">
+			<div class="modal-body">
+				<div id="invalid_otp_error" class="alert alert-danger" style="display:none;">
+					<strong>Entered code is not valid.</strong>
+				</div>
+				<p id="display_msg" style="color:green;">OTP has been sent successfully on {{new_mobile_no|mask_phone_number}}.</p>
+				<div class="form-group">
+					<input type="number" name="otp" class="form-control" placeholder="OTP" required="" min="-1" max="999999">
+				</div>
+				<span id="resend_otp" data-mask_mobile_no="{{new_mobile_no|mask_phone_number}}" data style="font-size: small;display: inline-block;width: 100%;text-align: end;color:green;cursor:pointer;">Resend OTP</span>
+			</div>
+			<div class="modal-footer">
+				<button type="submit" class="btn btn-success">Verify</button>
+			</div>
+		</form>
+		{% endif %}
+    </div>
+  </div>
+</div>
+
+
+<!-- cropImagePopModal -->
+<div class="modal fade" id="cropImagePopModal" tabindex="-1" role="dialog" aria-labelledby="cropModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="cropModalTitle">Crop Image</h4>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <div id="croppieDiv"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" id="cropImageBtn" class="btn btn-primary">Crop</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 {% endblock %}
+
+{% block scripts %}
+<script>
+var timer = 119, resendCounter=0, enableResend = true ,minutes, seconds, getTimer;
+const verify_mobile = "{{verify_mobile}}";
+var csrf_token = "{{csrf_token}}";
+var new_mobile_no = "{{new_mobile_no}}";
+const url = "{% url 'profile_mobile_verify' %}";
+const profileUpdateUrl = "{% url 'profile-setting' %}";
+</script>
+<script type="text/javascript" src="{% static 'settings/javascript/croppie.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/npm/exif-js"></script>
+<script type="text/javascript" src="{% static 'settings/javascript/profile_image_cropping.js' %}"></script>
+<script type="text/javascript" src="{% static 'settings/javascript/profile_mobile_verify.js' %}"></script>
+
+{% endblock scripts %}
