@@ -469,7 +469,8 @@ def check_for_new_notification(request):
         # return JsonResponse(data={'newNotification':total_notification}, safe=False)
 
 
-
+def error_404_view(request, exception):
+    return render(request, 'blog/error404.html')
 
 
 # class AboutView(DetailView):

@@ -131,3 +131,7 @@ urlpatterns = [
 ]
 
 urlpatterns+= static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+# For custom 404 page
+
+handler404 = 'blog.views.error_404_view'

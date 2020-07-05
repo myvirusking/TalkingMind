@@ -637,9 +637,9 @@ def user_search_view(request):
     users= []
     if url_parameter:
         all_user = User.objects.filter(
-            Q(username__icontains=url_parameter ) |
-            Q(first_name__icontains=url_parameter) |
-            Q(last_name__icontains=url_parameter)
+            Q(username__startswith=url_parameter ) |
+            Q(first_name__startswith=url_parameter) |
+            Q(last_name__startswith=url_parameter)
             ).distinct()
         blocked_by_list = request.user.profile.blocked_by.all()
         qs3 = all_user.difference(blocked_by_list)

@@ -4,6 +4,8 @@
 
 {% block section %}
     <section>
+        <button onclick="goTopFunction()" id="myBtn" title="Go to top"><i class="fa fa-arrow-up" aria-hidden="true"> &nbsp;Top</i>
+        </button>
         <div class="container-fluid">
             <div class="row">
                 <div id="replaceable-content" class="search-box col-6">
@@ -312,6 +314,31 @@
             $(".search-box").slideDown('fast');
         });
     });
+
+
+        // Take me to top button function
+
+        var goTopBtn = document.getElementById("myBtn");
+        window.onscroll = function(){
+            scrollFunction();
+        }
+
+        function scrollFunction(){
+            if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20){
+                $("#myBtn").css('display','block');
+            }
+            else {
+                $("#myBtn").css("display","none");
+            }
+        }
+
+        function goTopFunction() {
+            console.log("called");
+            document.body.scrollTop = 0;
+            document.documentElement.scrollTop = 0;
+        }
+
+    
 
 </script>
 

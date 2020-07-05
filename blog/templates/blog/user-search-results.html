@@ -1,14 +1,16 @@
 
 {% if users %}
-<!-- <div style="border-left:1px solid gray;border-right:1px solid gray;border-bottom:1px solid gray" class="ml-3"> -->
     
     {% for user in users %}
     {% if forloop.counter|divisibleby:1 %}
-    <div style="border-bottom:2px solid gray;">
-        <a href="{% url 'other-profile' user.id %}"><img src="{{ user.profile.image.url }}" alt="User profile Image" class="live_img"></a> 
+    <a href="{% url 'other-profile' user.id %}"><div style="border-bottom:2px solid gray;">
+        <!-- <a href="{% url 'other-profile' user.id %}"><img src="{{ user.profile.image.url }}" alt="User profile Image" class="live_img"></a> 
         <a href="{% url 'other-profile' user.id %}" style="padding: 10px; font-weight: bold;margin-top: 5px; line-height:5px;">&ensp; @{{ user.username }}</br> 
-            &emsp;&emsp;&emsp;&emsp;&ensp; {{ user.first_name }} {{user.last_name}}</a><br>
-    </div>
+            &emsp;&emsp;&emsp;&emsp;&ensp; {{ user.first_name }} {{user.last_name}}</a><br> -->
+            <img src="{{ user.profile.image.url }}" alt="User profile Image" class="live_img">
+            &ensp; <b>@{{ user.username }}</b></br> 
+            &emsp;&emsp;&emsp;&emsp;{{ user.first_name }} {{user.last_name}}<br>
+    </div></a>
     {% endif %}
 
     <!-- <div style="border-bottom:2px solid gray;">
