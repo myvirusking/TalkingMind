@@ -11,6 +11,5 @@ urlpatterns = [
     path('two-factor-auth/backup/tokens/', setting_views.CustomBackupTokensView.as_view(), name='2fa_backup_tokens'),
     path('authorized-logins/', setting_views.AuthorizedLogins.as_view(), name='authorized_devices'),
     path('authorized-logins/<int:pk>/delete/', setting_views.DeleteAuthorizedLogin, name='delete_authorized_device'),
-    
     path('sessions/', include('settings.user_sessions_url')),
 ]

@@ -101,6 +101,7 @@ class ProfileUpdateForm(forms.ModelForm):
         model = Profile
         fields = [ 'bio','image','facebook','twitter', 'instagram']
 
+
 class MobileNoUpdateForm(forms.ModelForm):
     mobile_no = forms.CharField(widget=TextInput(attrs={'class':'pl-2', 'aria-describedby':'phoneHelp',
                                                         }), required=False,validators=[validate_international_phonenumber])

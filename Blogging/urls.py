@@ -128,6 +128,7 @@ urlpatterns = [
 
     path('user/registration/otp-screen',setting_views.send_otp_for_email_verification, name='otp-screen')
 
+
 ]
 
 urlpatterns+= static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

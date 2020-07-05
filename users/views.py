@@ -350,7 +350,6 @@ def other_user_profile(request, pk):
             'block_user_class': 'unblock',
             'block_user_text': 'Unblock user'
 
-
         }
     return render(request, 'users/otherUserProfile.html', context)
 
