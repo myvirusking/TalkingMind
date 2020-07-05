@@ -99,7 +99,7 @@ class ProfileUpdateForm(forms.ModelForm):
                                                        'placeholder':'e.g. Blogger | Traveller | Optimist | Programmer'}))
     class Meta:
         model = Profile
-        fields = [ 'bio']
+        fields = [ 'bio','image','facebook','twitter', 'instagram']
 
 
 class MobileNoUpdateForm(forms.ModelForm):

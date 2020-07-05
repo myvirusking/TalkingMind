@@ -57,6 +57,9 @@ class Profile(models.Model):
     notification = models.ManyToManyField(Notification)
     notification_count = models.PositiveIntegerField(default=0)
     mobile_no = PhoneNumberField(blank=True, null=True)
+    facebook = models.CharField(max_length=100,null=True,blank=True)
+    twitter = models.CharField(max_length=100,null=True,blank=True)
+    instagram = models.CharField(max_length=100,null=True,blank=True)
 
     def __str__(self):
         return f'{self.user.username} Profile'

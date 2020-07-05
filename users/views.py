@@ -160,6 +160,8 @@ def profile(request):
         profile_form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user.profile)
         about_form = AboutForm(request.POST, instance = request.user.profile)
 
+        # Social icons
+
         if user_form.is_valid() and profile_form.is_valid():
             user_form.save()
             profile_form.save()
@@ -215,6 +217,7 @@ def profile(request):
         'followers_list': followers_list,
         'following_users': following_users,
         'comment_form': comment_form,
+        'current_user_profile':current_user_profile
 
     }
 
@@ -346,7 +349,6 @@ def other_user_profile(request, pk):
             'user_follows_profile': False,
             'block_user_class': 'unblock',
             'block_user_text': 'Unblock user'
-
 
         }
     return render(request, 'users/otherUserProfile.html', context)

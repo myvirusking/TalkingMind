@@ -29,7 +29,7 @@ from users import views as user_views
 from blog import views as blog_views
 from settings.forms import CustomPasswordChangeForm
 from django.contrib import messages
-
+from settings import views as setting_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -121,6 +121,14 @@ urlpatterns = [
     path('user/unblock/', user_views.unblock_user, name='unblock-user'),
 
     path('accounts/', include('allauth.urls')),
+
+    path('login/otp-screen/', setting_views.send_otp_for_email_verification, name='otp-screen'),
+
+    path('admin/login/otp-screen/', setting_views.send_otp_for_email_verification, name='otp-screen'),
+
+    path('user/registration/otp-screen',setting_views.send_otp_for_email_verification, name='otp-screen')
+
+
 ]
 
 urlpatterns+= static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -164,6 +164,7 @@ AXES_FAILURE_LIMIT = 4
 AXES_LOCKOUT_URL = 'otp-screen'
 CURRENT_USER = ""
 AXES_RESET_ON_SUCCESS = True
+AXES_ENABLED = False
 
 
 # Internationalization
