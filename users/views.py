@@ -28,6 +28,11 @@ from two_factor import signals
 from django.contrib.auth import login
 from django.shortcuts import resolve_url
 from django.utils.http import is_safe_url
+from django.contrib import messages 
+from django.core.mail import send_mail 
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import get_template 
+from django.template import Context  
 
 #global variable for making efficient infinite scrolling
 global_posts = None
@@ -66,6 +71,8 @@ def user_register(request):
                 return render(request, template, {'form': form,
                                                   'error_message': 'Passwords do not match'})
             else:
+                username = form.cleaned_data['username']
+                email = form.cleaned_data['email']
                 user = User.objects.create_user(
 
                     first_name = form.cleaned_data['first_name'],
@@ -75,6 +82,14 @@ def user_register(request):
                     password = form.cleaned_data['password']
 
                 )
+                # This is for sending mail when user register
+                html_tem = get_template('blog/email.html')
+                d = {'username' : username}
+                subject , from_email , to = 'Welcome', 'talkingmindblog@gmail.com', email
+                html_content = html_tem.render(d)
+                msg = EmailMultiAlternatives(subject, html_content, from_email, [to])   # method for adding  both text and html in message
+                msg.attach_alternative(html_content, "text/html")
+                msg.send()
                 user.save()
                 user = authenticate(request, username=form.cleaned_data['username'],
                                     password=form.cleaned_data['password'])
